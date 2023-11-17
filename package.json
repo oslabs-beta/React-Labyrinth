@@ -9,14 +9,43 @@
   "categories": [
     "Other"
   ],
+  "pricing": "Free",
   "activationEvents": [],
   "main": "./extension.js",
   "contributes": {
     "commands": [{
       "command": "react-labyrinth.helloWorld",
-      "title": "Hello World"
-    }]
+      "title": "Hello World",
+      "category": "React Labyrinth"
+    },
+  {
+    "command": "myExtension.showPanel",
+    "title": "Show Panel",
+    "category": "React Labyrinth"
+  }],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "react-labyrinth",
+          "title": "React Labyrinth",
+          "icon": "/media/test1.svg"
+        }
+      ]
+    },
+    "views": {
+      "react-labyrinth": [
+        {
+          "id": "metrics-file",
+          "name": "Metrics"
+        },
+        {
+          "id": "test",
+          "name": "Test"
+        }
+      ]
+    }
   },
+  
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
