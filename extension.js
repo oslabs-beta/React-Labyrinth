@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const {createPanel} = require('./src/panel');
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -19,12 +20,17 @@ function activate(context) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('react-labyrinth.helloWorld', function () {
 		// The code you place here will be executed every time your command is executed
-
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from React Labyrinth!');
 	});
 
-	context.subscriptions.push(disposable);
+	// pass in the command we want to register (refer to package.json)
+	let result = vscode.commands.registerCommand('myExtension.showPanel', () => {
+		// call helper func
+		createPanel();
+	});
+
+	context.subscriptions.push(disposable, result);
 }
 
 // This method is called when your extension is deactivated
