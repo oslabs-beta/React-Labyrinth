@@ -13,16 +13,16 @@ function activate(context) {
 	// pass in the command we want to register (refer to package.json)
 	let result = vscode.commands.registerCommand('myExtension.showPanel', () => {
 		// call helper func
-		createPanel();
+		createPanel(context);
 	});
 
 	context.subscriptions.push(disposable, result);
 }
 
 // This method is called when your extension is deactivated
-function deactivate() {}
+// function deactivate() {}
 
 module.exports = {
 	activate,
-	deactivate
+	// deactivate
 }
