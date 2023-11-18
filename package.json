@@ -43,7 +43,13 @@
           "name": "Test"
         }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "metrics-file",
+        "contents": "Select root file of your application to start\n[Select File](command:vscode.openFolder)\n"
+      }
+    ]
   },
   
   "scripts": {
