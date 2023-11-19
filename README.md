@@ -1,6 +1,6 @@
 # React Labrynth
 
-![React Labrynth Logo](https://github.com/oslabs-beta/React-Labyrinth/media/reactLabrynth.png)
+![React Labyrinth Logo](https://github.com/oslabs-beta/React-Labyrinth/media/reactLabyrinth.png)
 
 # __Table of Contents__
 1. [Overview](#overview)
