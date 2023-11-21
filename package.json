@@ -45,7 +45,13 @@
           "name": "Test"
         }
       ]
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "metrics-file",
+        "contents": "View tree to see where improvements can be made!\n[View Tree](command:myExtension.showPanel)\n"
+      }
+    ]
   },
   "scripts": {
     "lint": "eslint .",
