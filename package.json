@@ -23,6 +23,11 @@
         "command": "myExtension.showPanel",
         "title": "Show Panel",
         "category": "React Labyrinth"
+      },
+      {
+        "command": "myExtension.pickFile",
+        "title": "Pick File",
+        "category": "React Labyrinth"
       }
     ],
     "viewsContainers": {
@@ -49,7 +54,7 @@
     "viewsWelcome": [
       {
         "view": "metrics-file",
-        "contents": "View tree to see where improvements can be made!\n[View Tree](command:myExtension.showPanel)\n"
+        "contents": "View tree to see where improvements can be made!\n[View Tree](command:myExtension.pickFile)\n"
       }
     ]
   },
@@ -72,6 +77,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.3",
+    "@babel/parser": "^7.23.4",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
     "babel": "^6.23.0",

@@ -1,5 +1,5 @@
 const vscode = require('vscode');
-const {createPanel} = require('./src/panel');
+const {createPanel, grabFile} = require('./src/panel');
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -15,6 +15,10 @@ function activate(context) {
 		// call helper func
 		createPanel(context);
 	});
+
+	let file = vscode.commands.registerCommand('myExtension.pickFile', () => {
+		grabFile(context);
+	})
 
 	context.subscriptions.push(disposable, result);
 }
