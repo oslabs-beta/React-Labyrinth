@@ -1,28 +1,45 @@
-# react-labyrinth README
+# React Labyrinth
 
-This is the README for your extension "react-labyrinth". After writing up a brief description, we recommend including the following sections.
+![React Labyrinth Logo](https://github.com/oslabs-beta/React-Labyrinth/blob/LK/Readme/media/reactLabyrinth.png)
+
+# __Table of Contents__
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [Getting Started](#getting-started)
+5. [Known Issues](#known-issues)
+6. [Release Notes](#release-notes)
+7. [Meet Our Team](#meet-our-team)
+8. [License](#license)
+
+*work in progress as of 11/13/23*
+## Overview
+React Server Components are components that run exclusively on the server, allowing the components to do things such as making their own database queries inside of the component, rather than having to make a request to the backend first. These components are different from the components we usually write in React, which under this new paradigm are refered to as Client Components. But the problem is it's not always clear which Client Components could instead be Server Components which would save space on the bundle size and decrease TTI(time to interactive) for the client.
+
+We want to create a visualization tool to help developers know where these changes could be implemented and how much time and space their application would save from these potential changes. _(Make sure to "trust our extension" in order to see the bundle size and TTI metrics)_
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
+Our tool will 
+* Show which components are currently considered Client Components or Server Components 
+* Show if a Client Component has the potential to be a Server Component. 
+* Display the change in Bundle Size and TTI for the web application
 
 \!\[feature X\]\(images/feature-x.png\)
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-## Requirements
+## Installation
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Our visualization tool can be downloaded as an extension in the VS Code Editor. Search for React Labrynth and click "install".
 
-## Extension Settings
+## Getting Started
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Select the root file for your React App to load the tree.
 
-For example:
+Any components that are Client Components will have a blue background and Server Components will have an orange background. 
 
-This extension contributes the following settings:
+If the component has the potential to be a Server Component, there will be an orange dotted outline surrounding the component node on the tree.
 
 * `myExtension.enable`: Enable/disable this extension.
 * `myExtension.thing`: Set to `blah` to do something.
@@ -39,27 +56,15 @@ Users appreciate release notes as you update your extension.
 
 Initial release of ...
 
-### 1.0.1
+## Meet Our Team
 
-Fixed issue #.
+* Ashley Luu
+* Christina Raether
+* Francisco Lopez
+* Johnny Arroyo
+* Louis Kuczykowski
 
-### 1.1.0
 
-Added features X, Y, and Z.
+## License
 
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+React Labrynth is developed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License)
