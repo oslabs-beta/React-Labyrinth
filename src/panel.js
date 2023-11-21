@@ -52,11 +52,16 @@ let ast;
 async function grabFile() {
 
     const file = await vscode.window.showOpenDialog({canSelectFolders: true, canSelectFiles: true, canSelectMany: true})
-        .then(data => {
-            fs.readFile(data[0].path, 'utf-8', (err, data) => {
-                console.log(typeof data)
-                console.log(data)
-            })
+        .then(async (data) => {
+            ast = await babel.parse(
+                fs.readFileSync(path.resolve(data[0].path), 'utf-8'),
+                {
+                  sourceType: 'module',
+                  tokens: true,
+                  plugins: ['jsx', 'typescript'],
+                }
+              );
+            console.log(ast)
         })
 }
 
