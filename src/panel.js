@@ -8,15 +8,17 @@ function createPanel(context) {
         // create one new tab
         vscode.ViewColumn.One,
         {
-            enableScripts: true
+            enableScripts: true,
+            retainContextWhenHidden: true
         }
     );
+
+    panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'favicon.ico');
 
     const bundlePath = vscode.Uri.joinPath(context.extensionUri, 'build', 'bundle.js');
 
     // set webview URI to pass into html script
     const bundleURI = panel.webview.asWebviewUri(bundlePath);
-
 
     // render html of webview here
     panel.webview.html = createWebviewHTML(bundleURI);
