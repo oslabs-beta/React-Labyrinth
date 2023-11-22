@@ -1,6 +1,6 @@
 # React Labyrinth
 
-![React Labyrinth Logo](./media/reactLabyrinth.png)
+![React Labyrinth Logo](./media/reactLabyrinthFinal.png)
 
 # __Table of Contents__
 1. [Overview](#overview)
