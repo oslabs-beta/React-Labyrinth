@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const { createPanel } = require('./src/panel');
-const { grabFile } = require('./src/parser');
+const { Parser } = require('./src/parser');
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -17,8 +17,10 @@ function activate(context) {
 		createPanel(context);
 	});
 
-	vscode.commands.registerCommand('myExtension.pickFile', () => {
-		grabFile();
+	vscode.commands.registerCommand('myExtension.pickFile', async () => {
+		const tree = new Parser();
+		const file = await vscode.window.showOpenDialog({ canSelectFolders: true, canSelectFiles: true, canSelectMany: true });
+		tree.grabFile(file);
 	});
 
 	context.subscriptions.push(disposable, result);
