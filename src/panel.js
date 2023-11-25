@@ -1,7 +1,4 @@
 const vscode = require('vscode');
-const fs = require('fs');
-const path = require('path');
-const babel = require('@babel/parser');
 
 function createPanel(context) {
     // utilize method on vscode.window object to create webview
@@ -48,21 +45,4 @@ function createWebviewHTML(URI) {
     )
 }
 
-let ast;
-async function grabFile() {
-
-    const file = await vscode.window.showOpenDialog({canSelectFolders: true, canSelectFiles: true, canSelectMany: true})
-        .then(async (data) => {
-            ast = await babel.parse(
-                fs.readFileSync(path.resolve(data[0].path), 'utf-8'),
-                {
-                  sourceType: 'module',
-                  tokens: true,
-                  plugins: ['jsx', 'typescript'],
-                }
-              );
-            console.log(ast)
-        })
-}
-
-module.exports = {createPanel, grabFile};
+module.exports = {createPanel};
