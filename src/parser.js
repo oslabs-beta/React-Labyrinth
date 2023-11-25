@@ -15,7 +15,6 @@ class Parser {
     async grabFile(file) {
         try {
             // const file = await vscode.window.showOpenDialog({ canSelectFolders: true, canSelectFiles: true, canSelectMany: true });
-            // if(typeof(file) !== 'string'){
             if (typeof (file) !== 'string') {
                 file = path.resolve(file[0].path)
             }
@@ -39,9 +38,6 @@ class Parser {
     // traverse the ast nodes, passing in node
     traverseAST(node) {
         if (node.type === 'ImportDeclaration') {
-            // processedNodes.add(node);
-            // console.log('JSX Node', node);
-
             // extract file name path 
             const elementName = node.source.value;
             if (elementName.startsWith('./') || elementName.startsWith('../')) {
