@@ -20,6 +20,8 @@ async function grabFile() {
         // console.log('ast', ast);
         const result = await traverseAST(ast);
         console.log('res', result);
+        // const tokens = ast.tokens;
+        // console.log('tokens are:', tokens);
     } catch (error) {
         console.error(`Error processing file: ${error}`)
     }
@@ -31,15 +33,16 @@ const processedNodes = new Set();
 // traverse the ast nodes, passing in node
 async function traverseAST(node) {
     // identify which are jsx elements type and then extract info about them (like the component name) and store it in var
-    if (node.type === 'JSXElement' && !processedNodes.has(node)) {
+    if (node.type === 'ImportDeclaration' && !processedNodes.has(node)) {
         processedNodes.add(node);
         // console.log('JSX Node', node);
 
         // im guessing that jsx elements will never contain the use client or hook declaration, so i wouldnt need to call the functions here
 
         // property on node to obtain component name (could be tag or component name)
-        const elementName = node.openingElement.name.name;
-        // console.log('JSX Name', elementName);
+        const elementName = node.source.value;
+        if(elementName.startsWith('./') || elementName.startsWith('../'))  console.log('file path:', elementName);
+       
 
         if (node.children) {
             // if node children exist, then recursively call the child nodes with this func
@@ -51,8 +54,8 @@ async function traverseAST(node) {
         processedNodes.add(node);
 
         // call the function to determine if it is a client component and store it in var
-        const isClientComp = await checkForClientString(node);
-        const isReactHook = await checkReactHooks(node);
+        // const isClientComp = await checkForClientString(node);
+        // const isReactHook = await checkReactHooks(node);
 
         // recursively iterate through the other non-jsx types if the jsx node children doesnt exist 
         for (const key in node) {
