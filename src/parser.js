@@ -75,45 +75,45 @@ const { getNonce } = require('./getNonce.js');
 //     // function to determine server or client component (can look for 'use client' and 'hooks')
 //     // input: ast node (object)
 //     // output: boolean
-//     checkForClientString(node) {
-//         if (node.type === 'Directive') {
-//             console.log('node', node);
-//             // access the value property of the Directive node
-//             console.log('Directive Value:', node.value);
-//             // check if the node.value is a 'DirectiveLiteral' node
-//             if (node.value && node.value.type === 'DirectiveLiteral') {
-//                 // check the value to see if it is 'use client'
-//                 if (typeof node.value.value === 'string' && node.value.value.trim() === 'use client') {
-//                     // access the value property of the 'DirectiveLiteral' node
-//                     console.log('DirectiveLiteral Value:', node.value.value);
-//                     // might need to do something else here to make it known as client type
-//                     return true;
-//                 }
+// checkForClientString(node) {
+//     if (node.type === 'Directive') {
+//         console.log('node', node);
+//         // access the value property of the Directive node
+//         console.log('Directive Value:', node.value);
+//         // check if the node.value is a 'DirectiveLiteral' node
+//         if (node.value && node.value.type === 'DirectiveLiteral') {
+//             // check the value to see if it is 'use client'
+//             if (typeof node.value.value === 'string' && node.value.value.trim() === 'use client') {
+//                 // access the value property of the 'DirectiveLiteral' node
+//                 console.log('DirectiveLiteral Value:', node.value.value);
+//                 // might need to do something else here to make it known as client type
+//                 return true;
 //             }
 //         }
-//         return false;
 //     }
+//     return false;
+// }
 
 //     // function to determine if file uses react hooks (startswith 'use')
 //     // input: ast node (object)
 //     // output: boolean
-//     checkReactHooks(node) {
-//         // for just the mvp, look up for the FIRST client component and make every child as a client component
-//         // function to determine if component uses react hooks (checks if its BEING CALLED IN COMPONENT)
-//         if (node.type === 'CallExpression') {
-//             console.log('nodeCall', node)
-//             if (node.callee && node.callee.name) {
-//                 // to be more specific, we might want to consider declaring an array of hooks and write logic to iterate and checks if the name includes any of the elements, then return true
-//                 if (node.callee.name.startsWith('use')) {
-//                     // if the node.type is CallExpression (dealing with function or method call) (callee is prop on callexpression - an identifier), return true
-//                     console.log('node.callee', node.callee);
-//                     console.log('Node with Hook', node.callee.name);
-//                     return true;
-//                 }
+// checkReactHooks(node) {
+//     // for just the mvp, look up for the FIRST client component and make every child as a client component
+//     // function to determine if component uses react hooks (checks if its BEING CALLED IN COMPONENT)
+//     if (node.type === 'CallExpression') {
+//         console.log('nodeCall', node)
+//         if (node.callee && node.callee.name) {
+//             // to be more specific, we might want to consider declaring an array of hooks and write logic to see if the array includes the node.calee.name, then return true
+//             if (node.callee.name.startsWith('use')) {
+//                 // if the node.type is CallExpression (dealing with function or method call) (callee is prop on callexpression - an identifier), return true
+//                 console.log('node.callee', node.callee);
+//                 console.log('Node with Hook', node.callee.name);
+//                 return true;
 //             }
 //         }
-//         return false;
 //     }
+//     return false;
+// }
 // }
 
 class Parser {
@@ -160,6 +160,7 @@ class Parser {
             parentList: [],
             props: {},
             error: '',
+            isClientComponent: false, // might need to change this default value for the root file
         };
 
         this.tree = root;
@@ -243,7 +244,7 @@ class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     parser(componentTree) {
-        console.log(componentTree);
+        // console.log(componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -286,6 +287,8 @@ class Parser {
 
         // Find imports in the current file, then find child components in the current file
         const imports = this.getImports(ast.program.body);
+        const importsCallee = this.getCallee(ast.program.body);
+        console.log(importsCallee);
 
         // Get any JSX Children of current file:
         if (ast.tokens) {
@@ -352,6 +355,15 @@ class Parser {
             }
             return accum;
         }, {});
+    }
+
+    // helper function to determine component type (client)
+    // input: ast.program.body 
+    // output: boolean 
+
+    getCallee(body) {
+        const bodyCallee = body.filter((item) => item.type === 'CallExpression');
+        console.log(bodyCallee);
     }
 
     findVarDecImports(ast) {
@@ -450,9 +462,9 @@ class Parser {
                 children: [],
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
+                isClientComponent: false // for now keep it false, will change to invocation of helper func
             };
         }
-
         return children;
     }
 
