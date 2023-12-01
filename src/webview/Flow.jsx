@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -25,6 +25,18 @@ const OverviewFlow = () => {
     [setEdges]
   );
 
+  useEffect(() => {
+    window.addEventListener('message', (e) => {
+      const msg = e.data;
+      switch (msg.type) {
+        case 'testing': {
+          console.log('testing from flow.jsx');
+          break;
+        }
+      }
+    });
+  });
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -38,7 +50,7 @@ const OverviewFlow = () => {
     >
       <MiniMap
         nodeStrokeColor={(n) => {
-          if (n.style?.background) return n.style.background;
+          if (n.style.background) return n.style.background;
           if (n.type === "input") return "#0041d0";
           if (n.type === "output") return "#ff0072";
           if (n.type === "default") return "#1a192b";
@@ -46,7 +58,7 @@ const OverviewFlow = () => {
           return "#eee";
         }}
         nodeColor={(n) => {
-          if (n.style?.background) return n.style.background;
+          if (n.style.background) return n.style.background;
 
           return "#fff";
         }}

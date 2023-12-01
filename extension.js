@@ -18,9 +18,10 @@ function activate(context) {
 	});
 
 	vscode.commands.registerCommand('myExtension.pickFile', async () => {
-		const tree = new Parser();
-		const file = await vscode.window.showOpenDialog({ canSelectFolders: true, canSelectFiles: true, canSelectMany: true });
-		tree.grabFile(file);
+		const fileArray = await vscode.window.showOpenDialog({ canSelectFolders: false, canSelectFiles: true, canSelectMany: false });
+		const tree = new Parser(fileArray[0].path);
+		tree.parse();
+		console.log('tree instance', tree);
 	});
 
 	context.subscriptions.push(disposable, result);
