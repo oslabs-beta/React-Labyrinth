@@ -2,118 +2,27 @@ const fs = require('fs')
 const path = require('path')
 const babel = require('@babel/parser');
 const { getNonce } = require('./getNonce.js');
-// const { Tree } = require('./treeTemplates/tree.js')
-
-// Parser2 is our old code
-// class Parser2 {
-//     constructor() {
-//         this.ast = undefined;
-//         this.entryFile = undefined;
-//         this.arrList = [];
-//         this.parentDirectoryPath = undefined;
-//     }
-
-//     async grabFile(file) {
-//         try {
-//             if (!file) {
-//                 console.error('Invalid file parameter. Cannot process undefined.');
-//                 return;
-//             }
-
-//             if (typeof file !== 'string') {
-//                 file = path.resolve(file[0].fsPath);
-//             }
-
-//             const fileContent = fs.readFileSync(file, 'utf-8');
-//             this.ast = babel.parse(fileContent, {
-//                 sourceType: 'module',
-//                 tokens: true,
-//                 plugins: ['jsx', 'typescript'],
-//             });
-//             await this.traverseAST(this.ast);
-//             console.log('Result of arrList: ', this.arrList);
-//         } catch (error) {
-//             console.error(`Error processing file: ${error}`)
-//         }
-//     }
-
-//     // traverse the ast nodes, passing in node
-//     // input: ast node (object)
-//     // output ?
-//     traverseAST(node) {
-//         if (node.type === 'ImportDeclaration') {
-//             // extract file name path 
-//             const elementName = node.source.value;
-//             if (elementName.startsWith('./') || elementName.startsWith('../')) {
-//                 console.log('file path:', elementName)
-//                 console.log('node import: ', node);
-//                 // now with this list, we can call a func to determine if node is a client component? 
-//                 this.arrList.push(elementName);
-//                 return this.grabFile(elementName);
-//             };
-
-//             const result = getImports(node.program.body);
-//             console.log(result, 'result');
-
-//             /* this code only works for JSXElement types: has prop of .children, but not the one above
-//             if (node.children) {
-//                 // if node children exist, then recursively call the child nodes with this func
-//                 for (const child of node.children) {
-//                     await traverseAST(child);
-//                 }
-//             }*/
-//         } else {
-//             // recursively iterate through the other non-jsx types if the jsx node children doesnt exist 
-//             for (const key in node) {
-//                 if (node[key] && typeof node[key] === 'object' && key !== 'tokens') {
-//                     this.traverseAST(node[key]);
-//                 }
-//             }
-//         }
-//     }
 
 //     // function to determine server or client component (can look for 'use client' and 'hooks')
 //     // input: ast node (object)
 //     // output: boolean
-//     checkForClientString(node) {
-//         if (node.type === 'Directive') {
-//             console.log('node', node);
-//             // access the value property of the Directive node
-//             console.log('Directive Value:', node.value);
-//             // check if the node.value is a 'DirectiveLiteral' node
-//             if (node.value && node.value.type === 'DirectiveLiteral') {
-//                 // check the value to see if it is 'use client'
-//                 if (typeof node.value.value === 'string' && node.value.value.trim() === 'use client') {
-//                     // access the value property of the 'DirectiveLiteral' node
-//                     console.log('DirectiveLiteral Value:', node.value.value);
-//                     // might need to do something else here to make it known as client type
-//                     return true;
-//                 }
+// checkForClientString(node) {
+//     if (node.type === 'Directive') {
+//         console.log('node', node);
+//         // access the value property of the Directive node
+//         console.log('Directive Value:', node.value);
+//         // check if the node.value is a 'DirectiveLiteral' node
+//         if (node.value && node.value.type === 'DirectiveLiteral') {
+//             // check the value to see if it is 'use client'
+//             if (typeof node.value.value === 'string' && node.value.value.trim() === 'use client') {
+//                 // access the value property of the 'DirectiveLiteral' node
+//                 console.log('DirectiveLiteral Value:', node.value.value);
+//                 // might need to do something else here to make it known as client type
+//                 return true;
 //             }
 //         }
-//         return false;
 //     }
-
-//     // function to determine if file uses react hooks (startswith 'use')
-//     // input: ast node (object)
-//     // output: boolean
-//     checkReactHooks(node) {
-//         // for just the mvp, look up for the FIRST client component and make every child as a client component
-//         // function to determine if component uses react hooks (checks if its BEING CALLED IN COMPONENT)
-//         if (node.type === 'CallExpression') {
-//             console.log('nodeCall', node)
-//             if (node.callee && node.callee.name) {
-//                 // to be more specific, we might want to consider declaring an array of hooks and write logic to iterate and checks if the name includes any of the elements, then return true
-//                 if (node.callee.name.startsWith('use')) {
-//                     // if the node.type is CallExpression (dealing with function or method call) (callee is prop on callexpression - an identifier), return true
-//                     console.log('node.callee', node.callee);
-//                     console.log('Node with Hook', node.callee.name);
-//                     return true;
-//                 }
-//             }
-//         }
-//         return false;
-//     }
+//     return false;
 // }
 
 class Parser {
@@ -136,7 +45,6 @@ class Parser {
                 filePath.split(path.win32.sep).slice(1).join(path.posix.sep)
             );
         }
-
         this.tree = undefined;
         // Break down and reasemble given filePath safely for any OS using path?
     }
@@ -160,8 +68,8 @@ class Parser {
             parentList: [],
             props: {},
             error: '',
+            isClientComponent: false,
         };
-
         this.tree = root;
         this.parser(root);
         return this.tree;
@@ -243,7 +151,7 @@ class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     parser(componentTree) {
-        console.log(componentTree);
+        console.log('componentTree:', componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -287,12 +195,20 @@ class Parser {
         // Find imports in the current file, then find child components in the current file
         const imports = this.getImports(ast.program.body);
 
+        if (this.getCallee(ast.program.body)) {
+            componentTree.isClientComponent = true;
+        } else {
+            componentTree.isClientComponent = false;
+        }
+
+        console.log('componentTree.isClientComponent', componentTree.isClientComponent);
+        console.log('--------------------------------')
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
                 ast.tokens,
                 imports,
-                componentTree
+                componentTree,
             );
         }
 
@@ -328,10 +244,8 @@ class Parser {
     // output: object of imoprts
     getImports(body) {
         const bodyImports = body.filter((item) => item.type === 'ImportDeclaration' || 'VariableDeclaration');
-        console.log('body imports', bodyImports);
 
         return bodyImports.reduce((accum, curr) => {
-            // also determine if component is client or server 
             if (curr.type === 'ImportDeclaration') {
                 curr.specifiers.forEach(({ local, imported }) => {
                     accum[local.name] = {
@@ -355,8 +269,6 @@ class Parser {
     }
 
     findVarDecImports(ast) {
-        // also determine if component is client or server 
-
         // find import path in variable declaration and return it,
         if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
             return ast.arguments[0].value;
@@ -373,6 +285,33 @@ class Parser {
         return false;
     }
 
+    // helper function to determine component type (client)
+    // input: ast.program.body 
+    // output: boolean 
+    getCallee(body) {
+        // does useStore count as a client component functionality? 
+        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
+
+        //! console.log('ast.program.body', body);
+        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+        const calleeArr = bodyCallee[0].declarations[0].init.body.body // gives us an array of callee nodes
+
+        console.log('calleArr:', calleeArr);
+        for (let i = 0; i < calleeArr.length; i++) {
+            if (calleeArr[i].type === 'VariableDeclaration') {
+                if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
+                    return true;
+                }
+            }
+            if (calleeArr[i].type === 'ExpressionStatement') {
+                if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Finds JSX React Components in current file
     getJSXChildren(astTokens, importsObj, parentNode) {
         let childNodes = {};
@@ -380,6 +319,7 @@ class Parser {
         let token;
 
         for (let i = 0; i < astTokens.length; i++) {
+
             // Case for finding JSX tags eg <App .../>
             if (
                 astTokens[i].type.label === 'jsxTagStart' &&
@@ -393,7 +333,7 @@ class Parser {
                     token,
                     props,
                     parentNode,
-                    childNodes
+                    childNodes,
                 );
 
                 // Case for finding components passed in as props e.g. <Route component={App} />
@@ -409,7 +349,7 @@ class Parser {
                     token,
                     props,
                     parentNode,
-                    childNodes
+                    childNodes,
                 );
             }
         }
@@ -421,7 +361,7 @@ class Parser {
         astToken,
         props,
         parent,
-        children
+        children,
     ) {
         if (children[astToken.value]) {
             children[astToken.value].count += 1;
@@ -450,9 +390,9 @@ class Parser {
                 children: [],
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
+                isClientComponent: false
             };
         }
-
         return children;
     }
 
@@ -503,9 +443,5 @@ class Parser {
         return false;
     }
 }
-
-// function to determine if the client component imports server components or call server hooks/utils, if it does, then return 'is not valid client comp'
-
-// function to determine if the component is server 
 
 module.exports = { Parser };
