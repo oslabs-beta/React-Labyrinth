@@ -288,7 +288,7 @@ class Parser {
         // Find imports in the current file, then find child components in the current file
         const imports = this.getImports(ast.program.body);
         const importsCallee = this.getCallee(ast.program.body);
-        console.log(importsCallee);
+        console.log('result from importsCallee', importsCallee);
 
         // Get any JSX Children of current file:
         if (ast.tokens) {
@@ -331,7 +331,6 @@ class Parser {
     // output: object of imoprts
     getImports(body) {
         const bodyImports = body.filter((item) => item.type === 'ImportDeclaration' || 'VariableDeclaration');
-        console.log('body imports', bodyImports);
 
         return bodyImports.reduce((accum, curr) => {
             // also determine if component is client or server 
@@ -362,158 +361,184 @@ class Parser {
     // output: boolean 
 
     getCallee(body) {
-        const bodyCallee = body.filter((item) => item.type === 'CallExpression');
-        console.log(bodyCallee);
+        console.log('body', body);
+        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+        console.log('VariableDeclar', bodyCallee);
+        // console.log('Declaration at index 0', bodyCallee[0].declarations[0].init.body.body);
+        const calleeArr = bodyCallee[0].declarations[0].init.body.body[0].declarations[0].init.callee;
+        
+
+        // to be more specific, we might want to consider declaring an array of hooks and write logic to see if the array includes the node.callee.name, then return true
+
+        // does useStore count as a client component functionality? 
+        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue','useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreator',]
+
+        // const bodyCallee = body.filter((item) => item.type === 'CallExpression');
+        // console.log('callee', bodyCallee);
+        return 'function finished';
+
+        // console.log('node', node);
+        // if (node.type === 'CallExpression') {
+        //     console.log('nodeCall', node)
+        //     if (node.callee && node.callee.name) {
+        //         if (node.callee.name.startsWith('use')) {
+        //             // if the node.type is CallExpression (dealing with function or method call) (callee is prop on callexpression - an identifier), return true
+        //             console.log('node.callee', node.callee);
+        //             console.log('Node with Hook', node.callee.name);
+        //             return true;
+        //         }
+        //     }
+        // }
     }
 
-    findVarDecImports(ast) {
-        // also determine if component is client or server 
+findVarDecImports(ast) {
+    // also determine if component is client or server 
 
-        // find import path in variable declaration and return it,
-        if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
-            return ast.arguments[0].value;
-        }
-        // Otherwise look for imports in any other non null/undefined objects in the tree:
-        for (let key in ast) {
-            if (ast.hasOwnProperty(key) && typeof ast[key] === 'object' && ast[key]) {
-                const importPath = this.findVarDecImports(ast[key]);
-                if (importPath) {
-                    return importPath;
-                }
+    // find import path in variable declaration and return it,
+    if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
+        return ast.arguments[0].value;
+    }
+    // Otherwise look for imports in any other non null/undefined objects in the tree:
+    for (let key in ast) {
+        if (ast.hasOwnProperty(key) && typeof ast[key] === 'object' && ast[key]) {
+            const importPath = this.findVarDecImports(ast[key]);
+            if (importPath) {
+                return importPath;
             }
         }
+    }
+    return false;
+}
+
+// Finds JSX React Components in current file
+getJSXChildren(astTokens, importsObj, parentNode) {
+    let childNodes = {};
+    let props = {};
+    let token;
+
+    for (let i = 0; i < astTokens.length; i++) {
+        // Case for finding JSX tags eg <App .../>
+        if (
+            astTokens[i].type.label === 'jsxTagStart' &&
+            astTokens[i + 1].type.label === 'jsxName' &&
+            importsObj[astTokens[i + 1].value]
+        ) {
+            token = astTokens[i + 1];
+            props = this.getJSXProps(astTokens, i + 2);
+            childNodes = this.getChildNodes(
+                importsObj,
+                token,
+                props,
+                parentNode,
+                childNodes
+            );
+
+            // Case for finding components passed in as props e.g. <Route component={App} />
+        } else if (
+            astTokens[i].type.label === 'jsxName' &&
+            (astTokens[i].value === 'component' ||
+                astTokens[i].value === 'children') &&
+            importsObj[astTokens[i + 3].value]
+        ) {
+            token = astTokens[i + 3];
+            childNodes = this.getChildNodes(
+                importsObj,
+                token,
+                props,
+                parentNode,
+                childNodes
+            );
+        }
+    }
+    return Object.values(childNodes);
+}
+
+getChildNodes(
+    imports,
+    astToken,
+    props,
+    parent,
+    children
+) {
+    if (children[astToken.value]) {
+        children[astToken.value].count += 1;
+        children[astToken.value].props = {
+            ...children[astToken.value].props,
+            ...props,
+        };
+    } else {
+        // Add tree node to childNodes if one does not exist
+        children[astToken.value] = {
+            id: getNonce(),
+            name: imports[astToken.value]['importName'],
+            fileName: path.basename(imports[astToken.value]['importPath']),
+            filePath: path.resolve(
+                path.dirname(parent.filePath),
+                imports[astToken.value]['importPath']
+            ),
+            importPath: imports[astToken.value]['importPath'],
+            expanded: false,
+            depth: parent.depth + 1,
+            thirdParty: false,
+            reactRouter: false,
+            reduxConnect: false,
+            count: 1,
+            props: props,
+            children: [],
+            parentList: [parent.filePath].concat(parent.parentList),
+            error: '',
+            isClientComponent: false // for now keep it false, will change to invocation of helper func
+        };
+    }
+    return children;
+}
+
+// Extracts prop names from a JSX element
+getJSXProps(astTokens, j) {
+    const props = {};
+    while (astTokens[j].type.label !== 'jsxTagEnd') {
+        if (
+            astTokens[j].type.label === 'jsxName' &&
+            astTokens[j + 1].value === '='
+        ) {
+            props[astTokens[j].value] = true;
+        }
+        j += 1;
+    }
+    return props;
+}
+
+// Checks if current Node is connected to React-Redux Store
+checkForRedux(astTokens, importsObj) {
+    // Check that react-redux is imported in this file (and we have a connect method or otherwise)
+    let reduxImported = false;
+    let connectAlias;
+    Object.keys(importsObj).forEach((key) => {
+        if (
+            importsObj[key].importPath === 'react-redux' &&
+            importsObj[key].importName === 'connect'
+        ) {
+            reduxImported = true;
+            connectAlias = key;
+        }
+    });
+
+    if (!reduxImported) {
         return false;
     }
 
-    // Finds JSX React Components in current file
-    getJSXChildren(astTokens, importsObj, parentNode) {
-        let childNodes = {};
-        let props = {};
-        let token;
-
-        for (let i = 0; i < astTokens.length; i++) {
-            // Case for finding JSX tags eg <App .../>
-            if (
-                astTokens[i].type.label === 'jsxTagStart' &&
-                astTokens[i + 1].type.label === 'jsxName' &&
-                importsObj[astTokens[i + 1].value]
-            ) {
-                token = astTokens[i + 1];
-                props = this.getJSXProps(astTokens, i + 2);
-                childNodes = this.getChildNodes(
-                    importsObj,
-                    token,
-                    props,
-                    parentNode,
-                    childNodes
-                );
-
-                // Case for finding components passed in as props e.g. <Route component={App} />
-            } else if (
-                astTokens[i].type.label === 'jsxName' &&
-                (astTokens[i].value === 'component' ||
-                    astTokens[i].value === 'children') &&
-                importsObj[astTokens[i + 3].value]
-            ) {
-                token = astTokens[i + 3];
-                childNodes = this.getChildNodes(
-                    importsObj,
-                    token,
-                    props,
-                    parentNode,
-                    childNodes
-                );
-            }
+    // Check that connect method is invoked and exported in the file
+    for (let i = 0; i < astTokens.length; i += 1) {
+        if (
+            astTokens[i].type.label === 'export' &&
+            astTokens[i + 1].type.label === 'default' &&
+            astTokens[i + 2].value === connectAlias
+        ) {
+            return true;
         }
-        return Object.values(childNodes);
     }
-
-    getChildNodes(
-        imports,
-        astToken,
-        props,
-        parent,
-        children
-    ) {
-        if (children[astToken.value]) {
-            children[astToken.value].count += 1;
-            children[astToken.value].props = {
-                ...children[astToken.value].props,
-                ...props,
-            };
-        } else {
-            // Add tree node to childNodes if one does not exist
-            children[astToken.value] = {
-                id: getNonce(),
-                name: imports[astToken.value]['importName'],
-                fileName: path.basename(imports[astToken.value]['importPath']),
-                filePath: path.resolve(
-                    path.dirname(parent.filePath),
-                    imports[astToken.value]['importPath']
-                ),
-                importPath: imports[astToken.value]['importPath'],
-                expanded: false,
-                depth: parent.depth + 1,
-                thirdParty: false,
-                reactRouter: false,
-                reduxConnect: false,
-                count: 1,
-                props: props,
-                children: [],
-                parentList: [parent.filePath].concat(parent.parentList),
-                error: '',
-                isClientComponent: false // for now keep it false, will change to invocation of helper func
-            };
-        }
-        return children;
-    }
-
-    // Extracts prop names from a JSX element
-    getJSXProps(astTokens, j) {
-        const props = {};
-        while (astTokens[j].type.label !== 'jsxTagEnd') {
-            if (
-                astTokens[j].type.label === 'jsxName' &&
-                astTokens[j + 1].value === '='
-            ) {
-                props[astTokens[j].value] = true;
-            }
-            j += 1;
-        }
-        return props;
-    }
-
-    // Checks if current Node is connected to React-Redux Store
-    checkForRedux(astTokens, importsObj) {
-        // Check that react-redux is imported in this file (and we have a connect method or otherwise)
-        let reduxImported = false;
-        let connectAlias;
-        Object.keys(importsObj).forEach((key) => {
-            if (
-                importsObj[key].importPath === 'react-redux' &&
-                importsObj[key].importName === 'connect'
-            ) {
-                reduxImported = true;
-                connectAlias = key;
-            }
-        });
-
-        if (!reduxImported) {
-            return false;
-        }
-
-        // Check that connect method is invoked and exported in the file
-        for (let i = 0; i < astTokens.length; i += 1) {
-            if (
-                astTokens[i].type.label === 'export' &&
-                astTokens[i + 1].type.label === 'default' &&
-                astTokens[i + 2].value === connectAlias
-            ) {
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+}
 }
 
 // function to determine if the client component imports server components or call server hooks/utils, if it does, then return 'is not valid client comp'
