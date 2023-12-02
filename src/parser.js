@@ -222,7 +222,7 @@ class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     parser(componentTree) {
-        // console.log('componentTree:', componentTree);
+        console.log('componentTree:', componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -270,12 +270,18 @@ class Parser {
         // console.log('callee: ', callees);
 
         // Determine component type of child:
+        
+        
+        
         if (this.getCallee(ast.program.body)) {
             componentTree.isClientComponent = true;
         }
-
+        else {
+          componentTree.isClientComponent = false;
+        }
+  
         console.log('componentTree.isClientComponent', componentTree.isClientComponent);
-
+        console.log('--------------------------------')
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
@@ -370,29 +376,64 @@ class Parser {
         // does useStore count as a client component functionality? 
         const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
 
-        const hooksObj = {
-            useState: 'useState',
-        }
+        // const hooksObj = {
+        //     useState: 'useState',
+        // }
 
-        console.log('ast.program.body', body);
+        //! console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        console.log('node type of VariableDeclaration', bodyCallee);
+        // console.log('node type of VariableDeclaration', bodyCallee);
         // console.log('Declaration at index 0', bodyCallee[0].declarations[0].init.body.body);
         // const calleeArr = bodyCallee[0].declarations[0].init.body.body[0].declarations[0].init.callee; // gives us the value of the first node in array
         const calleeArr = bodyCallee[0].declarations[0].init.body.body // gives us an array of callee nodes
-        console.log('calleArr', calleeArr);
+        // console.log('calleArr', calleeArr);
 
-        calleeArr.forEach((curr) => {
-            if (curr.type === 'VariableDeclaration') {
-                // evaluated result of isUseHook is a boolean 
-                // could change the hooksArray to object 
-                return hooksArray.includes(curr.declarations[0].init.callee.name) || curr.declarations[0].init.callee.name.startsWith('use') ? true : false;
+        // calleeArr.forEach((curr) => {
+        //     if (curr.type === 'VariableDeclaration') {
+        //         // evaluated result of isUseHook is a boolean 
+        //         // could change the hooksArray to object 
+        //         if(hooksArray.includes(curr.declarations[0].init.callee.name) || curr.declarations[0].init.callee.name.startsWith('use')) return true;
+        //         else {return false}
+        //       }
+        //     if (curr.type === 'ExpressionStatement') {
+        //         if (hooksArray.includes(curr.expression.callee.name) || curr.expression.callee.name.startsWith('use')) return true;
+        //         else {return false}
+        //     }
+        //     return false;
+        // });
+        console.log('calleArr:', calleeArr);
+        for(let i = 0; i < calleeArr.length; i++){
+          if (calleeArr[i].type === 'VariableDeclaration'){
+            if(hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
+              return true;
             }
-            if (curr.type === 'ExpressionStatement') {
-                return hooksArray.includes(curr.expression.callee.name) || curr.expression.callee.name.startsWith('use')
-                    ? true : false;
+          }
+          if (calleArr[i].type === 'ExpressionStatement') {
+            if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
+              return true;
             }
-        });
+          }
+        }
+        return false;
+      //   calleeArr.some((curr) => {
+      //     console.log('curr:', curr)
+      //     if (curr.type === 'VariableDeclaration') {
+      //         if (hooksArray.includes(curr.declarations[0].init.callee.name) || curr.declarations[0].init.callee.name.startsWith('use')){
+      //           componentTree.isClientComponent = true;
+      //           return;
+      //         }
+      //         // return hooksArray.includes(curr.declarations[0].init.callee.name) || curr.declarations[0].init.callee.name.startsWith('use');
+      //     }
+      
+      //     if (curr.type === 'ExpressionStatement') {
+      //         if (hooksArray.includes(curr.expression.callee.name) || curr.expression.callee.name.startsWith('use')){
+      //           componentTree.isClientComponent = true;
+      //           return;
+      //         }
+      //         // return hooksArray.includes(curr.expression.callee.name) || curr.expression.callee.name.startsWith('use');
+      //     }
+    
+      // });
 
         // we will need to differentiate logic for 'VariableDelcaration' type and 'ExpressionStatement'
 
