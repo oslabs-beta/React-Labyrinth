@@ -21,7 +21,8 @@ function activate(context) {
 		const fileArray = await vscode.window.showOpenDialog({ canSelectFolders: false, canSelectFiles: true, canSelectMany: false });
 		const tree = new Parser(fileArray[0].path);
 		tree.parse();
-		// console.log('tree instance', tree);
+		const data = tree.getTree();
+		console.log('Data sent back: ', data)
 	});
 
 	context.subscriptions.push(disposable, result);

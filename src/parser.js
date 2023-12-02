@@ -94,28 +94,6 @@ const { getNonce } = require('./getNonce.js');
 //     return false;
 // }
 
-//     // function to determine if file uses react hooks (startswith 'use')
-//     // input: ast node (object)
-//     // output: boolean
-// checkReactHooks(node) {
-//     // for just the mvp, look up for the FIRST client component and make every child as a client component
-//     // function to determine if component uses react hooks (checks if its BEING CALLED IN COMPONENT)
-//     if (node.type === 'CallExpression') {
-//         console.log('nodeCall', node)
-//         if (node.callee && node.callee.name) {
-//             // to be more specific, we might want to consider declaring an array of hooks and write logic to see if the array includes the node.calee.name, then return true
-//             if (node.callee.name.startsWith('use')) {
-//                 // if the node.type is CallExpression (dealing with function or method call) (callee is prop on callexpression - an identifier), return true
-//                 console.log('node.callee', node.callee);
-//                 console.log('Node with Hook', node.callee.name);
-//                 return true;
-//             }
-//         }
-//     }
-//     return false;
-// }
-// }
-
 class Parser {
     constructor(filePath) {
         // Fix when selecting files in wsl file system
@@ -244,7 +222,7 @@ class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     parser(componentTree) {
-        // console.log(componentTree);
+        // console.log('componentTree:', componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -287,15 +265,23 @@ class Parser {
 
         // Find imports in the current file, then find child components in the current file
         const imports = this.getImports(ast.program.body);
-        const importsCallee = this.getCallee(ast.program.body);
-        console.log('result from importsCallee', importsCallee);
+        // console.log('imports: ', imports)
+        // const callees = this.getCallee(ast.program.body);
+        // console.log('callee: ', callees);
+
+        // Determine component type of child:
+        if (this.getCallee(ast.program.body)) {
+            componentTree.isClientComponent = true;
+        }
+
+        console.log('componentTree.isClientComponent', componentTree.isClientComponent);
 
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
                 ast.tokens,
                 imports,
-                componentTree
+                componentTree,
             );
         }
 
@@ -333,7 +319,6 @@ class Parser {
         const bodyImports = body.filter((item) => item.type === 'ImportDeclaration' || 'VariableDeclaration');
 
         return bodyImports.reduce((accum, curr) => {
-            // also determine if component is client or server 
             if (curr.type === 'ImportDeclaration') {
                 curr.specifiers.forEach(({ local, imported }) => {
                     accum[local.name] = {
@@ -356,28 +341,84 @@ class Parser {
         }, {});
     }
 
+    findVarDecImports(ast) {
+        // find import path in variable declaration and return it,
+        if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
+            return ast.arguments[0].value;
+        }
+        // Otherwise look for imports in any other non null/undefined objects in the tree:
+        for (let key in ast) {
+            if (ast.hasOwnProperty(key) && typeof ast[key] === 'object' && ast[key]) {
+                const importPath = this.findVarDecImports(ast[key]);
+                if (importPath) {
+                    return importPath;
+                }
+            }
+        }
+        return false;
+    }
+
     // helper function to determine component type (client)
     // input: ast.program.body 
     // output: boolean 
-
     getCallee(body) {
-        console.log('body', body);
-        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        console.log('VariableDeclar', bodyCallee);
-        // console.log('Declaration at index 0', bodyCallee[0].declarations[0].init.body.body);
-        const calleeArr = bodyCallee[0].declarations[0].init.body.body[0].declarations[0].init.callee;
-        
+        // can change logic to access componentTree.isClientComponent to change to boolean instead of reduce
+
 
         // to be more specific, we might want to consider declaring an array of hooks and write logic to see if the array includes the node.callee.name, then return true
 
         // does useStore count as a client component functionality? 
-        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue','useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreator',]
+        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
 
-        // const bodyCallee = body.filter((item) => item.type === 'CallExpression');
-        // console.log('callee', bodyCallee);
-        return 'function finished';
+        const hooksObj = {
+            useState: 'useState',
+        }
 
-        // console.log('node', node);
+        console.log('ast.program.body', body);
+        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+        console.log('node type of VariableDeclaration', bodyCallee);
+        // console.log('Declaration at index 0', bodyCallee[0].declarations[0].init.body.body);
+        // const calleeArr = bodyCallee[0].declarations[0].init.body.body[0].declarations[0].init.callee; // gives us the value of the first node in array
+        const calleeArr = bodyCallee[0].declarations[0].init.body.body // gives us an array of callee nodes
+        console.log('calleArr', calleeArr);
+
+        calleeArr.forEach((curr) => {
+            if (curr.type === 'VariableDeclaration') {
+                // evaluated result of isUseHook is a boolean 
+                // could change the hooksArray to object 
+                return hooksArray.includes(curr.declarations[0].init.callee.name) || curr.declarations[0].init.callee.name.startsWith('use') ? true : false;
+            }
+            if (curr.type === 'ExpressionStatement') {
+                return hooksArray.includes(curr.expression.callee.name) || curr.expression.callee.name.startsWith('use')
+                    ? true : false;
+            }
+        });
+
+        // we will need to differentiate logic for 'VariableDelcaration' type and 'ExpressionStatement'
+
+        // dont know how to make this more DRY and efficient
+        // also not sure how we would recursively all each child node in the tree node object 
+        // return calleeArr.reduce((accum, curr) => {
+        //     if (curr.type === 'VariableDeclaration') {
+        //         // evaluated result of isUseHook is a boolean 
+        //         // could change the hooksArray to object 
+        //         const isUseHook = hooksArray.includes(curr.declarations[0].init.callee.name) || curr.declarations[0].init.callee.name.startsWith('use');
+        //         accum[curr.declarations[0].init.callee.name] = {
+        //             isClientComponent: isUseHook,
+        //             fileName: curr.declarations[0].id.name
+        //         }
+        //     }
+        //     if (curr.type === 'ExpressionStatement') {
+        //         const isUseHook = hooksArray.includes(curr.expression.callee.name) || curr.expression.callee.name.startsWith('use');
+        //         accum[curr.expression.callee.name] = {
+        //             isClientComponent: isUseHook,
+        //             // fileName: curr.declarations[0].id.name
+        //         }
+        //     }
+        //     console.log('accum', accum);
+        //     return accum;
+        // }, {});
+
         // if (node.type === 'CallExpression') {
         //     console.log('nodeCall', node)
         //     if (node.callee && node.callee.name) {
@@ -391,154 +432,145 @@ class Parser {
         // }
     }
 
-findVarDecImports(ast) {
-    // also determine if component is client or server 
+    // Finds JSX React Components in current file
+    getJSXChildren(astTokens, importsObj, parentNode) {
+        let childNodes = {};
+        let props = {};
+        let token;
 
-    // find import path in variable declaration and return it,
-    if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
-        return ast.arguments[0].value;
-    }
-    // Otherwise look for imports in any other non null/undefined objects in the tree:
-    for (let key in ast) {
-        if (ast.hasOwnProperty(key) && typeof ast[key] === 'object' && ast[key]) {
-            const importPath = this.findVarDecImports(ast[key]);
-            if (importPath) {
-                return importPath;
+        // console.log('calleesObj: ', calleesObj);
+        // console.log('importsObj: ', importsObj);
+        for (let i = 0; i < astTokens.length; i++) {
+
+            // Case for finding JSX tags eg <App .../>
+            if (
+                astTokens[i].type.label === 'jsxTagStart' &&
+                astTokens[i + 1].type.label === 'jsxName' &&
+                importsObj[astTokens[i + 1].value]
+            ) {
+                token = astTokens[i + 1];
+                // console.log('astTokens in JSX Func: ', astTokens);
+                // console.log('astTokens at i: ', astTokens[i]);
+                props = this.getJSXProps(astTokens, i + 2);
+                childNodes = this.getChildNodes(
+                    importsObj,
+                    token,
+                    props,
+                    parentNode,
+                    childNodes,
+                    // calleesObj
+                );
+
+                // Case for finding components passed in as props e.g. <Route component={App} />
+            } else if (
+                astTokens[i].type.label === 'jsxName' &&
+                (astTokens[i].value === 'component' ||
+                    astTokens[i].value === 'children') &&
+                importsObj[astTokens[i + 3].value]
+            ) {
+                token = astTokens[i + 3];
+                childNodes = this.getChildNodes(
+                    importsObj,
+                    token,
+                    props,
+                    parentNode,
+                    childNodes,
+                    // calleesObj
+                );
             }
         }
+        console.log('getJSXChildren object: ', childNodes);
+        return Object.values(childNodes);
     }
-    return false;
-}
 
-// Finds JSX React Components in current file
-getJSXChildren(astTokens, importsObj, parentNode) {
-    let childNodes = {};
-    let props = {};
-    let token;
-
-    for (let i = 0; i < astTokens.length; i++) {
-        // Case for finding JSX tags eg <App .../>
-        if (
-            astTokens[i].type.label === 'jsxTagStart' &&
-            astTokens[i + 1].type.label === 'jsxName' &&
-            importsObj[astTokens[i + 1].value]
-        ) {
-            token = astTokens[i + 1];
-            props = this.getJSXProps(astTokens, i + 2);
-            childNodes = this.getChildNodes(
-                importsObj,
-                token,
-                props,
-                parentNode,
-                childNodes
-            );
-
-            // Case for finding components passed in as props e.g. <Route component={App} />
-        } else if (
-            astTokens[i].type.label === 'jsxName' &&
-            (astTokens[i].value === 'component' ||
-                astTokens[i].value === 'children') &&
-            importsObj[astTokens[i + 3].value]
-        ) {
-            token = astTokens[i + 3];
-            childNodes = this.getChildNodes(
-                importsObj,
-                token,
-                props,
-                parentNode,
-                childNodes
-            );
+    getChildNodes(
+        imports,
+        astToken,
+        props,
+        parent,
+        children,
+        // callees
+    ) {
+        if (children[astToken.value]) {
+            children[astToken.value].count += 1;
+            children[astToken.value].props = {
+                ...children[astToken.value].props,
+                ...props,
+            };
+        } else {
+            // Add tree node to childNodes if one does not exist
+            // console.log('callees in getChildNodes: ', callees);
+            children[astToken.value] = {
+                id: getNonce(),
+                name: imports[astToken.value]['importName'],
+                fileName: path.basename(imports[astToken.value]['importPath']),
+                filePath: path.resolve(
+                    path.dirname(parent.filePath),
+                    imports[astToken.value]['importPath']
+                ),
+                importPath: imports[astToken.value]['importPath'],
+                expanded: false,
+                depth: parent.depth + 1,
+                thirdParty: false,
+                reactRouter: false,
+                reduxConnect: false,
+                count: 1,
+                props: props,
+                children: [],
+                parentList: [parent.filePath].concat(parent.parentList),
+                error: '',
+                isClientComponent: false
+            };
         }
+        return children;
     }
-    return Object.values(childNodes);
-}
 
-getChildNodes(
-    imports,
-    astToken,
-    props,
-    parent,
-    children
-) {
-    if (children[astToken.value]) {
-        children[astToken.value].count += 1;
-        children[astToken.value].props = {
-            ...children[astToken.value].props,
-            ...props,
-        };
-    } else {
-        // Add tree node to childNodes if one does not exist
-        children[astToken.value] = {
-            id: getNonce(),
-            name: imports[astToken.value]['importName'],
-            fileName: path.basename(imports[astToken.value]['importPath']),
-            filePath: path.resolve(
-                path.dirname(parent.filePath),
-                imports[astToken.value]['importPath']
-            ),
-            importPath: imports[astToken.value]['importPath'],
-            expanded: false,
-            depth: parent.depth + 1,
-            thirdParty: false,
-            reactRouter: false,
-            reduxConnect: false,
-            count: 1,
-            props: props,
-            children: [],
-            parentList: [parent.filePath].concat(parent.parentList),
-            error: '',
-            isClientComponent: false // for now keep it false, will change to invocation of helper func
-        };
-    }
-    return children;
-}
-
-// Extracts prop names from a JSX element
-getJSXProps(astTokens, j) {
-    const props = {};
-    while (astTokens[j].type.label !== 'jsxTagEnd') {
-        if (
-            astTokens[j].type.label === 'jsxName' &&
-            astTokens[j + 1].value === '='
-        ) {
-            props[astTokens[j].value] = true;
+    // Extracts prop names from a JSX element
+    getJSXProps(astTokens, j) {
+        const props = {};
+        while (astTokens[j].type.label !== 'jsxTagEnd') {
+            if (
+                astTokens[j].type.label === 'jsxName' &&
+                astTokens[j + 1].value === '='
+            ) {
+                props[astTokens[j].value] = true;
+            }
+            j += 1;
         }
-        j += 1;
+        return props;
     }
-    return props;
-}
 
-// Checks if current Node is connected to React-Redux Store
-checkForRedux(astTokens, importsObj) {
-    // Check that react-redux is imported in this file (and we have a connect method or otherwise)
-    let reduxImported = false;
-    let connectAlias;
-    Object.keys(importsObj).forEach((key) => {
-        if (
-            importsObj[key].importPath === 'react-redux' &&
-            importsObj[key].importName === 'connect'
-        ) {
-            reduxImported = true;
-            connectAlias = key;
+    // Checks if current Node is connected to React-Redux Store
+    checkForRedux(astTokens, importsObj) {
+        // Check that react-redux is imported in this file (and we have a connect method or otherwise)
+        let reduxImported = false;
+        let connectAlias;
+        Object.keys(importsObj).forEach((key) => {
+            if (
+                importsObj[key].importPath === 'react-redux' &&
+                importsObj[key].importName === 'connect'
+            ) {
+                reduxImported = true;
+                connectAlias = key;
+            }
+        });
+
+        if (!reduxImported) {
+            return false;
         }
-    });
 
-    if (!reduxImported) {
+        // Check that connect method is invoked and exported in the file
+        for (let i = 0; i < astTokens.length; i += 1) {
+            if (
+                astTokens[i].type.label === 'export' &&
+                astTokens[i + 1].type.label === 'default' &&
+                astTokens[i + 2].value === connectAlias
+            ) {
+                return true;
+            }
+        }
         return false;
     }
-
-    // Check that connect method is invoked and exported in the file
-    for (let i = 0; i < astTokens.length; i += 1) {
-        if (
-            astTokens[i].type.label === 'export' &&
-            astTokens[i + 1].type.label === 'default' &&
-            astTokens[i + 2].value === connectAlias
-        ) {
-            return true;
-        }
-    }
-    return false;
-}
 }
 
 // function to determine if the client component imports server components or call server hooks/utils, if it does, then return 'is not valid client comp'
