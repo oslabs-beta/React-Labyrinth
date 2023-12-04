@@ -151,7 +151,7 @@ class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     parser(componentTree) {
-        console.log('componentTree:', componentTree);
+        // console.log('componentTree:', componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -201,8 +201,8 @@ class Parser {
             componentTree.isClientComponent = false;
         }
 
-        console.log('componentTree.isClientComponent', componentTree.isClientComponent);
-        console.log('--------------------------------')
+        // console.log('componentTree.isClientComponent', componentTree.isClientComponent);
+        // console.log('--------------------------------')
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
@@ -292,23 +292,60 @@ class Parser {
         // does useStore count as a client component functionality? 
         const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
 
-        //! console.log('ast.program.body', body);
-        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        const calleeArr = bodyCallee[0].declarations[0].init.body.body // gives us an array of callee nodes
 
-        console.log('calleArr:', calleeArr);
-        for (let i = 0; i < calleeArr.length; i++) {
-            if (calleeArr[i].type === 'VariableDeclaration') {
-                if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
-                    return true;
-                }
-            }
-            if (calleeArr[i].type === 'ExpressionStatement') {
-                if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
-                    return true;
-                }
-            }
+        // console.log('ast.program.body', body);
+        let bodyCallee, calleeArr; // needed to define here because const varibales declared inside of try-catch blocks are only scoped for inside of that try-catch block
+        
+        try{
+          bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+          // console.log('bodyCallee:',bodyCallee)
         }
+        catch(err){
+          console.log('error in bodyCallee:', err)
+        }
+        
+        try{
+          calleeArr = bodyCallee[0]?.declarations[0]?.init?.body?.body // gives us an array of callee nodes
+          // console.log('calleeArr:', calleeArr)
+        }
+        catch(err){
+          console.log('error in calleeArr:', err);
+        }
+
+        if(calleeArr === undefined) return false;
+        for (let i = 0; i < calleeArr.length; i++) {
+          try{
+            if (calleeArr[i].type === 'VariableDeclaration') {
+              if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i]?.declarations[0]?.init?.callee?.name?.startsWith('use')) {
+                // console.log('true');
+                return true;
+              }
+              // if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
+              //     return true;
+              // }
+            }
+          }   
+          catch(err){
+            console.log('first if statement');
+            console.log(err);
+          }
+          try {
+            if (calleeArr[i].type === 'ExpressionStatement') {
+              if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i]?.expression?.callee?.name?.startsWith('use')) {
+                // console.log('true');
+                return true;
+              }
+              // if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
+              //     return true;
+              // }
+            }
+          }
+          catch(err){
+            console.log('second if statement');
+            console.log(err);
+          }
+        }
+        // console.log('false');
         return false;
     }
 
