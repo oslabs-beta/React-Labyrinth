@@ -290,26 +290,63 @@ class Parser {
     // output: boolean 
     getCallee(body) {
         // does useStore count as a client component functionality? 
-        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
+        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLocation', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
 
-        //! console.log('ast.program.body', body);
+        !console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        const calleeArr = bodyCallee[0].declarations[0].init.body.body // gives us an array of callee nodes
+        console.log('bodyCallee', bodyCallee);
+        // const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body // gives us an array of callee nodes
+        console.log('bodyCallee.length', bodyCallee.length)
+        // so bodyCallee can return us an array with more than one element, and each element has their own property of declarations.init?.body
+        // we need to decipher if there is a body.body, if so, we need to access those elements 
+        if (bodyCallee.length === 1) {
+            const calleeArr = bodyCallee[0].declarations[0] && bodyCallee[0].declarations[0].init && bodyCallee[0].declarations[0].init.body && bodyCallee[0].declarations[0].init.body.body;
 
-        console.log('calleArr:', calleeArr);
-        for (let i = 0; i < calleeArr.length; i++) {
-            if (calleeArr[i].type === 'VariableDeclaration') {
-                if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
-                    return true;
+            console.log('calleArr:', calleeArr);
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (calleeArr[i].type === 'VariableDeclaration') {
+                    if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
-            }
-            if (calleeArr[i].type === 'ExpressionStatement') {
-                if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
-                    return true;
+                if (calleeArr[i].type === 'ExpressionStatement') {
+                    if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             }
         }
-        return false;
+        if (bodyCallee.length > 1) {
+            const calleeArr1 = [];
+            for (let i = 0; i < bodyCallee.length; i++) {
+                if (bodyCallee[i].declarations[0] && bodyCallee[i].declarations[0].init && bodyCallee[i].declarations[0].init.body && bodyCallee[i].declarations[0].init.body.body) {
+                    calleeArr1.push(bodyCallee[i]);
+                    console.log('calleeArr from body', calleeArr1);
+                }
+            }
+            const calleeBodyArr = calleeArr1[0].declarations[0].init.body.body;
+            console.log('calleeBodyArr', calleeBodyArr);
+            for (let i = 0; i < calleeBodyArr.length; i++) {
+                if (calleeBodyArr[i].type === 'VariableDeclaration') {
+                    if (hooksArray.includes(calleeBodyArr[i].declarations[0].init.callee.name) || calleeBodyArr[i].declarations[0].init.callee.name.startsWith('use')) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                if (calleeBodyArr[i].type === 'ExpressionStatement') {
+                    if (hooksArray.includes(calleeBodyArr[i].expression.callee.name) || calleeBodyArr[i].expression.callee.name.startsWith('use')) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
     }
 
     // Finds JSX React Components in current file
