@@ -313,10 +313,9 @@ class Parser {
       // }
 
       // console.log('ast.program.body', body);
-      let bodyCallee, calleeArr; // needed to define here because const varibales declared inside of try-catch blocks are only scoped for inside of that try-catch block
-      
-      bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-      calleeArr = bodyCallee[0]?.declarations[0]?.init?.body?.body // gives us an array of callee nodes
+            
+      const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+      const calleeArr = bodyCallee[0]?.declarations[0]?.init?.body?.body // gives us an array of callee nodes
 
       if(calleeArr === undefined) return false; // without this check, the for loop can throw an error when startsWith tries to check an undefined value
 
