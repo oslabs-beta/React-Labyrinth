@@ -289,63 +289,103 @@ class Parser {
     // input: ast.program.body 
     // output: boolean 
     getCallee(body) {
-        // does useStore count as a client component functionality? 
-        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLocation', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
+        const defaultErr = (err,) => {
+            return {
+                method: 'Error in getCallee method of Parser:',
+                log: err,
+            }
+        };
 
-        !console.log('ast.program.body', body);
+        console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+        if (bodyCallee.length === 0) return false;
         console.log('bodyCallee', bodyCallee);
-        // const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body // gives us an array of callee nodes
-        console.log('bodyCallee.length', bodyCallee.length)
-        // so bodyCallee can return us an array with more than one element, and each element has their own property of declarations.init?.body
-        // we need to decipher if there is a body.body, if so, we need to access those elements 
+        // console.log('bodyCallee.length', bodyCallee.length)
+
+        const calleeHelper = (item) => {
+            const hooksObj = {
+                useState: 0,
+                useContext: 0,
+                useRef: 0,
+                useImperativeHandle: 0,
+                useNavigate: 0,
+                useLocation: 0,
+                useLayoutEffect: 0,
+                useInsertionEffect: 0,
+                useMemo: 0,
+                useCallback: 0,
+                useTransition: 0,
+                useDeferredValue: 0,
+                useEffect: 0,
+                useReducer: 0,
+                useDispatch: 0,
+                useActions: 0,
+                useSelector: 0,
+                bindActionCreators: 0,
+            }
+            if (item.type === 'VariableDeclaration') {
+                try {
+                    let calleeName = item.declarations[0]?.init?.callee?.name;
+                    console.log('passed into vardec statement');
+                    if (hooksObj.hasOwnProperty(calleeName) || (typeof calleeName === 'string' && calleeName.startsWith('use'))) {
+                        return true;
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
+                }
+            }
+            else if (item.type === 'ExpressionStatement') {
+                try {
+                    const calleeName = item.expression?.callee?.name;
+                    if (calleeName === undefined) return false;
+                    if (hooksObj.hasOwnProperty(calleeName) || (typeof calleeName === 'string' && calleeName.startsWith('use'))) {
+                        return true;
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
+                }
+            }
+            return false;
+        }
+
         if (bodyCallee.length === 1) {
-            const calleeArr = bodyCallee[0].declarations[0] && bodyCallee[0].declarations[0].init && bodyCallee[0].declarations[0].init.body && bodyCallee[0].declarations[0].init.body.body;
+            const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
+            if (calleeArr === undefined) return false;
 
             console.log('calleArr:', calleeArr);
+            let checkTrue = false;
             for (let i = 0; i < calleeArr.length; i++) {
-                if (calleeArr[i].type === 'VariableDeclaration') {
-                    if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                if (calleeArr[i].type === 'ExpressionStatement') {
-                    if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
             }
+            return checkTrue;
         }
-        if (bodyCallee.length > 1) {
-            const calleeArr1 = [];
+        else if (bodyCallee.length > 1) {
+            let calleeArr;
             for (let i = 0; i < bodyCallee.length; i++) {
-                if (bodyCallee[i].declarations[0] && bodyCallee[i].declarations[0].init && bodyCallee[i].declarations[0].init.body && bodyCallee[i].declarations[0].init.body.body) {
-                    calleeArr1.push(bodyCallee[i]);
-                    console.log('calleeArr from body', calleeArr1);
-                }
-            }
-            const calleeBodyArr = calleeArr1[0].declarations[0].init.body.body;
-            console.log('calleeBodyArr', calleeBodyArr);
-            for (let i = 0; i < calleeBodyArr.length; i++) {
-                if (calleeBodyArr[i].type === 'VariableDeclaration') {
-                    if (hooksArray.includes(calleeBodyArr[i].declarations[0].init.callee.name) || calleeBodyArr[i].declarations[0].init.callee.name.startsWith('use')) {
-                        return true;
-                    } else {
-                        return false;
+                try {
+                    if (bodyCallee[i].declarations[0]?.init?.body?.body) {
+                        calleeArr = bodyCallee[i].declarations[0].init.body.body;
+                        console.log('calleeArr from body', calleeArr);
                     }
                 }
-                if (calleeBodyArr[i].type === 'ExpressionStatement') {
-                    if (hooksArray.includes(calleeBodyArr[i].expression.callee.name) || calleeBodyArr[i].expression.callee.name.startsWith('use')) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
                 }
             }
+
+            if (calleeArr === undefined) return false;
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
         }
     }
 
