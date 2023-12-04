@@ -289,64 +289,71 @@ class Parser {
     // input: ast.program.body 
     // output: boolean 
     getCallee(body) {
-        // does useStore count as a client component functionality? 
-        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
+      // does useStore count as a client component functionality? 
+      const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
 
+      // const hooksObj = {
+      //   useState: 0,
+      //   useContext: 0,
+      //   useRef: 0,
+      //   useImperativeHandle: 0,
+      //   useNavigate: 0,
+      //   useLayoutEffect: 0,
+      //   useInsertionEffect: 0,
+      //   useMemo: 0,
+      //   useCallback: 0,
+      //   useTransition: 0,
+      //   useDeferredValue: 0,
+      //   useEffect: 0,
+      //   useReducer: 0,
+      //   useDispatch: 0,
+      //   useActions: 0,
+      //   useSelector: 0,
+      //   bindActionCreators: 0,
+      // }
 
-        // console.log('ast.program.body', body);
-        let bodyCallee, calleeArr; // needed to define here because const varibales declared inside of try-catch blocks are only scoped for inside of that try-catch block
-        
-        try{
-          bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-          // console.log('bodyCallee:',bodyCallee)
+      // console.log('ast.program.body', body);
+      let bodyCallee, calleeArr; // needed to define here because const varibales declared inside of try-catch blocks are only scoped for inside of that try-catch block
+      
+      bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+      calleeArr = bodyCallee[0]?.declarations[0]?.init?.body?.body // gives us an array of callee nodes
+
+      if(calleeArr === undefined) return false; // without this check, the for loop can throw an error when startsWith tries to check an undefined value
+
+      for (let i = 0; i < calleeArr.length; i++) {
+        if (calleeArr[i].type === 'VariableDeclaration') {
+          if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i]?.declarations[0]?.init?.callee?.name?.startsWith('use')) {
+            return true;
+          }
+          //  original
+          //  if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
+          //    return true;
+          //  }
         }
-        catch(err){
-          console.log('error in bodyCallee:', err)
-        }
-        
-        try{
-          calleeArr = bodyCallee[0]?.declarations[0]?.init?.body?.body // gives us an array of callee nodes
-          // console.log('calleeArr:', calleeArr)
-        }
-        catch(err){
-          console.log('error in calleeArr:', err);
+        if (calleeArr[i].type === 'ExpressionStatement') {
+          if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i]?.expression?.callee?.name?.startsWith('use')) {
+            return true;
+          }
+          // original
+          // if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
+          //  return true;
+          // }
         }
 
-        if(calleeArr === undefined) return false;
-        for (let i = 0; i < calleeArr.length; i++) {
-          try{
-            if (calleeArr[i].type === 'VariableDeclaration') {
-              if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i]?.declarations[0]?.init?.callee?.name?.startsWith('use')) {
-                // console.log('true');
-                return true;
-              }
-              // if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
-              //     return true;
-              // }
-            }
-          }   
-          catch(err){
-            console.log('first if statement');
-            console.log(err);
-          }
-          try {
-            if (calleeArr[i].type === 'ExpressionStatement') {
-              if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i]?.expression?.callee?.name?.startsWith('use')) {
-                // console.log('true');
-                return true;
-              }
-              // if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
-              //     return true;
-              // }
-            }
-          }
-          catch(err){
-            console.log('second if statement');
-            console.log(err);
-          }
-        }
-        // console.log('false');
-        return false;
+        // logic for if we decide to use the hooksObj over the array
+        // if (calleeArr[i].type === 'VariableDeclaration'){
+        //   if((calleeArr[i].declarations[0].init.callee.name in hooksObj) || calleeArr[i]?.declarations[0]?.init?.callee?.name?.startsWith('use')) {
+        //     return true;
+        //   }
+        // }
+        // if (calleeArr[i].type === 'ExpressionStatement') {
+        //   if ((calleeArr[i].expression.callee.name in hooksObj) || calleeArr[i]?.expression?.callee?.name?.startsWith('use')) {
+        //     return true;
+        //   }
+        // }
+
+      }
+      return false;
     }
 
     // Finds JSX React Components in current file
