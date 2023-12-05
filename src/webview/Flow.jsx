@@ -26,6 +26,7 @@ const OverviewFlow = () => {
   );
 
   useEffect(() => {
+    // does not work currently
     window.addEventListener('message', (e) => {
       const msg = e.data;
       switch (msg.type) {

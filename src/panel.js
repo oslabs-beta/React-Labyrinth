@@ -48,8 +48,6 @@ function createPanel(context) {
     //     null,
     //     vscode.Disposable
     // );
-
-
 }
 
 // getNonce generates a new random string each time ext is used to prevent external injection of foreign code into the html 

@@ -289,27 +289,103 @@ class Parser {
     // input: ast.program.body 
     // output: boolean 
     getCallee(body) {
-        // does useStore count as a client component functionality? 
-        const hooksArray = ['useState', 'useContext', 'useRef', 'useImperativeHandle', 'useNavigate', 'useLayoutEffect', 'useInsertionEffect', 'useMemo', 'useCallback', 'useTransition', 'useDeferredValue', 'useEffect', 'useReducer', 'useDispatch', 'useActions', 'useSelector', 'bindActionCreators'];
+        const defaultErr = (err,) => {
+            return {
+                method: 'Error in getCallee method of Parser:',
+                log: err,
+            }
+        };
 
-        //! console.log('ast.program.body', body);
+        // console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        const calleeArr = bodyCallee[0].declarations[0].init.body.body // gives us an array of callee nodes
+        if (bodyCallee.length === 0) return false;
+        // console.log('bodyCallee', bodyCallee);
+        // console.log('bodyCallee.length', bodyCallee.length)
 
-        console.log('calleArr:', calleeArr);
-        for (let i = 0; i < calleeArr.length; i++) {
-            if (calleeArr[i].type === 'VariableDeclaration') {
-                if (hooksArray.includes(calleeArr[i].declarations[0].init.callee.name) || calleeArr[i].declarations[0].init.callee.name.startsWith('use')) {
-                    return true;
+        const calleeHelper = (item) => {
+            const hooksObj = {
+                useState: 0,
+                useContext: 0,
+                useRef: 0,
+                useImperativeHandle: 0,
+                useNavigate: 0,
+                useLocation: 0,
+                useLayoutEffect: 0,
+                useInsertionEffect: 0,
+                useMemo: 0,
+                useCallback: 0,
+                useTransition: 0,
+                useDeferredValue: 0,
+                useEffect: 0,
+                useReducer: 0,
+                useDispatch: 0,
+                useActions: 0,
+                useSelector: 0,
+                bindActionCreators: 0,
+            }
+            if (item.type === 'VariableDeclaration') {
+                try {
+                    let calleeName = item.declarations[0]?.init?.callee?.name;
+                    if (hooksObj.hasOwnProperty(calleeName) || (typeof calleeName === 'string' && calleeName.startsWith('use'))) {
+                        return true;
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
                 }
             }
-            if (calleeArr[i].type === 'ExpressionStatement') {
-                if (hooksArray.includes(calleeArr[i].expression.callee.name) || calleeArr[i].expression.callee.name.startsWith('use')) {
-                    return true;
+            else if (item.type === 'ExpressionStatement') {
+                try {
+                    const calleeName = item.expression?.callee?.name;
+                    if (calleeName === undefined) return false;
+                    if (hooksObj.hasOwnProperty(calleeName) || (typeof calleeName === 'string' && calleeName.startsWith('use'))) {
+                        return true;
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
                 }
             }
+            return false;
         }
-        return false;
+
+        if (bodyCallee.length === 1) {
+            const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
+            if (calleeArr === undefined) return false;
+
+            // console.log('calleArr:', calleeArr);
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
+        }
+        else if (bodyCallee.length > 1) {
+            let calleeArr;
+            for (let i = 0; i < bodyCallee.length; i++) {
+                try {
+                    if (bodyCallee[i].declarations[0]?.init?.body?.body) {
+                        calleeArr = bodyCallee[i].declarations[0].init.body.body;
+                        console.log('calleeArr from body', calleeArr);
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
+                }
+            }
+
+            if (calleeArr === undefined) return false;
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
+        }
     }
 
     // Finds JSX React Components in current file
