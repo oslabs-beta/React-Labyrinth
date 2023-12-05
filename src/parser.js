@@ -296,10 +296,10 @@ class Parser {
             }
         };
 
-        console.log('ast.program.body', body);
+        // console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
         if (bodyCallee.length === 0) return false;
-        console.log('bodyCallee', bodyCallee);
+        // console.log('bodyCallee', bodyCallee);
         // console.log('bodyCallee.length', bodyCallee.length)
 
         const calleeHelper = (item) => {
@@ -326,7 +326,6 @@ class Parser {
             if (item.type === 'VariableDeclaration') {
                 try {
                     let calleeName = item.declarations[0]?.init?.callee?.name;
-                    console.log('passed into vardec statement');
                     if (hooksObj.hasOwnProperty(calleeName) || (typeof calleeName === 'string' && calleeName.startsWith('use'))) {
                         return true;
                     }
@@ -356,7 +355,7 @@ class Parser {
             const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
             if (calleeArr === undefined) return false;
 
-            console.log('calleArr:', calleeArr);
+            // console.log('calleArr:', calleeArr);
             let checkTrue = false;
             for (let i = 0; i < calleeArr.length; i++) {
                 if (checkTrue) return true;
