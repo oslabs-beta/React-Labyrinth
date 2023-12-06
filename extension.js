@@ -22,9 +22,9 @@ function activate(context) {
 		const tree = new Parser(fileArray[0].path);
 		tree.parse();
 		const data = tree.getTree();
-		console.log('Data sent back: ', data)
+		// console.log('Data sent back: ', data);
+		createPanel(context, data);
 	});
-
 	context.subscriptions.push(disposable, result);
 }
 
