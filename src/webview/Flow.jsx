@@ -26,17 +26,18 @@ const OverviewFlow = () => {
   );
 
   useEffect(() => {
-    // does not work currently
     window.addEventListener('message', (e) => {
-      const msg = e.data;
+      const msg = e.data; // object containing type prop and value prop
       switch (msg.type) {
-        case 'testing': {
+        case 'parsed-data': {
+          // this is where we would set state of msg for tree data, root file, and other info
+          console.log('msg.value: ', msg.value);
           console.log('testing from flow.jsx');
           break;
         }
       }
     });
-  });
+  }, []);
 
   return (
     <ReactFlow
@@ -51,7 +52,7 @@ const OverviewFlow = () => {
     >
       <MiniMap
         nodeStrokeColor={(n) => {
-          if (n.style.background) return n.style.background;
+          if (n.style?.background) return n.style.background;
           if (n.type === "input") return "#0041d0";
           if (n.type === "output") return "#ff0072";
           if (n.type === "default") return "#1a192b";
@@ -59,7 +60,7 @@ const OverviewFlow = () => {
           return "#eee";
         }}
         nodeColor={(n) => {
-          if (n.style.background) return n.style.background;
+          if (n.style?.background) return n.style.background;
 
           return "#fff";
         }}

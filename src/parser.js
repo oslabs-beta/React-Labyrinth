@@ -151,7 +151,7 @@ class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     parser(componentTree) {
-        console.log('componentTree:', componentTree);
+        // console.log('componentTree:', componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -201,8 +201,8 @@ class Parser {
             componentTree.isClientComponent = false;
         }
 
-        console.log('componentTree.isClientComponent', componentTree.isClientComponent);
-        console.log('--------------------------------')
+        // console.log('componentTree.isClientComponent', componentTree.isClientComponent);
+        // console.log('--------------------------------')
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
@@ -369,7 +369,7 @@ class Parser {
                 try {
                     if (bodyCallee[i].declarations[0]?.init?.body?.body) {
                         calleeArr = bodyCallee[i].declarations[0].init.body.body;
-                        console.log('calleeArr from body', calleeArr);
+                        // console.log('calleeArr from body', calleeArr);
                     }
                 }
                 catch (err) {
