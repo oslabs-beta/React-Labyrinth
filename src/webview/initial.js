@@ -12,7 +12,7 @@ export const nodes = [
         </>
       )
     },
-    position: { x: 250, y: 0 }
+    // position: { x: 250, y: 0 }
   },
   {
     id: "2",
@@ -23,7 +23,7 @@ export const nodes = [
         </>
       )
     },
-    position: { x: 100, y: 100 }
+    // position: { x: 100, y: 100 }
   },
   {
     id: "3",
@@ -34,7 +34,7 @@ export const nodes = [
         </>
       )
     },
-    position: { x: 400, y: 100 },
+    // position: { x: 400, y: 100 },
     style: {
       background: "#D6D5E6",
       color: "#333",
@@ -44,7 +44,7 @@ export const nodes = [
   },
   {
     id: "4",
-    position: { x: 250, y: 200 },
+    // position: { x: 250, y: 200 },
     data: {
       label: "Another default node"
     }
@@ -54,7 +54,7 @@ export const nodes = [
     data: {
       label: "Node id: 5"
     },
-    position: { x: 250, y: 325 }
+    // position: { x: 250, y: 325 }
   },
   {
     id: "6",
@@ -66,13 +66,13 @@ export const nodes = [
         </>
       )
     },
-    position: { x: 100, y: 480 }
+    // position: { x: 100, y: 480 }
   },
   {
     id: "7",
     type: "output",
     data: { label: "Another output node" },
-    position: { x: 400, y: 450 }
+    // position: { x: 400, y: 450 }
   }
 ];
 
