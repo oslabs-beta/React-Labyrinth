@@ -34,12 +34,14 @@ function createPanel(context, data) {
             switch (msg.type) {
                 case 'onData':
                     if (!msg.value) break;
-                    // context.workspaceState.update('reactLabyrinth', msg.value);
+                    context.workspaceState = context.workspaceState || {};
+                    context.workspaceState.update('reactLabyrinth', msg.value);
+                    // console.log('msg.value from panel.js: ', msg.value);
                     panel.webview.postMessage(
                         {
                             type: 'parsed-data',
                             value: msg.value, // tree object
-                            // settings: await vscode.workspace.getConfiguration('reactLabyrinth')
+                            settings: await vscode.workspace.getConfiguration('reactLabyrinth')
                         });
                     break;
 
