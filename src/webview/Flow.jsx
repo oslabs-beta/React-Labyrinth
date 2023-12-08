@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -9,20 +9,21 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css"
 
-import {
-  nodes as initialNodes,
-  edges as initialEdges
-} from "./initial";
+import FlowBuilder from './flowBuilder.js';
 
 const onInit = (reactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
 const OverviewFlow = () => {
+  const initialNodes = [];
+  const initialEdges = [];
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    (params) => setEdges((eds) => addEdge({ ...params, type: ConnectionLineType.Bezier, animated: true }, eds)),
+    []
   );
 
   useEffect(() => {
@@ -30,9 +31,13 @@ const OverviewFlow = () => {
       const msg = e.data; // object containing type prop and value prop
       switch (msg.type) {
         case 'parsed-data': {
-          // this is where we would set state of msg for tree data, root file, and other info
-          console.log('msg.value: ', msg.value);
-          console.log('testing from flow.jsx');
+          const results = new FlowBuilder(msg.value);
+          results.build(msg.settings)
+          console.log('results: ', results);
+          console.log('results.initialNodes: ', results.initialNodes);
+          console.log('results.initialEdges: ', results.initialEdges);
+          setNodes(results.initialNodes);
+          setEdges(results.initialEdges);
           break;
         }
       }
