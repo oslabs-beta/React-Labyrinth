@@ -32,7 +32,8 @@ class FlowBuilder {
           )
         },
         // type: item.depth === 0 ? 'input' : '',
-        type: 'default',
+        type: item.isClientComponent ? 'input' : 'output',
+        // type: 'default',
         position: { x: 0, y: 0 },
         style: {
           border: 'none',

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import ReactFlow, {
   addEdge,
   MiniMap,
+  Panel,
   Controls,
   Background,
   useNodesState,
@@ -59,22 +60,31 @@ const OverviewFlow = () => {
       <MiniMap
         nodeStrokeColor={(n) => {
           if (n.style?.background) return n.style.background;
-          if (n.type === "input") return "#0041d0";
-          if (n.type === "output") return "#ff0072";
+          if (n.type === "input") return "#fdba74";
+          if (n.type === "output") return "#93C5FD";
           if (n.type === "default") return "#1a192b";
 
           return "#eee";
         }}
         nodeColor={(n) => {
           if (n.style?.background) return n.style.background;
-
           return "#fff";
         }}
         nodeBorderRadius={2}
       />
+      <Panel position="top-left">
+        <div className="border-1 border-gray-500">
+          <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
+            <p className="pl-2 pr-2 py-2">Client: <span className="border-1 border-gray-500 bg-orange-300 text-transparent rounded-full">00</span></p>
+          </div>
+          <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
+            <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue-300 text-transparent  rounded-full">00</span></p>
+          </div>
+        </div>
+      </Panel >
       <Controls />
       <Background color="#aaa" gap={16} />
-    </ReactFlow>
+    </ReactFlow >
   );
 };
 
