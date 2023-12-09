@@ -21,13 +21,12 @@ class FlowBuilder {
     parsedData.forEach((item) => {
       const node = {
         id: (++this.id).toString(),
-        data: { // `py-2 px-9 shadow-lg rounded-md border-2 border-gray-500 flex justify-center place-items-center 
+        data: {
           label: (
             <div className="text-sm font-medium text-ellipsis overflow-hidden ..." key={this.id}>{item.fileName}</div>
           )
         },
         // type: item.depth === 0 ? 'input' : '',
-        // type: item.isClientComponent ? 'input' : 'output',
         type: 'default',
         position: { x: x += 40, y: y += 30 },
         style: {

@@ -73,9 +73,9 @@ const OverviewFlow = () => {
         nodeBorderRadius={2}
       />
       <Panel position="top-left">
-        <div className="border-1 border-gray-500">
+        <div className="text-black">
           <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
-            <p className="pl-2 pr-2 py-2">Client: <span className="border-1 border-gray-500 bg-orange-300 text-transparent rounded-full">00</span></p>
+            <p className="pl-2 pr-2 py-2">Client: <span className="bg-orange-300 text-transparent rounded-full">00</span></p>
           </div>
           <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
             <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue-300 text-transparent  rounded-full">00</span></p>
