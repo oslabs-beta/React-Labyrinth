@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import ReactFlow, {
   addEdge,
   MiniMap,
+  Panel,
   Controls,
   Background,
   useNodesState,
   useEdgesState
 } from "reactflow";
-import "reactflow/dist/style.css"
+
+import "reactflow/dist/style.css";
 
 import FlowBuilder from './flowBuilder.js';
 
@@ -33,9 +35,9 @@ const OverviewFlow = () => {
         case 'parsed-data': {
           const results = new FlowBuilder(msg.value);
           results.build(msg.settings)
-          console.log('results: ', results);
-          console.log('results.initialNodes: ', results.initialNodes);
-          console.log('results.initialEdges: ', results.initialEdges);
+          // console.log('results: ', results);
+          // console.log('results.initialNodes: ', results.initialNodes);
+          // console.log('results.initialEdges: ', results.initialEdges);
           setNodes(results.initialNodes);
           setEdges(results.initialEdges);
           break;
@@ -58,22 +60,31 @@ const OverviewFlow = () => {
       <MiniMap
         nodeStrokeColor={(n) => {
           if (n.style?.background) return n.style.background;
-          if (n.type === "input") return "#0041d0";
-          if (n.type === "output") return "#ff0072";
+          if (n.data.label.props.className.includes('orange')) return "#fdba74";
+          if (n.data.label.props.className.includes('blue')) return "#93C5FD";
           if (n.type === "default") return "#1a192b";
 
           return "#eee";
         }}
         nodeColor={(n) => {
           if (n.style?.background) return n.style.background;
-
           return "#fff";
         }}
         nodeBorderRadius={2}
       />
+      <Panel position="top-left">
+        <div className="text-black">
+          <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
+            <p className="pl-2 pr-2 py-2">Client: <span className="bg-orange-300 text-transparent rounded-full">00</span></p>
+          </div>
+          <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
+            <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue-300 text-transparent  rounded-full">00</span></p>
+          </div>
+        </div>
+      </Panel >
       <Controls />
       <Background color="#aaa" gap={16} />
-    </ReactFlow>
+    </ReactFlow >
   );
 };
 
