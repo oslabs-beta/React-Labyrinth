@@ -17,16 +17,13 @@ class FlowBuilder {
   buildNodesArray(parsedData, x = this.x, y = this.y) {
     if (!parsedData) return;
 
+
     parsedData.forEach((item) => {
       const node = {
         id: (++this.id).toString(),
-        data: {
+        data: { // `py-2 px-9 shadow-lg rounded-md border-2 border-gray-500 flex justify-center place-items-center 
           label: (
-            <div className={`-mx-2.5 -my-2.5 py-2 px-9 shadow-lg rounded-md border-2 border-gray-500 ${(item.isClientComponent) ? 'bg-orange-300' : 'bg-blue-300'}`}>
-              <div className="flex justify-center place-items-center" key={this.id}>
-                <div className="text-sm font-medium">{item.fileName}</div>
-              </div>
-            </div>
+            <div className="text-sm font-medium text-ellipsis overflow-hidden ..." key={this.id}>{item.fileName}</div>
           )
         },
         // type: item.depth === 0 ? 'input' : '',
@@ -34,9 +31,14 @@ class FlowBuilder {
         type: 'default',
         position: { x: x += 40, y: y += 30 },
         style: {
-          border: 'none',
-          borderRadius: "6px"
-        }
+          borderRadius: '6px',
+          borderWidth: '2px',
+          borderColor: '#6b7280',
+          display: 'flex',
+          justifyContent: 'center',
+          placeItems: 'center',
+          backgroundColor: `${(item.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
+        },
       };
       this.initialNodes.push(node);
       if (item.children) {
