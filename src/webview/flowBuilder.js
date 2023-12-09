@@ -1,22 +1,20 @@
 import React from 'react';
-// import CustomNode from '../styles/CustomNode';
 // will create a build func and then call the helper funcs to return an object
 // make a new instance of this class in flow, call the build method, and pass this as state
-// const nodeTypes = {
-//   custom: CustomNode,
-// };
 
 class FlowBuilder {
   constructor(data) {
     this.parsedData = [data];
     this.id = 0;
+    this.x = 0;
+    this.y = 0;
     this.initialNodes = [];
     this.viewData;
     this.edgeId = 0;
     this.initialEdges = [];
   }
 
-  buildNodesArray(parsedData) {
+  buildNodesArray(parsedData, x = this.x, y = this.y) {
     if (!parsedData) return;
 
     parsedData.forEach((item) => {
@@ -34,7 +32,7 @@ class FlowBuilder {
         // type: item.depth === 0 ? 'input' : '',
         // type: item.isClientComponent ? 'input' : 'output',
         type: 'default',
-        position: { x: 0, y: 0 },
+        position: { x: x += 40, y: y += 30 },
         style: {
           border: 'none',
           borderRadius: "6px"
@@ -42,7 +40,7 @@ class FlowBuilder {
       };
       this.initialNodes.push(node);
       if (item.children) {
-        this.buildNodesArray(item.children);
+        this.buildNodesArray(item.children, this.x += 40, this.y += 30);
       }
     });
   };
@@ -98,7 +96,7 @@ class FlowBuilder {
       });
     }
     traverse(treeParsed);
-    // Update the vewData state
+    // Update the viewData state
     this.viewData = ([treeParsed]);
     console.log('viewData:', this.viewData);
     this.buildNodesArray(this.viewData);
