@@ -26,7 +26,7 @@ class FlowBuilder {
           label: (
             <div className={`-mx-2.5 -my-2.5 py-2 px-9 shadow-lg rounded-md border-2 border-gray-500 ${(item.isClientComponent) ? 'bg-orange-300' : 'bg-blue-300'}`}>
               <div className="flex justify-center place-items-center" key={this.id}>
-                <div className="text-base font-medium">{item.fileName}</div>
+                <div className="text-sm font-medium">{item.fileName}</div>
               </div>
             </div>
           )
