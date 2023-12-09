@@ -62,6 +62,7 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "node ./test/runTest.js",
+    "dev": "webpack --watch",
     "webpack": "webpack"
   },
   "devDependencies": {
