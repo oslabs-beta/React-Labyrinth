@@ -1,17 +1,20 @@
 import React from 'react';
 // will create a build func and then call the helper funcs to return an object
 // make a new instance of this class in flow, call the build method, and pass this as state
+
 class FlowBuilder {
   constructor(data) {
     this.parsedData = [data];
     this.id = 0;
+    this.x = 0;
+    this.y = 0;
     this.initialNodes = [];
     this.viewData;
     this.edgeId = 0;
     this.initialEdges = [];
   }
 
-  buildNodesArray(parsedData) {
+  buildNodesArray(parsedData, x = this.x, y = this.y) {
     if (!parsedData) return;
 
     parsedData.forEach((item) => {
@@ -19,31 +22,27 @@ class FlowBuilder {
         id: (++this.id).toString(),
         data: {
           label: (
-            <div key={this.id}>
-              <ul>
-                <li>{item.fileName}</li>
-                <li>Client Component: {item.isClientComponent.toString()}</li>
-              </ul>
+            <div className={`-mx-2.5 -my-2.5 py-2 px-9 shadow-lg rounded-md border-2 border-gray-500 ${(item.isClientComponent) ? 'bg-orange-300' : 'bg-blue-300'}`}>
+              <div className="flex justify-center place-items-center" key={this.id}>
+                <div className="text-sm font-medium">{item.fileName}</div>
+              </div>
             </div>
           )
         },
-        type: item.depth === 0 ? 'input' : '',
-        position: { x: 0, y: 0 },
+        // type: item.depth === 0 ? 'input' : '',
+        // type: item.isClientComponent ? 'input' : 'output',
+        type: 'default',
+        position: { x: x += 40, y: y += 30 },
         style: {
-          backgroundColor: "var(--vscode-dropdown-background)",
-          borderRadius: "15px",
-          width: '265px',
-          boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
           border: 'none',
-          padding: '10px 10px 3px 10px'
-        },
+          borderRadius: "6px"
+        }
       };
       this.initialNodes.push(node);
       if (item.children) {
-        this.buildNodesArray(item.children);
+        this.buildNodesArray(item.children, this.x += 40, this.y += 30);
       }
     });
-    // console.log('initialNodes', this.initialNodes);
   };
 
   buildEdgesArray(parsedData, parentID) {
@@ -65,7 +64,6 @@ class FlowBuilder {
         this.buildEdgesArray(item.children, nodeID);
       }
     });
-    // console.log('initialEdges', this.initialEdges);
   }
 
   build(settings) {
@@ -98,7 +96,7 @@ class FlowBuilder {
       });
     }
     traverse(treeParsed);
-    // Update the vewData state
+    // Update the viewData state
     this.viewData = ([treeParsed]);
     console.log('viewData:', this.viewData);
     this.buildNodesArray(this.viewData);
