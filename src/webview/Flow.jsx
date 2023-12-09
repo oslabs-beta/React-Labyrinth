@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -7,7 +7,8 @@ import ReactFlow, {
   useNodesState,
   useEdgesState
 } from "reactflow";
-import "reactflow/dist/style.css"
+
+import "reactflow/dist/style.css";
 
 import FlowBuilder from './flowBuilder.js';
 
@@ -33,9 +34,9 @@ const OverviewFlow = () => {
         case 'parsed-data': {
           const results = new FlowBuilder(msg.value);
           results.build(msg.settings)
-          console.log('results: ', results);
-          console.log('results.initialNodes: ', results.initialNodes);
-          console.log('results.initialEdges: ', results.initialEdges);
+          // console.log('results: ', results);
+          // console.log('results.initialNodes: ', results.initialNodes);
+          // console.log('results.initialEdges: ', results.initialEdges);
           setNodes(results.initialNodes);
           setEdges(results.initialEdges);
           break;
