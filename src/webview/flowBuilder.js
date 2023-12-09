@@ -23,12 +23,7 @@ class FlowBuilder {
         id: (++this.id).toString(),
         data: { // `py-2 px-9 shadow-lg rounded-md border-2 border-gray-500 flex justify-center place-items-center 
           label: (
-            // <div className={`${(item.isClientComponent) ? 'bg-orange-300' : 'bg-blue-300'}`} key={this.id}>
-            <div className="text-sm font-medium" key={this.id}>{item.fileName}</div>
-            //   {/* <div className="flex justify-center place-items-center" key={this.id}> */}
-            //   {/* <div className="text-sm font-medium">{item.fileName}</div> */}
-            //   {/* </div> */}
-            // // </div>
+            <div className="text-sm font-medium text-ellipsis overflow-hidden ..." key={this.id}>{item.fileName}</div>
           )
         },
         // type: item.depth === 0 ? 'input' : '',
