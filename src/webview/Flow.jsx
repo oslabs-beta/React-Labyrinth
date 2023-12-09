@@ -60,8 +60,8 @@ const OverviewFlow = () => {
       <MiniMap
         nodeStrokeColor={(n) => {
           if (n.style?.background) return n.style.background;
-          if (n.type === "input") return "#fdba74";
-          if (n.type === "output") return "#93C5FD";
+          if (n.data.label.props.className.includes('orange')) return "#fdba74";
+          if (n.data.label.props.className.includes('blue')) return "#93C5FD";
           if (n.type === "default") return "#1a192b";
 
           return "#eee";
