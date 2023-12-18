@@ -3,15 +3,30 @@
   "displayName": "React Labyrinth",
   "description": "React Server Components visualization tool",
   "version": "0.0.1",
+  "publisher": "ReactLabyrinthDev",
   "engines": {
     "vscode": "^1.84.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oslabs-beta/React-Labyrinth"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "react",
+    "rsc",
+    "hierarchy tree",
+    "parent-child",
+    "visualizer",
+    "server component"
+  ],
+  "license": "MIT",
   "pricing": "Free",
   "activationEvents": [],
-  "main": "./extension.js",
+  "main": "./extension.ts",
+  "type": "module",
   "contributes": {
     "commands": [
       {
@@ -75,8 +90,10 @@
     "mocha": "^10.2.0",
     "postcss-loader": "^7.3.3",
     "postcss-preset-env": "^9.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.3",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
@@ -87,11 +104,10 @@
     "babel": "^6.23.0",
     "babel-loader": "^9.1.3",
     "css-loader": "^6.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "reactflow": "^11.10.1",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
     "webpack": "^5.89.0"
   }
 }

@@ -8,15 +8,14 @@ import ReactFlow, {
   useNodesState,
   useEdgesState
 } from "reactflow";
-
 import "reactflow/dist/style.css";
-
-import FlowBuilder from './flowBuilder.js';
+import { ConnectionLineType } from "../types/connection";
+import FlowBuilder from './flowBuilder';
 
 const onInit = (reactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
-const OverviewFlow = () => {
+const OverviewFlow: React.FC = () => {
   const initialNodes = [];
   const initialEdges = [];
 
@@ -35,9 +34,6 @@ const OverviewFlow = () => {
         case 'parsed-data': {
           const results = new FlowBuilder(msg.value);
           results.build(msg.settings)
-          // console.log('results: ', results);
-          // console.log('results.initialNodes: ', results.initialNodes);
-          // console.log('results.initialEdges: ', results.initialEdges);
           setNodes(results.initialNodes);
           setEdges(results.initialEdges);
           break;

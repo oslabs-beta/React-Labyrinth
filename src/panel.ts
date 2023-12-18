@@ -1,8 +1,8 @@
-const vscode = require('vscode');
-const { getNonce } = require('./getNonce.js');
-const { Parser } = require('./parser.js');
+// const vscode = require('vscode');
+import * as vscode from 'vscode';
+import { getNonce } from './getNonce';
 
-function createPanel(context, data) {
+export function createPanel(context, data) {
     // if the current panel exists, then reveal the column, else make one?
 
     // utilize method on vscode.window object to create webview
@@ -30,7 +30,7 @@ function createPanel(context, data) {
     // will need to use onDidDispose to clear cached data and reset tree when the webview and/or application is closed
 
     panel.webview.onDidReceiveMessage(
-        async (msg) => {
+        async (msg: any) => {
             switch (msg.type) {
                 case 'onData':
                     if (!msg.value) break;
@@ -77,11 +77,11 @@ function createWebviewHTML(URI, initialData) {
                         });
                     }
                 </script>
-                <script nonce=${nonce} src=${URI}></script>
+                <script type="module" nonce=${nonce} src=${URI}></script>
             </body>
             </html>
         `
     )
 }
 
-module.exports = { createPanel };
+// module.exports = { createPanel };

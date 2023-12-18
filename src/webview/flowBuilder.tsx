@@ -2,24 +2,71 @@ import React from 'react';
 // will create a build func and then call the helper funcs to return an object
 // make a new instance of this class in flow, call the build method, and pass this as state
 
+interface Node {
+  id: string;
+  data: {
+    label: React.ReactNode;
+  };
+  type: string;
+  position: { x: number, y: number};
+  style: {
+    borderRadius: string;
+    borderWidth: string;
+    borderColor: string;
+    display: string;
+    justifyContent: string;
+    placeItems: string;
+    backgroundColor: string; 
+  };
+}
+
+interface Edge {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
+  animated: boolean;
+}
+
+interface ParsedDataItem {
+  fileName: string;
+  isClientComponent: boolean;
+  children?: ParsedDataItem[];
+  thirdParty?: boolean;
+  reactRouter?: boolean;
+}
+
+interface Settings {
+  thirdParty: boolean;
+  reactRouter: boolean;
+}
+
 class FlowBuilder {
-  constructor(data) {
+  private parsedData: ParsedDataItem[];
+  private id: number;
+  private x: number;
+  private y: number;
+  public initialNodes: Node[];
+  private viewData: ParsedDataItem[];
+  private edgeId: number;
+  public initialEdges: Edge[];
+
+  constructor(data: ParsedDataItem) {
     this.parsedData = [data];
     this.id = 0;
     this.x = 0;
     this.y = 0;
     this.initialNodes = [];
-    this.viewData;
+    this.viewData = [];
     this.edgeId = 0;
     this.initialEdges = [];
   }
 
-  buildNodesArray(parsedData, x = this.x, y = this.y) {
+  private buildNodesArray(parsedData: ParsedDataItem[] | undefined, x: number = this.x, y: number = this.y): void {
     if (!parsedData) return;
 
-
     parsedData.forEach((item) => {
-      const node = {
+      const node: Node = {
         id: (++this.id).toString(),
         data: {
           label: (
@@ -28,7 +75,7 @@ class FlowBuilder {
         },
         // type: item.depth === 0 ? 'input' : '',
         type: 'default',
-        position: { x: x += 40, y: y += 30 },
+        position: { x: (x += 40), y: (y += 30) },
         style: {
           borderRadius: '6px',
           borderWidth: '2px',
@@ -41,18 +88,18 @@ class FlowBuilder {
       };
       this.initialNodes.push(node);
       if (item.children) {
-        this.buildNodesArray(item.children, this.x += 40, this.y += 30);
+        this.buildNodesArray(item.children, (this.x += 40), (this.y += 30));
       }
     });
   };
 
-  buildEdgesArray(parsedData, parentID) {
+  private buildEdgesArray(parsedData: ParsedDataItem[] | undefined, parentID?: number): void {
     if (!parsedData) return;
 
     parsedData.forEach((item) => {
       const nodeID = ++this.edgeId;
       if (parentID) {
-        const edge = {
+        const edge: Edge = {
           id: `e${parentID}-${nodeID}`,
           source: parentID.toString(),
           target: nodeID.toString(),
@@ -67,13 +114,13 @@ class FlowBuilder {
     });
   }
 
-  build(settings) {
+  public build(settings: Settings): void {
     const treeParsed = JSON.parse(JSON.stringify(this.parsedData[0]));
     console.log('settings: ', settings);
-    const traverse = (node) => {
-      let validChildren = [];
+    const traverse = (node: ParsedDataItem): void => {
+      let validChildren: ParsedDataItem[] = [];
 
-      for (let i = 0; i < node.children.length; i++) {
+      for (let i = 0; i < node.children?.length; i++) {
         if (
           node.children[i].thirdParty &&
           settings.thirdParty &&
