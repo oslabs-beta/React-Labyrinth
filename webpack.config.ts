@@ -63,7 +63,7 @@ const webviewConfig: webpack.Configuration = {
       { test: /\.tsx?$/, use: ['babel-loader', 'ts-loader'] },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
     ],
   },

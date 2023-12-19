@@ -55,15 +55,15 @@ const OverviewFlow: React.FC = () => {
     >
       <MiniMap
         nodeStrokeColor={(n): string => {
-          if (n.style?.background) return `${n.style.background}`;
-          if (n.data.label.props.className.includes('orange')) return "#fdba74";
-          if (n.data.label.props.className.includes('blue')) return "#93C5FD";
+          if (n.style?.backgroundColor) return n.style.backgroundColor;
+          // if (n.data.label.props.className.includes('orange')) return "#fdba74";
+          // if (n.data.label.props.className.includes('blue')) return "#93C5FD";
           if (n.type === "default") return "#1a192b";
 
           return "#eee";
         }}
         nodeColor={(n): string => {
-          if (n.style?.background) return `${n.style.background}`;
+          if (n.style?.backgroundColor) return n.style.backgroundColor;
           return "#fff";
         }}
         nodeBorderRadius={2}
