@@ -25,8 +25,7 @@
   "license": "MIT",
   "pricing": "Free",
   "activationEvents": [],
-  "main": "./extension.ts",
-  "type": "module",
+  "main": "./build/extension.js",
   "contributes": {
     "commands": [
       {
@@ -83,6 +82,8 @@
   "devDependencies": {
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
     "@types/vscode": "^1.84.0",
     "@vscode/test-electron": "^2.3.6",
     "eslint": "^8.54.0",

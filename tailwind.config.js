@@ -1,7 +1,12 @@
 module.exports = {
     content: ['./build/bundle.js'],
     theme: {
-        extend: {},
+        extend: {
+            backgroundColor: {
+                orange: '#fdba74',
+                blue: '#93C5FD',
+            },
+        },
     },
     variants: {
         extend: {},

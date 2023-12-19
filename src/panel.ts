@@ -34,7 +34,7 @@ export function createPanel(context, data) {
             switch (msg.type) {
                 case 'onData':
                     if (!msg.value) break;
-                    context.workspaceState = context.workspaceState || {};
+                    // context.workspaceState = context.workspaceState || {};
                     context.workspaceState.update('reactLabyrinth', msg.value);
                     // console.log('msg.value from panel.js: ', msg.value);
                     panel.webview.postMessage(

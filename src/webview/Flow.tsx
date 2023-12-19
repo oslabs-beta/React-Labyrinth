@@ -54,16 +54,16 @@ const OverviewFlow: React.FC = () => {
       attributionPosition="top-right"
     >
       <MiniMap
-        nodeStrokeColor={(n) => {
-          if (n.style?.background) return n.style.background;
+        nodeStrokeColor={(n): string => {
+          if (n.style?.background) return `${n.style.background}`;
           if (n.data.label.props.className.includes('orange')) return "#fdba74";
           if (n.data.label.props.className.includes('blue')) return "#93C5FD";
           if (n.type === "default") return "#1a192b";
 
           return "#eee";
         }}
-        nodeColor={(n) => {
-          if (n.style?.background) return n.style.background;
+        nodeColor={(n): string => {
+          if (n.style?.background) return `${n.style.background}`;
           return "#fff";
         }}
         nodeBorderRadius={2}
@@ -71,10 +71,10 @@ const OverviewFlow: React.FC = () => {
       <Panel position="top-left">
         <div className="text-black">
           <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
-            <p className="pl-2 pr-2 py-2">Client: <span className="bg-orange-300 text-transparent rounded-full">00</span></p>
+            <p className="pl-2 pr-2 py-2">Client: <span className="bg-orange text-transparent rounded-full">00</span></p>
           </div>
           <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
-            <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue-300 text-transparent  rounded-full">00</span></p>
+            <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue text-transparent  rounded-full">00</span></p>
           </div>
         </div>
       </Panel >
