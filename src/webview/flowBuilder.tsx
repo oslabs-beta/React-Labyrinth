@@ -8,7 +8,7 @@ interface Node {
     label: React.ReactNode;
   };
   type: string;
-  position: { x: number, y: number};
+  position: { x: number, y: number };
   style: {
     borderRadius: string;
     borderWidth: string;
@@ -16,7 +16,7 @@ interface Node {
     display: string;
     justifyContent: string;
     placeItems: string;
-    backgroundColor: string; 
+    backgroundColor: string;
   };
 }
 
@@ -43,13 +43,13 @@ interface Settings {
 
 class FlowBuilder {
   private parsedData: ParsedDataItem[];
+  private viewData: ParsedDataItem[];
   private id: number;
   private x: number;
   private y: number;
-  public initialNodes: Node[];
-  private viewData: ParsedDataItem[];
   private edgeId: number;
   public initialEdges: Edge[];
+  public initialNodes: Node[];
 
   constructor(data: ParsedDataItem) {
     this.parsedData = [data];
@@ -57,9 +57,9 @@ class FlowBuilder {
     this.x = 0;
     this.y = 0;
     this.initialNodes = [];
+    this.initialEdges = [];
     this.viewData = [];
     this.edgeId = 0;
-    this.initialEdges = [];
   }
 
   private buildNodesArray(parsedData: ParsedDataItem[] | undefined, x: number = this.x, y: number = this.y): void {

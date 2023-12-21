@@ -6,13 +6,14 @@ import ReactFlow, {
   Controls,
   Background,
   useNodesState,
-  useEdgesState
+  useEdgesState,
+  ReactFlowInstance
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { ConnectionLineType } from "../types/connection";
 import FlowBuilder from './flowBuilder';
 
-const onInit = (reactFlowInstance) =>
+const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
 const OverviewFlow: React.FC = () => {

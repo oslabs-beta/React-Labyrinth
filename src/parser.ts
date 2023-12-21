@@ -301,7 +301,7 @@ export class Parser {
     // helper function to determine component type (client)
     // input: ast.program.body 
     // output: boolean 
-    private getCallee(body): boolean {
+    private getCallee(body: { [key: string]: any }[]): boolean {
         const defaultErr = (err,) => {
             return {
                 method: 'Error in getCallee method of Parser:',
@@ -402,19 +402,19 @@ export class Parser {
     }
 
     // Finds JSX React Components in current file
-    private getJSXChildren(astTokens: any[],
+    private getJSXChildren(
+        astTokens: any[],
         importsObj: ImportObj,
         parentNode: Tree
       ): Tree[] {
         // let childNodes = {};
         // let props = {};
         // let token;
-        let childNodes: { [key: string]: Tree } = {};
+    let childNodes: { [key: string]: Tree } = {};
     let props: { [key: string]: boolean } = {};
     let token: { [key: string]: any };
 
         for (let i = 0; i < astTokens.length; i++) {
-
             // Case for finding JSX tags eg <App .../>
             if (
                 astTokens[i].type.label === 'jsxTagStart' &&
@@ -453,11 +453,11 @@ export class Parser {
 
     private getChildNodes(
         imports: ImportObj,
-    astToken: { [key: string]: any },
-    props: { [key: string]: boolean },
-    parent: Tree,
-    children: { [key: string]: Tree }
-  ): { [key: string]: Tree } {
+        astToken: { [key: string]: any },
+        props: { [key: string]: boolean },
+        parent: Tree,
+        children: { [key: string]: Tree }
+    ): { [key: string]: Tree } {
         if (children[astToken.value]) {
             children[astToken.value].count += 1;
             children[astToken.value].props = {

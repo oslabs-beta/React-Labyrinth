@@ -7,7 +7,7 @@ import { Parser } from './parser';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 
-function activate(context) {
+function activate(context: vscode.ExtensionContext) {
 
 	let disposable = vscode.commands.registerCommand('react-labyrinth.helloWorld', function () {
 		vscode.window.showInformationMessage('Hello World from React Labyrinth!');
@@ -37,9 +37,9 @@ function activate(context) {
 }
 
 // This method is called when your extension is deactivated
-// function deactivate() {}
+function deactivate() {}
 
 module.exports = {
 	activate,
-	// deactivate
+	deactivate
 }
