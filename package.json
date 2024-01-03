@@ -29,11 +29,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "react-labyrinth.helloWorld",
-        "title": "Hello World",
-        "category": "React Labyrinth"
-      },
-      {
         "command": "myExtension.showPanel",
         "title": "Show Panel",
         "category": "React Labyrinth"

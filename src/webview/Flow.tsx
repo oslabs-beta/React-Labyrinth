@@ -16,7 +16,7 @@ import FlowBuilder from './flowBuilder';
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
-const OverviewFlow: React.FC = () => {
+const OverviewFlow = () => {
   const initialNodes = [];
   const initialEdges = [];
 
@@ -57,8 +57,6 @@ const OverviewFlow: React.FC = () => {
       <MiniMap
         nodeStrokeColor={(n): string => {
           if (n.style?.backgroundColor) return n.style.backgroundColor;
-          // if (n.data.label.props.className.includes('orange')) return "#fdba74";
-          // if (n.data.label.props.className.includes('blue')) return "#93C5FD";
           if (n.type === "default") return "#1a192b";
 
           return "#eee";

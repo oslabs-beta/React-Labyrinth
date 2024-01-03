@@ -116,7 +116,7 @@ class FlowBuilder {
 
   public build(settings: Settings): void {
     const treeParsed = JSON.parse(JSON.stringify(this.parsedData[0]));
-    console.log('settings: ', settings);
+    // console.log('settings: ', settings);
     const traverse = (node: ParsedDataItem): void => {
       let validChildren: ParsedDataItem[] = [];
 

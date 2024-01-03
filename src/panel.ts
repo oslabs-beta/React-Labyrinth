@@ -1,4 +1,3 @@
-// const vscode = require('vscode');
 import * as vscode from 'vscode';
 import { getNonce } from './getNonce';
 import { Tree } from './types/tree';
@@ -83,5 +82,3 @@ function createWebviewHTML(URI: vscode.Uri, initialData: Tree) {
         `
     )
 }
-
-// module.exports = { createPanel };

@@ -1,14 +1,7 @@
-// const fs = require('fs')
 import * as fs from 'fs';
 import * as path from 'path';
-// const path = require('path')
-// const babel = require('@babel/parser');
 import * as babel from '@babel/parser';
 import { getNonce } from './getNonce';
-// const { getNonce } = require('./getNonce');
-// const { Tree } = require('./types/tree');
-// const { File } = require('@babel/types');
-// const ImportObj = require('./types/ImportObj')
 import { ImportObj } from './types/ImportObj';
 import { Tree } from "./types/tree";
 import { File } from '@babel/types';
@@ -164,7 +157,6 @@ export class Parser {
 
     // Recursively builds the React component tree structure starting from root node
     private parser(componentTree: Tree): Tree | undefined {
-        // console.log('componentTree:', componentTree);
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -180,7 +172,7 @@ export class Parser {
         // Check that file has valid fileName/Path, if not found, add error to node and halt
         const fileName = this.getFileName(componentTree);
         if (!fileName) {
-            componentTree.error = 'File not found.';
+            componentTree.error = 'File not found';
             return;
         }
 
@@ -309,11 +301,8 @@ export class Parser {
             }
         };
 
-        // console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
         if (bodyCallee.length === 0) return false;
-        // console.log('bodyCallee', bodyCallee);
-        // console.log('bodyCallee.length', bodyCallee.length)
 
         const calleeHelper = (item) => {
             const hooksObj = {
@@ -368,7 +357,6 @@ export class Parser {
             const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
             if (calleeArr === undefined) return false;
 
-            // console.log('calleArr:', calleeArr);
             let checkTrue = false;
             for (let i = 0; i < calleeArr.length; i++) {
                 if (checkTrue) return true;
@@ -382,7 +370,6 @@ export class Parser {
                 try {
                     if (bodyCallee[i].declarations[0]?.init?.body?.body) {
                         calleeArr = bodyCallee[i].declarations[0].init.body.body;
-                        // console.log('calleeArr from body', calleeArr);
                     }
                 }
                 catch (err) {
@@ -407,9 +394,7 @@ export class Parser {
         importsObj: ImportObj,
         parentNode: Tree
       ): Tree[] {
-        // let childNodes = {};
-        // let props = {};
-        // let token;
+
     let childNodes: { [key: string]: Tree } = {};
     let props: { [key: string]: boolean } = {};
     let token: { [key: string]: any };
@@ -483,6 +468,7 @@ export class Parser {
                 count: 1,
                 props: props,
                 children: [],
+                // consider adding the id to the parentList array somehow for D3 integration...
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
                 isClientComponent: false
@@ -540,5 +526,3 @@ export class Parser {
         return false;
     }
 }
-
-// module.exports = { Parser };

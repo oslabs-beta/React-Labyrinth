@@ -8,4 +8,3 @@ export function getNonce() {
     return text;
   }
 
-// module.exports = { getNonce }

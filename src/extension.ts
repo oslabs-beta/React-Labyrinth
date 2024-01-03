@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
 import {createPanel} from './panel';
-// const { createPanel } = require('./src/panel');
-// const { Parser } = require('./src/parser');
 import { Parser } from './parser';
 
 // This method is called when your extension is activated
