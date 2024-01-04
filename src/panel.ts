@@ -1,8 +1,8 @@
-const vscode = require('vscode');
-const { getNonce } = require('./getNonce.js');
-const { Parser } = require('./parser.js');
+import * as vscode from 'vscode';
+import { getNonce } from './getNonce';
+import { Tree } from './types/tree';
 
-function createPanel(context, data) {
+export function createPanel(context: vscode.ExtensionContext, data: Tree) {
     // if the current panel exists, then reveal the column, else make one?
 
     // utilize method on vscode.window object to create webview
@@ -30,18 +30,17 @@ function createPanel(context, data) {
     // will need to use onDidDispose to clear cached data and reset tree when the webview and/or application is closed
 
     panel.webview.onDidReceiveMessage(
-        async (msg) => {
+        async (msg: any) => {
             switch (msg.type) {
                 case 'onData':
                     if (!msg.value) break;
-                    context.workspaceState = context.workspaceState || {};
                     context.workspaceState.update('reactLabyrinth', msg.value);
                     // console.log('msg.value from panel.js: ', msg.value);
                     panel.webview.postMessage(
                         {
                             type: 'parsed-data',
                             value: msg.value, // tree object
-                            settings: await vscode.workspace.getConfiguration('reactLabyrinth')
+                            settings: vscode.workspace.getConfiguration('reactLabyrinth')
                         });
                     break;
 
@@ -56,7 +55,7 @@ function createPanel(context, data) {
 const nonce = getNonce();
 
 // function to create the HTML page for webview
-function createWebviewHTML(URI, initialData) {
+function createWebviewHTML(URI: vscode.Uri, initialData: Tree) {
     return (
         `
             <!DOCTYPE html>
@@ -83,5 +82,3 @@ function createWebviewHTML(URI, initialData) {
         `
     )
 }
-
-module.exports = { createPanel };

@@ -1,7 +1,10 @@
-const fs = require('fs')
-const path = require('path')
-const babel = require('@babel/parser');
-const { getNonce } = require('./getNonce.js');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as babel from '@babel/parser';
+import { getNonce } from './getNonce';
+import { ImportObj } from './types/ImportObj';
+import { Tree } from "./types/tree";
+import { File } from '@babel/types';
 
 //     // function to determine server or client component (can look for 'use client' and 'hooks')
 //     // input: ast node (object)
@@ -25,8 +28,11 @@ const { getNonce } = require('./getNonce.js');
 //     return false;
 // }
 
-class Parser {
-    constructor(filePath) {
+export class Parser {
+    entryFile: string;
+    tree: Tree | undefined;
+
+    constructor(filePath: string) {
         // Fix when selecting files in wsl file system
         this.entryFile = filePath;
         if (process.platform === 'linux' && this.entryFile.includes('wsl$')) {
@@ -50,7 +56,7 @@ class Parser {
     }
 
     // method to generate component tree based on current entryFile
-    parse() {
+    public parse(): Tree {
         // Create root Tree node
         const root = {
             id: getNonce(),
@@ -75,25 +81,25 @@ class Parser {
         return this.tree;
     }
 
-    getTree() {
+    public getTree(): Tree {
         return this.tree;
     }
 
     // Set Sapling Parser with a specific Data Tree (from workspace state)
-    setTree(tree) {
+    public setTree(tree: Tree) {
         this.entryFile = tree.filePath;
         this.tree = tree;
     }
 
-    updateTree(filePath) {
-        let children = [];
+    public updateTree(filePath: string): Tree {
+        let children: any[] = [];
 
-        const getChildNodes = (node) => {
+        const getChildNodes = (node: Tree): void => {
             const { depth, filePath, expanded } = node;
             children.push({ depth, filePath, expanded });
         };
 
-        const matchExpand = (node) => {
+        const matchExpand = (node: Tree): void  => {
             for (let i = 0; i < children.length; i += 1) {
                 const oldNode = children[i];
                 if (
@@ -106,7 +112,7 @@ class Parser {
             }
         };
 
-        const callback = (node) => {
+        const callback = (node: Tree): void => {
             if (node.filePath === filePath) {
                 node.children.forEach((child) => {
                     this.traverseTree(getChildNodes, child);
@@ -121,23 +127,23 @@ class Parser {
         };
 
         this.traverseTree(callback, this.tree);
-        return this.tree;
+        return this.tree!;
     }
 
     // Traverses the tree and changes expanded property of node whose id matches provided id
-    toggleNode(id, expanded) {
-        const callback = (node) => {
+    public toggleNode(id: string, expanded: boolean): Tree{
+        const callback = (node: { id: string; expanded: boolean }) => {
             if (node.id === id) {
                 node.expanded = expanded;
             }
         };
 
         this.traverseTree(callback, this.tree);
-        return this.tree;
+        return this.tree!;
     }
 
     // Traverses all nodes of current component tree and applies callback to each node
-    traverseTree(callback, node = this.tree) {
+    private traverseTree(callback: Function, node: Tree | undefined = this.tree): void {
         if (!node) {
             return;
         }
@@ -150,8 +156,7 @@ class Parser {
     }
 
     // Recursively builds the React component tree structure starting from root node
-    parser(componentTree) {
-        // console.log('componentTree:', componentTree);
+    private parser(componentTree: Tree): Tree | undefined {
         // If import is a node module, do not parse any deeper
         if (!['\\', '/', '.'].includes(componentTree.importPath[0])) {
             componentTree.thirdParty = true;
@@ -167,7 +172,7 @@ class Parser {
         // Check that file has valid fileName/Path, if not found, add error to node and halt
         const fileName = this.getFileName(componentTree);
         if (!fileName) {
-            componentTree.error = 'File not found.';
+            componentTree.error = 'File not found';
             return;
         }
 
@@ -177,7 +182,7 @@ class Parser {
         }
 
         // Create abstract syntax tree of current component tree file
-        let ast;
+        let ast: babel.ParseResult<File>;
         try {
             ast = babel.parse(
                 fs.readFileSync(path.resolve(componentTree.filePath), 'utf-8'),
@@ -223,9 +228,9 @@ class Parser {
     }
 
     // Finds files where import string does not include a file extension
-    getFileName(componentTree) {
+    private getFileName(componentTree: Tree): string | undefined {
         const ext = path.extname(componentTree.filePath);
-        let fileName = componentTree.fileName;
+        let fileName: string | undefined = componentTree.fileName;
 
         if (!ext) {
             // Try and find file extension that exists in directory:
@@ -242,7 +247,7 @@ class Parser {
     // import Page2 from './page2'; -> is parsed as 'VariableDeclaration'
     // input: array of objects: ast.program.body
     // output: object of imoprts
-    getImports(body) {
+    private getImports(body: { [key: string]: any }[]): ImportObj {
         const bodyImports = body.filter((item) => item.type === 'ImportDeclaration' || 'VariableDeclaration');
 
         return bodyImports.reduce((accum, curr) => {
@@ -268,7 +273,7 @@ class Parser {
         }, {});
     }
 
-    findVarDecImports(ast) {
+    private findVarDecImports(ast: { [key: string]: any }): string | boolean {
         // find import path in variable declaration and return it,
         if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
             return ast.arguments[0].value;
@@ -288,7 +293,7 @@ class Parser {
     // helper function to determine component type (client)
     // input: ast.program.body 
     // output: boolean 
-    getCallee(body) {
+    private getCallee(body: { [key: string]: any }[]): boolean {
         const defaultErr = (err,) => {
             return {
                 method: 'Error in getCallee method of Parser:',
@@ -296,11 +301,8 @@ class Parser {
             }
         };
 
-        // console.log('ast.program.body', body);
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
         if (bodyCallee.length === 0) return false;
-        // console.log('bodyCallee', bodyCallee);
-        // console.log('bodyCallee.length', bodyCallee.length)
 
         const calleeHelper = (item) => {
             const hooksObj = {
@@ -355,7 +357,6 @@ class Parser {
             const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
             if (calleeArr === undefined) return false;
 
-            // console.log('calleArr:', calleeArr);
             let checkTrue = false;
             for (let i = 0; i < calleeArr.length; i++) {
                 if (checkTrue) return true;
@@ -364,12 +365,11 @@ class Parser {
             return checkTrue;
         }
         else if (bodyCallee.length > 1) {
-            let calleeArr;
+            let calleeArr: [];
             for (let i = 0; i < bodyCallee.length; i++) {
                 try {
                     if (bodyCallee[i].declarations[0]?.init?.body?.body) {
                         calleeArr = bodyCallee[i].declarations[0].init.body.body;
-                        // console.log('calleeArr from body', calleeArr);
                     }
                 }
                 catch (err) {
@@ -389,13 +389,17 @@ class Parser {
     }
 
     // Finds JSX React Components in current file
-    getJSXChildren(astTokens, importsObj, parentNode) {
-        let childNodes = {};
-        let props = {};
-        let token;
+    private getJSXChildren(
+        astTokens: any[],
+        importsObj: ImportObj,
+        parentNode: Tree
+      ): Tree[] {
+
+    let childNodes: { [key: string]: Tree } = {};
+    let props: { [key: string]: boolean } = {};
+    let token: { [key: string]: any };
 
         for (let i = 0; i < astTokens.length; i++) {
-
             // Case for finding JSX tags eg <App .../>
             if (
                 astTokens[i].type.label === 'jsxTagStart' &&
@@ -432,13 +436,13 @@ class Parser {
         return Object.values(childNodes);
     }
 
-    getChildNodes(
-        imports,
-        astToken,
-        props,
-        parent,
-        children,
-    ) {
+    private getChildNodes(
+        imports: ImportObj,
+        astToken: { [key: string]: any },
+        props: { [key: string]: boolean },
+        parent: Tree,
+        children: { [key: string]: Tree }
+    ): { [key: string]: Tree } {
         if (children[astToken.value]) {
             children[astToken.value].count += 1;
             children[astToken.value].props = {
@@ -464,6 +468,7 @@ class Parser {
                 count: 1,
                 props: props,
                 children: [],
+                // consider adding the id to the parentList array somehow for D3 integration...
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
                 isClientComponent: false
@@ -473,8 +478,10 @@ class Parser {
     }
 
     // Extracts prop names from a JSX element
-    getJSXProps(astTokens, j) {
-        const props = {};
+    private getJSXProps(astTokens: { [key: string]: any }[],
+        j: number
+      ): { [key: string]: boolean } {
+        const props: any = {};
         while (astTokens[j].type.label !== 'jsxTagEnd') {
             if (
                 astTokens[j].type.label === 'jsxName' &&
@@ -488,7 +495,7 @@ class Parser {
     }
 
     // Checks if current Node is connected to React-Redux Store
-    checkForRedux(astTokens, importsObj) {
+    private checkForRedux(astTokens: any[], importsObj: ImportObj): boolean {
         // Check that react-redux is imported in this file (and we have a connect method or otherwise)
         let reduxImported = false;
         let connectAlias;
@@ -519,5 +526,3 @@ class Parser {
         return false;
     }
 }
-
-module.exports = { Parser };

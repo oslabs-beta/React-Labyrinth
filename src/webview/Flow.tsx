@@ -6,14 +6,14 @@ import ReactFlow, {
   Controls,
   Background,
   useNodesState,
-  useEdgesState
+  useEdgesState,
+  ReactFlowInstance
 } from "reactflow";
-
 import "reactflow/dist/style.css";
+import { ConnectionLineType } from "../types/connection";
+import FlowBuilder from './flowBuilder';
 
-import FlowBuilder from './flowBuilder.js';
-
-const onInit = (reactFlowInstance) =>
+const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
 const OverviewFlow = () => {
@@ -35,9 +35,6 @@ const OverviewFlow = () => {
         case 'parsed-data': {
           const results = new FlowBuilder(msg.value);
           results.build(msg.settings)
-          // console.log('results: ', results);
-          // console.log('results.initialNodes: ', results.initialNodes);
-          // console.log('results.initialEdges: ', results.initialEdges);
           setNodes(results.initialNodes);
           setEdges(results.initialEdges);
           break;
@@ -58,16 +55,14 @@ const OverviewFlow = () => {
       attributionPosition="top-right"
     >
       <MiniMap
-        nodeStrokeColor={(n) => {
-          if (n.style?.background) return n.style.background;
-          if (n.data.label.props.className.includes('orange')) return "#fdba74";
-          if (n.data.label.props.className.includes('blue')) return "#93C5FD";
+        nodeStrokeColor={(n): string => {
+          if (n.style?.backgroundColor) return n.style.backgroundColor;
           if (n.type === "default") return "#1a192b";
 
           return "#eee";
         }}
-        nodeColor={(n) => {
-          if (n.style?.background) return n.style.background;
+        nodeColor={(n): string => {
+          if (n.style?.backgroundColor) return n.style.backgroundColor;
           return "#fff";
         }}
         nodeBorderRadius={2}
@@ -75,10 +70,10 @@ const OverviewFlow = () => {
       <Panel position="top-left">
         <div className="text-black">
           <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
-            <p className="pl-2 pr-2 py-2">Client: <span className="bg-orange-300 text-transparent rounded-full">00</span></p>
+            <p className="pl-2 pr-2 py-2">Client: <span className="bg-orange text-transparent rounded-full">00</span></p>
           </div>
           <div className="flex justify-end place-items-end shadow-lg bg-slate-50 w-20 h-15">
-            <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue-300 text-transparent  rounded-full">00</span></p>
+            <p className="pl-2 pr-2 pb-2">Server: <span className="bg-blue text-transparent  rounded-full">00</span></p>
           </div>
         </div>
       </Panel >
