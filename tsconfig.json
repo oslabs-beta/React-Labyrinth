@@ -12,7 +12,7 @@
       "strict": false,
     },
     // "include": ["src", "src/types/index.d.ts"],
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/**/*.tsx", "src/**/**/*.ts"],
     "exclude": [
       "node_modules",
       ".vscode-test",

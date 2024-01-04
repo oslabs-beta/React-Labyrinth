@@ -26,6 +26,7 @@
   "pricing": "Free",
   "activationEvents": [],
   "main": "./build/extension.js",
+  "type": "module",
   "contributes": {
     "commands": [
       {
@@ -70,11 +71,12 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "node ./test/runTest.js",
+    "test": "node ./src/test/runTest.ts",
     "dev": "webpack --watch",
     "webpack": "webpack"
   },
   "devDependencies": {
+    "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/react": "^18.2.45",
