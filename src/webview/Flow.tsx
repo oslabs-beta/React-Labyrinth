@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -12,13 +12,19 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { ConnectionLineType } from "../types/connection";
 import FlowBuilder from './flowBuilder';
+import * as d3 from 'd3';
+import { Tree } from "../types/tree";
+import { hierarchyData } from "../types/hierarchyData";
 
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
 const OverviewFlow = () => {
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const initialNodes = [];
   const initialEdges = [];
+  const elements = [];
+  const edge = [];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -33,26 +39,74 @@ const OverviewFlow = () => {
       const msg = e.data; // object containing type prop and value prop
       switch (msg.type) {
         case 'parsed-data': {
-          const results = new FlowBuilder(msg.value);
-          results.build(msg.settings)
-          setNodes(results.initialNodes);
-          setEdges(results.initialEdges);
+          // const results = new FlowBuilder(msg.value);
+          // results.build(msg.settings)
+          let data : object | undefined = msg.value;
+          console.log('data', data)
+          // setNodes(results.initialNodes);
+          // setEdges(results.initialEdges);
+          
+          // create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
+          const root : any = d3.hierarchy(data)
+          console.log('root', root)
+          
+
+          //create tree layout and give nodes their positions
+          const treeLayout = d3.tree()
+          treeLayout(root);
+          
+          root.each((node: any) : void => {
+            // console.log('node name',Object.keys(node))
+            elements.push({
+              id: node.data.name,
+              type: 'default',
+              data: { label: node.data.name },
+              position: { x: node.x || 0, y: node.y || 0 },
+            });
+            
+            // figure out how to get edges to connect
+            if (node.data.parent) {
+              // elements.push(addEdge({ 
+              //   id: node.data.id,
+              //   source: node.data.id,
+              //   target: node.data.parent,
+              //   // sourceHandle: null,
+              //   // targetHandle: null,
+              // }))
+            }
+          })
           break;
         }
       }
     });
+
+    setNodes(elements);
+    
+    //Rendering reactFlow
+    if (reactFlowWrapper.current) {
+      // Set initial position for the nodes
+      const initialPosition = { x: 0, y: 0 };
+      // reactFlowWrapper.current?.fitView(initialPosition);
+    }
+    // assign root variable using d3.heirarchy(data[0]), this will use d3 to format our data in a easy way to visualize the heirarchy
+    // const elements: Tree[];
+
   }, []);
 
   return (
+  <div style={{ height: '600px', width: '100%' }}>
     <ReactFlow
       nodes={nodes}
-      edges={edges}
+      // edges={edges}
+      // nodes={elements}
+      // edges={edge}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       onInit={onInit}
       fitView
       attributionPosition="top-right"
+      style={{ width: '100%', height: '100%' }}
     >
       <MiniMap
         nodeStrokeColor={(n): string => {
@@ -80,6 +134,7 @@ const OverviewFlow = () => {
       <Controls />
       <Background color="#aaa" gap={16} />
     </ReactFlow >
+  </div>
   );
 };
 
