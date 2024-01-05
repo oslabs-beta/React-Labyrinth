@@ -15,6 +15,7 @@ import FlowBuilder from './flowBuilder';
 import * as d3 from 'd3';
 import { Tree } from "../types/tree";
 import { hierarchyData } from "../types/hierarchyData";
+import { getNonce } from "../getNonce";
 
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
@@ -24,7 +25,7 @@ const OverviewFlow = () => {
   const initialNodes = [];
   const initialEdges = [];
   const elements = [];
-  const edge = [];
+  const edgeArr = [];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -52,7 +53,7 @@ const OverviewFlow = () => {
           
 
           //create tree layout and give nodes their positions
-          const treeLayout = d3.tree()
+          const treeLayout = d3.tree().size([500, 300])
           treeLayout(root);
           
           root.each((node: any) : void => {
@@ -61,25 +62,51 @@ const OverviewFlow = () => {
               id: node.data.name,
               type: 'default',
               data: { label: node.data.name },
-              position: { x: node.x || 0, y: node.y || 0 },
+              position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
+              style: {
+                borderRadius: '6px',
+                borderWidth: '2px',
+                borderColor: '#6b7280',
+                display: 'flex',
+                justifyContent: 'center',
+                placeItems: 'center',
+                backgroundColor: `${(node.data.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
+              }
             });
             
             // figure out how to get edges to connect
             if (node.data.parent) {
-              // elements.push(addEdge({ 
-              //   id: node.data.id,
-              //   source: node.data.id,
-              //   target: node.data.parent,
-              //   // sourceHandle: null,
-              //   // targetHandle: null,
-              // }))
+              const newEdge = {
+                id: `${getNonce()}`,
+                source: node.data.parent,
+                target: node.data.id,
+                type: ConnectionLineType.Bezier,
+                animated: true
+              };
+            
+              // Check if the edge already exists before adding
+              const edgeExists = edgeArr.some(
+                edge => edge[0].source === newEdge.source && edge[0].target === newEdge.target
+              );
+            
+              if (!edgeExists) {
+                initialEdges.push(newEdge);
+              }
             }
-          })
+          }
+          )
+          console.log('Initial Edges', initialEdges)
+          setEdges(initialEdges)
+          console.log('Edges', edges)
           break;
         }
       }
+
+    
     });
 
+    
+    
     setNodes(elements);
     
     //Rendering reactFlow
@@ -97,9 +124,9 @@ const OverviewFlow = () => {
   <div style={{ height: '600px', width: '100%' }}>
     <ReactFlow
       nodes={nodes}
-      // edges={edges}
+      // edges={edgeArr}
       // nodes={elements}
-      // edges={edge}
+      edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
