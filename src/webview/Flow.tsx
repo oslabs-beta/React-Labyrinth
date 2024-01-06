@@ -24,11 +24,7 @@ const OverviewFlow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const initialNodes = [];
   const initialEdges = [];
-  const initialEdge = [];
-  const elements = [];
-  // const elementsRef = useRef(elements);
-  // const edgesRef = useRef(initialEdges)
-
+ 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -37,70 +33,44 @@ const OverviewFlow = () => {
     []
   );
 
-  // const memoizedOnNodesChange = useCallback(
-  //   (newNodes) => {
-  //    setNodes(newNodes);
-  //    elementsRef.current = newNodes;
-  //   },
-  //   [setNodes]
-  // );
-
-  // const memoizedOnEdgesChange = useCallback(
-  //   (newEdges) => {
-  //     setEdges(newEdges);
-  //     edgesRef.current = newEdges
-  //   },
-  //   [setEdges]
-  // );
 
   useEffect(() => {
     window.addEventListener('message', (e) => {
-      const msg = e.data; // object containing type prop and value prop
+      // object containing type prop and value prop
+      const msg = e.data; 
+
       switch (msg.type) {
         case 'parsed-data': {
-          // const results = new FlowBuilder(msg.value);
-          // results.build(msg.settings)
-          // setNodes(results.initialNodes);
-          // setEdges(results.initialEdges);
           let data : object | undefined = msg.value;
           console.log('data', data)
           mappedData(data)
-          console.log('nodes', elements)
+          console.log('nodes', initialNodes)
           setEdges(initialEdges);
-          setNodes(elements)
+          setNodes(initialNodes)
           console.log('edges: ', edges);
           break;
         }
       }
     });
-    
-
-
-    // memoizedOnEdgesChange(edgesRef.current);
-    // memoizedOnNodesChange(elementsRef.current);
-    
-    //Rendering reactFlow
-    if (reactFlowWrapper.current) {
-      // Set initial position for the nodes
-      const initialPosition = { x: 0, y: 0 };
-      // reactFlowWrapper.current?.fitView(initialPosition);
-    }
-
   }, []);
 
+
+  // Function that creates Tree Structure 
   function mappedData (data) {
-    // create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
+
+    // Create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
     const root : any = d3.hierarchy(data)
     console.log('root', root)
-    
 
     //create tree layout and give nodes their positions
     const treeLayout = d3.tree().size([800, 500])
     treeLayout(root);
 
+    // Iterate through each Tree and create a node
     root.each((node: any) : void => {
       
-      elements.push({
+      // Create a Node from the current Root and add it to our nodes array
+      initialNodes.push({
         id: node.data.id,
         type: 'default',
         data: { label: node.data.name },
@@ -116,7 +86,7 @@ const OverviewFlow = () => {
         }
       });
       
-      // figure out how to get edges to connect
+      // If the current node has a parent, create an edge to show relationship
       if (node.data.parent) {
         const newEdge = {
           id: `${getNonce()}`,
@@ -131,7 +101,8 @@ const OverviewFlow = () => {
         const edgeExists = initialEdges.some(
           edge => edge.source === newEdge.source && edge.target === newEdge.target
         );
-      
+        
+        // If edge does not exist, add to our edges array
         if (!edgeExists) {
           initialEdges.push(newEdge)
         }
