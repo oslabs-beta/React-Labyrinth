@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "publisher": "ReactLabyrinthDev",
   "engines": {
-    "vscode": "^1.84.0"
+    "vscode": "^1.85.1"
   },
   "repository": {
     "type": "git",
@@ -70,17 +70,20 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "node ./test/runTest.js",
+    "test": "node ./build/src/test/runTest.js",
+    "test1": "vscode-test",
     "dev": "webpack --watch",
     "webpack": "webpack"
   },
   "devDependencies": {
+    "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
-    "@types/vscode": "^1.84.0",
-    "@vscode/test-electron": "^2.3.6",
+    "@types/vscode": "^1.85.1",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
     "eslint": "^8.54.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
