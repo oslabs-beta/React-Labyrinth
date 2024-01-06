@@ -71,6 +71,7 @@ export class Parser {
             reactRouter: false,
             reduxConnect: false,
             children: [],
+            parent: null,
             parentList: [],
             props: {},
             error: '',
@@ -180,6 +181,9 @@ export class Parser {
         if (componentTree.parentList.includes(componentTree.filePath)) {
             return;
         }
+        // if (typeof componentTree.parentList === 'string' && componentTree.parentList.includes(componentTree.filePath)) {
+        //     return;
+        // }
 
         // Create abstract syntax tree of current component tree file
         let ast: babel.ParseResult<File>;
@@ -468,6 +472,7 @@ export class Parser {
                 count: 1,
                 props: props,
                 children: [],
+                parent: parent.id,
                 // consider adding the id to the parentList array somehow for D3 integration...
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
