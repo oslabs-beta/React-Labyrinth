@@ -11,7 +11,6 @@
       "allowJs": true,
       "strict": false,
     },
-    // "include": ["src", "src/types/index.d.ts"],
     "include": ["src/**/*.ts", "src/**/*.tsx"],
     "exclude": [
       "node_modules",
