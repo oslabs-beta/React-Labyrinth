@@ -24,16 +24,34 @@ const OverviewFlow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const initialNodes = [];
   const initialEdges = [];
+  const initialEdge = [];
   const elements = [];
-  const edgeArr = [];
+  // const elementsRef = useRef(elements);
+  // const edgesRef = useRef(initialEdges)
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, type: ConnectionLineType.Bezier, animated: true }, eds)),
     []
   );
+
+  // const memoizedOnNodesChange = useCallback(
+  //   (newNodes) => {
+  //    setNodes(newNodes);
+  //    elementsRef.current = newNodes;
+  //   },
+  //   [setNodes]
+  // );
+
+  // const memoizedOnEdgesChange = useCallback(
+  //   (newEdges) => {
+  //     setEdges(newEdges);
+  //     edgesRef.current = newEdges
+  //   },
+  //   [setEdges]
+  // );
 
   useEffect(() => {
     window.addEventListener('message', (e) => {
@@ -42,72 +60,24 @@ const OverviewFlow = () => {
         case 'parsed-data': {
           // const results = new FlowBuilder(msg.value);
           // results.build(msg.settings)
-          let data : object | undefined = msg.value;
-          console.log('data', data)
           // setNodes(results.initialNodes);
           // setEdges(results.initialEdges);
-          
-          // create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
-          const root : any = d3.hierarchy(data)
-          console.log('root', root)
-          
-
-          //create tree layout and give nodes their positions
-          const treeLayout = d3.tree().size([500, 300])
-          treeLayout(root);
-          
-          root.each((node: any) : void => {
-            // console.log('node name',Object.keys(node))
-            elements.push({
-              id: node.data.name,
-              type: 'default',
-              data: { label: node.data.name },
-              position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
-              style: {
-                borderRadius: '6px',
-                borderWidth: '2px',
-                borderColor: '#6b7280',
-                display: 'flex',
-                justifyContent: 'center',
-                placeItems: 'center',
-                backgroundColor: `${(node.data.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
-              }
-            });
-            
-            // figure out how to get edges to connect
-            if (node.data.parent) {
-              const newEdge = {
-                id: `${getNonce()}`,
-                source: node.data.parent,
-                target: node.data.id,
-                type: ConnectionLineType.Bezier,
-                animated: true
-              };
-            
-              // Check if the edge already exists before adding
-              const edgeExists = edgeArr.some(
-                edge => edge[0].source === newEdge.source && edge[0].target === newEdge.target
-              );
-            
-              if (!edgeExists) {
-                initialEdges.push(newEdge);
-              }
-            }
-          }
-          )
-          console.log('Initial Edges', initialEdges)
-          setEdges(initialEdges)
-          console.log('Edges', edges)
+          let data : object | undefined = msg.value;
+          console.log('data', data)
+          mappedData(data)
+          console.log('nodes', elements)
+          setEdges(initialEdges);
+          setNodes(elements)
+          console.log('edges: ', edges);
           break;
         }
       }
-
-    
     });
+    
 
-    
-    
-    setNodes(elements);
+
+    // memoizedOnEdgesChange(edgesRef.current);
+    // memoizedOnNodesChange(elementsRef.current);
     
     //Rendering reactFlow
     if (reactFlowWrapper.current) {
@@ -115,17 +85,66 @@ const OverviewFlow = () => {
       const initialPosition = { x: 0, y: 0 };
       // reactFlowWrapper.current?.fitView(initialPosition);
     }
-    // assign root variable using d3.heirarchy(data[0]), this will use d3 to format our data in a easy way to visualize the heirarchy
-    // const elements: Tree[];
 
   }, []);
+
+  function mappedData (data) {
+    // create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
+    const root : any = d3.hierarchy(data)
+    console.log('root', root)
+    
+
+    //create tree layout and give nodes their positions
+    const treeLayout = d3.tree().size([800, 500])
+    treeLayout(root);
+
+    root.each((node: any) : void => {
+      
+      elements.push({
+        id: node.data.id,
+        type: 'default',
+        data: { label: node.data.name },
+        position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
+        style: {
+          borderRadius: '6px',
+          borderWidth: '2px',
+          borderColor: '#6b7280',
+          display: 'flex',
+          justifyContent: 'center',
+          placeItems: 'center',
+          backgroundColor: `${(node.data.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
+        }
+      });
+      
+      // figure out how to get edges to connect
+      if (node.data.parent) {
+        const newEdge = {
+          id: `${getNonce()}`,
+          source: node.data.parent,
+          target: node.data.id,
+          type: ConnectionLineType.Bezier,
+          animated: true,
+        };
+
+        
+        // Check if the edge already exists before adding
+        const edgeExists = initialEdges.some(
+          edge => edge.source === newEdge.source && edge.target === newEdge.target
+        );
+      
+        if (!edgeExists) {
+          initialEdges.push(newEdge)
+        }
+      }
+    }
+    )
+  
+  }
 
   return (
   <div style={{ height: '600px', width: '100%' }}>
     <ReactFlow
       nodes={nodes}
-      // edges={edgeArr}
-      // nodes={elements}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
