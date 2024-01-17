@@ -10,10 +10,11 @@
       "rootDir": "./src",
       "allowJs": true,
       "strict": false,
+      "inlineSources": true
     },
-    "tsnode": {
-      "esm": true
-    },
+    // "tsnode": {
+    //   "esm": true
+    // },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/**/*.tsx", "src/**/**/*.ts"],
     "exclude": [
       "node_modules",

@@ -36,13 +36,17 @@ const path = __importStar(require("path"));
 const test_electron_1 = require("@vscode/test-electron");
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log('made it through the line before try block');
         try {
+            console.log('inside try block');
             // The folder containing the Extension Manifest package.json
             // Passed to `--extensionDevelopmentPath`
             const extensionDevelopmentPath = path.resolve(__dirname, '../../');
+            console.log('inside try block after first var declare');
             // The path to the extension test script
             // Passed to --extensionTestsPath
             const extensionTestsPath = path.resolve(__dirname, './suite/index');
+            console.log('inside try block after second var declare');
             // Download VS Code, unzip it and run the integration test
             yield (0, test_electron_1.runTests)({ extensionDevelopmentPath, extensionTestsPath });
         }

@@ -1,0 +1,1 @@
+{"version":3,"file":"builder.js","sourceRoot":"","sources":["../../src/types/builder.ts"],"names":[],"mappings":"","sourcesContent":["export type Builder = {\n    parsedData: [object];\n    id: number;\n    x: number;\n    y: number;\n    initialNodes: [];\n    viewData: any;\n    edgeId: number;\n    initialEdges: [];\n}"]}

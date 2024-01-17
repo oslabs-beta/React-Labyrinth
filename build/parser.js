@@ -378,7 +378,7 @@ class Parser {
                 // Case for finding components passed in as props e.g. <Route component={App} />
             }
             else if (astTokens[i].type.label === 'jsxName' &&
-                (astTokens[i].value === 'component' ||
+                (astTokens[i].value === 'Component' ||
                     astTokens[i].value === 'children') &&
                 importsObj[astTokens[i + 3].value]) {
                 token = astTokens[i + 3];

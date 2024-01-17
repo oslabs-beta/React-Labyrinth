@@ -70,7 +70,7 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "node ./build/src/test/runTest.js",
+    "test": "node ./build/test/runTest.js",
     "test1": "vscode-test",
     "dev": "webpack --watch",
     "webpack": "webpack"
@@ -81,7 +81,7 @@
     "@types/node": "18.x",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
-    "@types/vscode": "^1.85.1",
+    "@types/vscode": "^1.84.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
     "eslint": "^8.54.0",
