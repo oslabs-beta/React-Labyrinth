@@ -7,7 +7,9 @@ import ReactFlow, {
   Background,
   useNodesState,
   useEdgesState,
-  ReactFlowInstance
+  ReactFlowInstance,
+  Node,
+  Edge
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { ConnectionLineType } from "../types/connection";
@@ -16,14 +18,15 @@ import * as d3 from 'd3';
 import { Tree } from "../types/tree";
 import { hierarchyData } from "../types/hierarchyData";
 import { getNonce } from "../getNonce";
+import { FlowNode } from "typescript";
 
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
 const OverviewFlow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const initialNodes = [];
-  const initialEdges = [];
+  const initialNodes : Node[] = [];
+  const initialEdges : Edge[] = [];
  
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -35,19 +38,17 @@ const OverviewFlow = () => {
 
 
   useEffect(() => {
-    window.addEventListener('message', (e) => {
+    window.addEventListener('message', (e: MessageEvent) => {
       // object containing type prop and value prop
-      const msg = e.data; 
+      const msg : MessageEvent = e; 
+      console.log(e)
 
-      switch (msg.type) {
+      switch (msg.data.type) {
         case 'parsed-data': {
-          let data : object | undefined = msg.value;
-          console.log('data', data)
+          let data : Tree | undefined = msg.data.value;
           mappedData(data)
-          console.log('nodes', initialNodes)
           setEdges(initialEdges);
           setNodes(initialNodes)
-          console.log('edges: ', edges);
           break;
         }
       }
@@ -56,25 +57,24 @@ const OverviewFlow = () => {
 
 
   // Function that creates Tree Structure 
-  function mappedData (data) {
+  function mappedData (data: Tree) : void {
 
     // Create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
-    const root : any = d3.hierarchy(data)
-    console.log('root', root)
+    const root : d3.HierarchyNode<Tree> = d3.hierarchy(data)
+    
 
     //create tree layout and give nodes their positions
-    const treeLayout = d3.tree().size([800, 500])
+    const treeLayout : d3.TreeLayout<unknown> = d3.tree().size([800, 500])
     treeLayout(root);
-
     // Iterate through each Tree and create a node
     root.each((node: any) : void => {
-      
+      console.log('Node', node)
       // Create a Node from the current Root and add it to our nodes array
       initialNodes.push({
         id: node.data.id,
+        position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
         type: 'default',
         data: { label: node.data.name },
-        position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
         style: {
           borderRadius: '6px',
           borderWidth: '2px',
@@ -88,7 +88,7 @@ const OverviewFlow = () => {
       
       // If the current node has a parent, create an edge to show relationship
       if (node.data.parent) {
-        const newEdge = {
+        const newEdge : Edge = {
           id: `${getNonce()}`,
           source: node.data.parent,
           target: node.data.id,
@@ -98,7 +98,7 @@ const OverviewFlow = () => {
 
         
         // Check if the edge already exists before adding
-        const edgeExists = initialEdges.some(
+        const edgeExists : boolean = initialEdges.some(
           edge => edge.source === newEdge.source && edge.target === newEdge.target
         );
         
