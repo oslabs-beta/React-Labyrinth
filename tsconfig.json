@@ -2,7 +2,7 @@
     "compilerOptions": {
       "target": "es6",
       "module": "commonjs",
-      "outDir": "./build",
+      "outDir": "./build/src",
       "esModuleInterop": true,
       "lib": ["es6", "dom"],
       "jsx": "react",
@@ -10,11 +10,8 @@
       "rootDir": "./src",
       "allowJs": true,
       "strict": false,
-      "inlineSources": true
+      "inlineSources": true,
     },
-    // "tsnode": {
-    //   "esm": true
-    // },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/**/*.tsx", "src/**/**/*.ts"],
     "exclude": [
       "node_modules",
