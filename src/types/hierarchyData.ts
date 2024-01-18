@@ -2,9 +2,17 @@ import { Tree } from "./tree"
 
 
 export interface hierarchyData {
-    children?: hierarchyData[],
-    data: Tree,
-    depth: number,
-    height: number,
-    parent: hierarchyData | null
-}
+    id: string,
+    position: { x: number, y: number },
+    type: string,
+    data: { label: string },
+    style: {
+      borderRadius: string,
+      borderWidth: string,
+      borderColor: string,
+      display: string,
+      justifyContent: string,
+      placeItems: string,
+      backgroundColor: string,
+    }
+  }

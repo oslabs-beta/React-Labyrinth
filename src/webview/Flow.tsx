@@ -61,10 +61,19 @@ const OverviewFlow = () => {
 
     // Create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
     const root : d3.HierarchyNode<Tree> = d3.hierarchy(data)
-    
 
-    //create tree layout and give nodes their positions
-    const treeLayout : d3.TreeLayout<unknown> = d3.tree().size([800, 500])
+    // Dynamically adjust height and width of display depending on the amount of nodes
+    const totalNodes : number = root.descendants().length;
+    const width : number = Math.max(totalNodes * 100, 800);
+    const height = Math.max(totalNodes * 20, 500)
+ 
+
+    //create tree layout and give nodes their positions and 
+    const treeLayout : d3.TreeLayout<unknown> = d3.tree()
+      .size([ width, height ])
+      .separation((a: d3.HierarchyPointNode<Node>, b: d3.HierarchyPointNode<Node>) => (a.parent == b.parent ? 2 : 2.5))
+
+
     treeLayout(root);
     // Iterate through each Tree and create a node
     root.each((node: any) : void => {
