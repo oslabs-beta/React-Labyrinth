@@ -3,22 +3,31 @@
   "displayName": "React Labyrinth",
   "description": "React Server Components visualization tool",
   "version": "0.0.1",
+  "publisher": "ReactLabyrinthDev",
   "engines": {
-    "vscode": "^1.84.0"
+    "vscode": "^1.85.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oslabs-beta/React-Labyrinth"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "react",
+    "rsc",
+    "hierarchy tree",
+    "parent-child",
+    "visualizer",
+    "server component"
+  ],
+  "license": "MIT",
   "pricing": "Free",
   "activationEvents": [],
-  "main": "./extension.js",
+  "main": "./build/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "react-labyrinth.helloWorld",
-        "title": "Hello World",
-        "category": "React Labyrinth"
-      },
       {
         "command": "myExtension.showPanel",
         "title": "Show Panel",
@@ -61,22 +70,27 @@
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "node ./test/runTest.js",
+    "test": "node ./build/src/test/runTest.js",
+    "test1": "vscode-test",
     "dev": "webpack --watch",
     "webpack": "webpack"
   },
   "devDependencies": {
+    "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
     "@types/vscode": "^1.84.0",
-    "@vscode/test-electron": "^2.3.6",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
     "eslint": "^8.54.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "postcss-loader": "^7.3.3",
     "postcss-preset-env": "^9.3.0",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.3",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
@@ -87,11 +101,13 @@
     "babel": "^6.23.0",
     "babel-loader": "^9.1.3",
     "css-loader": "^6.8.1",
+    "d3": "^7.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reactflow": "^11.10.1",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.1",
     "webpack": "^5.89.0"
   }
 }

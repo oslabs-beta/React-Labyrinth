@@ -1,10 +1,10 @@
-const path = require('path');
-const Mocha = require('mocha');
-const glob = require('glob');
+import * as path from 'path';
+import * as Mocha from 'mocha';
+import { glob } from 'glob';
 
-async function run() {
+export async function run(): Promise<void> {
 	// Create the mocha test
-	const mocha = new Mocha({
+	const mocha = new Mocha.default({
 		ui: 'tdd',
 		color: true
 	});
@@ -31,6 +31,3 @@ async function run() {
 	}
 }
 
-module.exports = {
-	run
-};

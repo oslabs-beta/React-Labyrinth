@@ -5,6 +5,7 @@
 {
 	"version": "0.2.0",
 	"configurations": [
+		
 		{
 			"name": "Run Extension",
 			"type": "extensionHost",
@@ -20,7 +21,9 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
 				"--extensionTestsPath=${workspaceFolder}/test/suite/index"
-			]
+			], 
+			"outFiles": ["${workspaceFolder}/build/**.js"],
+			"preLaunchTask": "npm: test-compile"
 		}
 	]
 }

@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "./build/src",
+      "esModuleInterop": true,
+      "lib": ["es6", "dom"],
+      "jsx": "react",
+      "sourceMap": true,
+      "rootDir": "./src",
+      "allowJs": true,
+      "strict": false,
+      "inlineSources": true,
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/**/*.tsx", "src/**/**/*.ts"],
+    "exclude": [
+      "node_modules",
+      ".vscode-test",
+      "src/webviews",
+      "src/test/test_apps"
+    ]
+}
