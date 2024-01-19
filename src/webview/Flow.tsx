@@ -13,8 +13,11 @@ import "reactflow/dist/style.css";
 import FlowBuilder from "./flowBuilder";
 import { Tree } from "../types/tree";
 
+
+
+
 const OverviewFlow = () => {
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+
   const initialNodes : Node[] = [];
   const initialEdges : Edge[] = [];
  
@@ -35,7 +38,7 @@ const OverviewFlow = () => {
 
           // Creates our Tree structure
           flowBuilder.mappedData(data, initialNodes, initialEdges)
-          
+
           setEdges(initialEdges);
           setNodes(initialNodes)
           break;
