@@ -32,7 +32,7 @@ class FlowBuilder {
       nodes.push({
         id: node.data.id,
         position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
-        type: 'default',
+        type: node.depth === 0 ? 'input' : !node.children ? 'output' : 'default',
         data: { label: node.data.name },
         style: {
           borderRadius: '6px',
