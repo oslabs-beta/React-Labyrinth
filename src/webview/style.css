@@ -5,6 +5,7 @@
 html,
 body,
 #root,
+
 .App {
   height: 100%;
 }
@@ -12,4 +13,9 @@ body,
 .App {
   font-family: sans-serif;
   text-align: center;
+}
+
+
+.react-flow__handle.connectionindicator {
+  pointer-events: none !important;
 }
