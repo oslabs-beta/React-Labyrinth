@@ -1,81 +1,39 @@
-import React from 'react';
-// will create a build func and then call the helper funcs to return an object
-// make a new instance of this class in flow, call the build method, and pass this as state
+import { ConnectionLineType, Edge, Node } from 'reactflow';
+import { Tree } from '../types/tree';
+import { getNonce } from '../getNonce';
+import * as d3 from 'd3'
 
-interface Node {
-  id: string;
-  data: {
-    label: React.ReactNode;
-  };
-  type: string;
-  position: { x: number, y: number };
-  style: {
-    borderRadius: string;
-    borderWidth: string;
-    borderColor: string;
-    display: string;
-    justifyContent: string;
-    placeItems: string;
-    backgroundColor: string;
-  };
-}
-
-interface Edge {
-  id: string;
-  source: string;
-  target: string;
-  type: string;
-  animated: boolean;
-}
-
-interface ParsedDataItem {
-  fileName: string;
-  isClientComponent: boolean;
-  children?: ParsedDataItem[];
-  thirdParty?: boolean;
-  reactRouter?: boolean;
-}
-
-interface Settings {
-  thirdParty: boolean;
-  reactRouter: boolean;
-}
+// Contructs our family tree for React application root file that was selected
 
 class FlowBuilder {
-  private parsedData: ParsedDataItem[];
-  private viewData: ParsedDataItem[];
-  private id: number;
-  private x: number;
-  private y: number;
-  private edgeId: number;
-  public initialEdges: Edge[];
-  public initialNodes: Node[];
 
-  constructor(data: ParsedDataItem) {
-    this.parsedData = [data];
-    this.id = 0;
-    this.x = 0;
-    this.y = 0;
-    this.initialNodes = [];
-    this.initialEdges = [];
-    this.viewData = [];
-    this.edgeId = 0;
-  }
+  public mappedData (data: Tree, nodes: Node[], edges: Edge[]) : void {
 
-  private buildNodesArray(parsedData: ParsedDataItem[] | undefined, x: number = this.x, y: number = this.y): void {
-    if (!parsedData) return;
+    // Create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
+    const root : d3.HierarchyNode<Tree> = d3.hierarchy(data)
 
-    parsedData.forEach((item) => {
-      const node: Node = {
-        id: (++this.id).toString(),
-        data: {
-          label: (
-            <div className="text-sm font-medium text-ellipsis overflow-hidden ..." key={this.id}>{item.fileName}</div>
-          )
-        },
-        // type: item.depth === 0 ? 'input' : '',
-        type: 'default',
-        position: { x: (x += 40), y: (y += 30) },
+    // Dynamically adjust height and width of display depending on the amount of nodes
+    const totalNodes : number = root.descendants().length;
+    const width : number = Math.max(totalNodes * 100, 800);
+    const height = Math.max(totalNodes * 20, 500)
+ 
+
+    //create tree layout and give nodes their positions and 
+    const treeLayout : d3.TreeLayout<unknown> = d3.tree()
+      .size([ width, height ])
+      .separation((a: d3.HierarchyPointNode<Node>, b: d3.HierarchyPointNode<Node>) => (a.parent == b.parent ? 2 : 2.5))
+
+
+    treeLayout(root);
+    // Iterate through each Tree and create a node
+    root.each((node: any) : void => {
+  
+      // Create a Node from the current Root and add it to our nodes array
+      nodes.push({
+        id: node.data.id,
+        position: { x: node.x ? node.x : 0, y: node.y ? node.y : 0 },
+        type: node.depth === 0 ? 'input' : !node.children ? 'output' : 'default',
+        data: { label: node.data.name },
         style: {
           borderRadius: '6px',
           borderWidth: '2px',
@@ -83,72 +41,34 @@ class FlowBuilder {
           display: 'flex',
           justifyContent: 'center',
           placeItems: 'center',
-          backgroundColor: `${(item.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
-        },
-      };
-      this.initialNodes.push(node);
-      if (item.children) {
-        this.buildNodesArray(item.children, (this.x += 40), (this.y += 30));
-      }
-    });
-  };
-
-  private buildEdgesArray(parsedData: ParsedDataItem[] | undefined, parentID?: number): void {
-    if (!parsedData) return;
-
-    parsedData.forEach((item) => {
-      const nodeID = ++this.edgeId;
-      if (parentID) {
-        const edge: Edge = {
-          id: `e${parentID}-${nodeID}`,
-          source: parentID.toString(),
-          target: nodeID.toString(),
-          type: 'bezier',
-          animated: false,
+          backgroundColor: `${(node.data.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
+        }
+      });
+      
+      // If the current node has a parent, create an edge to show relationship
+      if (node.data.parent) {
+        const newEdge : Edge = {
+          id: `${getNonce()}`,
+          source: node.data.parent,
+          target: node.data.id,
+          type: ConnectionLineType.Bezier,
+          animated: true,
         };
-        this.initialEdges.push(edge);
-      }
-      if (item.children) {
-        this.buildEdgesArray(item.children, nodeID);
-      }
-    });
-  }
 
-  public build(settings: Settings): void {
-    const treeParsed = JSON.parse(JSON.stringify(this.parsedData[0]));
-    // console.log('settings: ', settings);
-    const traverse = (node: ParsedDataItem): void => {
-      let validChildren: ParsedDataItem[] = [];
-
-      for (let i = 0; i < node.children?.length; i++) {
-        if (
-          node.children[i].thirdParty &&
-          settings.thirdParty &&
-          !node.children[i].reactRouter
-        ) {
-          validChildren.push(node.children[i]);
-        } else if (node.children[i].reactRouter && settings.reactRouter) {
-          validChildren.push(node.children[i]);
-        } else if (
-          !node.children[i].thirdParty &&
-          !node.children[i].reactRouter
-        ) {
-          validChildren.push(node.children[i]);
+        
+        // Check if the edge already exists before adding
+        const edgeExists : boolean = edges.some(
+          edge => edge.source === newEdge.source && edge.target === newEdge.target
+        );
+        
+        // If edge does not exist, add to our edges array
+        if (!edgeExists) {
+          edges.push(newEdge)
         }
       }
-
-      // Update children with only valid nodes, and recurse through each node
-      node.children = validChildren;
-      node.children.forEach((child) => {
-        traverse(child);
-      });
     }
-    traverse(treeParsed);
-    // Update the viewData state
-    this.viewData = ([treeParsed]);
-    console.log('viewData:', this.viewData);
-    this.buildNodesArray(this.viewData);
-    this.buildEdgesArray(this.viewData);
+    )
+  
   }
 }
 
