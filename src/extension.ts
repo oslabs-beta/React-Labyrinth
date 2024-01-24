@@ -1,37 +1,67 @@
 import * as vscode from 'vscode';
 import {createPanel} from './panel';
 import { Parser } from './parser';
+import { Tree } from './types/tree';
+
+let tree: Parser | undefined = undefined;
+let panel: vscode.WebviewPanel | undefined = undefined
+
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-
 function activate(context: vscode.ExtensionContext) {
 
-	let disposable = vscode.commands.registerCommand('react-labyrinth.helloWorld', function () {
-		vscode.window.showInformationMessage('Hello World from React Labyrinth!');
-	});
+	// This is the column where Webview will be revealed to
+	const columnToShowIn : vscode.ViewColumn | undefined = vscode.window.activeTextEditor
+        ? vscode.window.activeTextEditor.viewColumn
+        : undefined;
 
-	// pass in the command we want to register (refer to package.json)
-	// let result = vscode.commands.registerCommand('myExtension.showPanel', () => {
-	// 	// call helper func
-	// 	createPanel(context);
-	// });
+	
+	// Command that allows for User to select the root file of their React application.
+	const pickFile: vscode.Disposable = vscode.commands.registerCommand('myExtension.pickFile', async () => {
 
-	vscode.commands.registerCommand('myExtension.pickFile', async () => {
-		const fileArray = await vscode.window.showOpenDialog({ canSelectFolders: false, canSelectFiles: true, canSelectMany: false });
+
+		// Check if there is an existing webview panel, if so display it.
+		if(panel) {
+			panel.reveal(columnToShowIn)
+		}
+
+
+		// Opens window for the User to select the root file of React application
+		const fileArray: vscode.Uri[] = await vscode.window.showOpenDialog({ canSelectFolders: false, canSelectFiles: true, canSelectMany: false });
 		
+
+		// Throw error message if no file was selected
 		if (!fileArray || fileArray.length === 0) {
 			vscode.window.showErrorMessage('No file selected');
 			return;
 		}
-	
-		const tree = new Parser(fileArray[0].path);
+		
+
+		// Create Tree to be inserted into returned HTML
+		tree = new Parser(fileArray[0].path);
 		tree.parse();
-		const data = tree.getTree();
-		console.log('Data sent back: \n', data);
-		createPanel(context, data);
+		const data: Tree = tree.getTree();
+
+
+		// Check if panel currently has a webview, if it does dispose of it and create another with updated root file selected. 
+		// Otherwise create a new webview to display root file selected.
+		if(!panel) {
+			panel = createPanel(context, data, columnToShowIn);
+		} else {
+			panel.dispose()
+			panel = createPanel(context, data, columnToShowIn);
+		}
 	});
-	context.subscriptions.push(disposable);
+
+
+	// Command to show panel if it is hidden
+	const showPanel: vscode.Disposable = vscode.commands.registerCommand('myExtension.showPanel', () => {
+		panel.reveal(columnToShowIn)
+	  });
+
+
+	context.subscriptions.push(pickFile, showPanel);
 }
 
 // This method is called when your extension is deactivated
