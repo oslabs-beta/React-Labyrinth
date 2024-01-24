@@ -6,9 +6,9 @@ import * as vscode from 'vscode'
 // we can either use test() or it() -- matter of style for team/project convention
 
 describe('Extension Test Suite', () => {
-	beforeEach(() => {
-		vscode.window.showInformationMessage('Start all tests.');
-	});
+	// beforeEach(() => {
+	// 	vscode.window.showInformationMessage('Start all tests.');
+	// });
 
 	it('Sample test', () => {
 		expect([1, 2, 3].indexOf(5)).toBe(-1);

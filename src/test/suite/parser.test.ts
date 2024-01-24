@@ -9,9 +9,9 @@ import * as vscode from 'vscode'
 // const myExtension = require('../extension');
 
 describe('Parser Test Suite', () => {
-	beforeEach(() => {
-        vscode.window.showInformationMessage('Start all tests.');
-    });
+	// beforeEach(() => {
+    //     vscode.window.showInformationMessage('Start all tests.');
+    // });
 
     let parser, tree, file;
 
