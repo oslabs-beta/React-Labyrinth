@@ -25,5 +25,6 @@ module.exports = {
         // '^@/(.*)$': 'build/src/$1',
         vscode: path.join(__dirname, 'vscode.js')  // <----- most important line
     },
-    testMatch: ['**/test/**/*.js', '**/?(*.)+(spec|test).js']
+    testMatch: ['**/test/**/*.js', '**/?(*.)+(spec|test).js'],
+    modulePathIgnorePatterns: ["node_modules"]
 };
