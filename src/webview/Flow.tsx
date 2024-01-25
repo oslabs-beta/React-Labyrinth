@@ -9,9 +9,10 @@ import ReactFlow, {
   Node,
   Edge
 } from "reactflow";
-import "reactflow/dist/style.css";
 import FlowBuilder from "./flowBuilder";
 import { Tree } from "../types/tree";
+import "reactflow/dist/style.css";
+import "./style.css";
 
 
 
