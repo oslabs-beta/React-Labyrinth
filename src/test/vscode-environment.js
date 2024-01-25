@@ -11,10 +11,6 @@ class VsCodeEnvironment extends TestEnvironment {
         this.global.vscode = {};
         await super.teardown();
     }
-
-    // runScript(script) {
-    //     return super.runScript(script);
-    // }
 }
 
 module.exports = VsCodeEnvironment;

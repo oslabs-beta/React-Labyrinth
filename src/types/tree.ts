@@ -16,4 +16,4 @@ export type Tree = {
     props: { [key: string]: boolean; };
     error: string;
     isClientComponent: boolean;
-}
+};

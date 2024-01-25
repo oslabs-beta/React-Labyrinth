@@ -7,27 +7,27 @@ import * as d3 from 'd3'
 
 class FlowBuilder {
 
-  public mappedData (data: Tree, nodes: Node[], edges: Edge[]) : void {
+  public mappedData(data: Tree, nodes: Node[], edges: Edge[]): void {
 
     // Create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
-    const root : d3.HierarchyNode<Tree> = d3.hierarchy(data)
+    const root: d3.HierarchyNode<Tree> = d3.hierarchy(data)
 
     // Dynamically adjust height and width of display depending on the amount of nodes
-    const totalNodes : number = root.descendants().length;
-    const width : number = Math.max(totalNodes * 100, 800);
+    const totalNodes: number = root.descendants().length;
+    const width: number = Math.max(totalNodes * 100, 800);
     const height = Math.max(totalNodes * 20, 500)
- 
+
 
     //create tree layout and give nodes their positions and 
-    const treeLayout : d3.TreeLayout<unknown> = d3.tree()
-      .size([ width, height ])
+    const treeLayout: d3.TreeLayout<unknown> = d3.tree()
+      .size([width, height])
       .separation((a: d3.HierarchyPointNode<Node>, b: d3.HierarchyPointNode<Node>) => (a.parent == b.parent ? 2 : 2.5))
 
 
     treeLayout(root);
     // Iterate through each Tree and create a node
-    root.each((node: any) : void => {
-  
+    root.each((node: any): void => {
+
       // Create a Node from the current Root and add it to our nodes array
       nodes.push({
         id: node.data.id,
@@ -44,10 +44,10 @@ class FlowBuilder {
           backgroundColor: `${(node.data.isClientComponent) ? '#fdba74' : '#93C5FD'}`,
         }
       });
-      
+
       // If the current node has a parent, create an edge to show relationship
       if (node.data.parent) {
-        const newEdge : Edge = {
+        const newEdge: Edge = {
           id: `${getNonce()}`,
           source: node.data.parent,
           target: node.data.id,
@@ -55,12 +55,12 @@ class FlowBuilder {
           animated: true,
         };
 
-        
+
         // Check if the edge already exists before adding
-        const edgeExists : boolean = edges.some(
+        const edgeExists: boolean = edges.some(
           edge => edge.source === newEdge.source && edge.target === newEdge.target
         );
-        
+
         // If edge does not exist, add to our edges array
         if (!edgeExists) {
           edges.push(newEdge)
@@ -68,7 +68,6 @@ class FlowBuilder {
       }
     }
     )
-  
   }
 }
 

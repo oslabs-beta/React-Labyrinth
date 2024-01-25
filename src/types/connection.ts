@@ -4,4 +4,4 @@ export enum ConnectionLineType {
     Step = 'step',
     SmoothStep = 'smoothstep',
     SimpleBezier = 'simplebezier',
-  }
+};

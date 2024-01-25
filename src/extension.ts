@@ -6,7 +6,6 @@ import { Tree } from './types/tree';
 let tree: Parser | undefined = undefined;
 let panel: vscode.WebviewPanel | undefined = undefined
 
-
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context: vscode.ExtensionContext) {
