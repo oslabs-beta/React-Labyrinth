@@ -305,6 +305,9 @@ export class Parser {
             }
         };
 
+        // if statement to first check if component has a directive that is strictly equal to 'use client' or 'use server'
+        // if there is no directive, continue down the chain of logic below
+
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
         if (bodyCallee.length === 0) return false;
 
