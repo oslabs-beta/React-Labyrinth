@@ -12,14 +12,13 @@ let panel: vscode.WebviewPanel | undefined = undefined
 function activate(context: vscode.ExtensionContext) {
 
 	// This is the column where Webview will be revealed to
-	const columnToShowIn : vscode.ViewColumn | undefined = vscode.window.activeTextEditor
+	let columnToShowIn : vscode.ViewColumn | undefined = vscode.window.activeTextEditor
         ? vscode.window.activeTextEditor.viewColumn
         : undefined;
 
 	
 	// Command that allows for User to select the root file of their React application.
 	const pickFile: vscode.Disposable = vscode.commands.registerCommand('myExtension.pickFile', async () => {
-
 
 		// Check if there is an existing webview panel, if so display it.
 		if(panel) {
@@ -52,6 +51,19 @@ function activate(context: vscode.ExtensionContext) {
 			panel.dispose()
 			panel = createPanel(context, data, columnToShowIn);
 		}
+
+		// Listens for when webview is closed and disposes of webview resources
+		panel.onDidDispose(
+			() => {
+				console.log("Before: ", panel)
+				panel.dispose()
+				panel = undefined;
+				columnToShowIn = undefined;
+				console.log("After: ", panel)
+			},
+			null,
+			context.subscriptions
+			);
 	});
 
 

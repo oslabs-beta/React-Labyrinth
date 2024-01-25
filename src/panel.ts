@@ -35,16 +35,6 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
     // render html of webview here
     panel.webview.html = createWebviewHTML(bundleURI, data);
 
-
-    // Listens for when webview is closed and disposes of webview resources
-    panel.onDidDispose(
-        () => {
-          panel = undefined;
-        },
-        null,
-        context.subscriptions
-      );
-
     
     // Sends data to Flow.tsx to be displayed after parsed data is received
     panel.webview.onDidReceiveMessage(
