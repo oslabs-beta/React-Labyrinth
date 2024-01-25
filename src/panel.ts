@@ -10,7 +10,6 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
     panel = vscode.window.createWebviewPanel(
         'reactLabyrinth',
         'React Labyrinth',
-
         // create one new tab
         vscode.ViewColumn.One,
         {
@@ -19,23 +18,18 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
         }
     );
     
-
     // Set the icon logo of extension webview
     panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'favicon.ico');
     
-
     // Set URI to be the path to bundle
     const bundlePath: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'build', 'bundle.js');
-
 
     // set webview URI to pass into html script
     const bundleURI: vscode.Uri = panel.webview.asWebviewUri(bundlePath);
 
-
     // render html of webview here
     panel.webview.html = createWebviewHTML(bundleURI, data);
 
-    
     // Sends data to Flow.tsx to be displayed after parsed data is received
     panel.webview.onDidReceiveMessage(
         async (msg: any) => {
@@ -51,7 +45,6 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
                             settings: vscode.workspace.getConfiguration('reactLabyrinth')
                         });
                     break;
-
             }
         },
         undefined,
@@ -61,11 +54,8 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
     return panel
 };
 
-
-
 // getNonce generates a new random string each time ext is used to prevent external injection of foreign code into the html 
 const nonce: string = getNonce();
-
 
 // function to create the HTML page for webview
 function createWebviewHTML(URI: vscode.Uri, initialData: Tree) : string {

@@ -1,6 +1,5 @@
 import { Tree } from "./tree"
 
-
 export interface hierarchyData {
     id: string,
     position: { x: number, y: number },
@@ -15,4 +14,4 @@ export interface hierarchyData {
       placeItems: string,
       backgroundColor: string,
     }
-  }
+};

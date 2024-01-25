@@ -7,4 +7,4 @@ export type Builder = {
     viewData: any;
     edgeId: number;
     initialEdges: [];
-}
+};

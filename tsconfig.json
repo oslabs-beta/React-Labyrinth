@@ -12,11 +12,14 @@
       "strict": false,
       "inlineSources": true,
     },
+    "jest": {
+      "tsconfig": "tsconfig.json"
+    },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/**/*.tsx", "src/**/**/*.ts"],
     "exclude": [
       "node_modules",
       ".vscode-test",
       "src/webviews",
-      "src/test/test_apps"
+      "node_modules/@types/mocha/index.d.ts"
     ]
 }
