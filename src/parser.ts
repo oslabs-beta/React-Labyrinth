@@ -423,7 +423,7 @@ export class Parser {
                     childNodes,
                 );
 
-                // Case for finding components passed in as props e.g. <Route component={App} />
+            // Case for finding components passed in as props e.g. <Route component={App} />
             } else if (
                 astTokens[i].type.label === 'jsxName' &&
                 (astTokens[i].value === 'Component' ||
