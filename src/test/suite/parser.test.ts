@@ -31,9 +31,10 @@ describe('Parser Test Suite', () => {
     });
 
 	// TEST 0: ONE CHILD
-    describe('It works for simple apps', () => {
-        before(() => {
-            file = path.join(__dirname, '');
+    it('It works for simple apps', () => {
+        beforeAll(() => {
+            console.log('-----test 0----------')
+            file = path.join(__dirname, '../test_cases/tc_0/index.js');
             parser = new Parser(file);
             tree = parser.parse();
         });
@@ -44,11 +45,24 @@ describe('Parser Test Suite', () => {
         });
 
         test('Parsed tree has a property called name with value index and one child with name App', () => {
-
+            expect(tree).toHaveProperty('index');
+            console.log('--------------index---------');
         });
     });
 
 	// TEST 1: NESTED CHILDREN
+
+    describe('It checks for nested Children', () => {
+        beforeEach(() => {
+            file = path.join(__dirname, '../test_cases/tc_1/index.js');
+            // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
+            parser = new Parser(file);
+        })
+
+        console.log('inside Test 1')
+    })
+
+
 	// TEST 2: THIRD PARTY, REACT ROUTER, DESTRUCTURED IMPORTS
 	// TEST 3: IDENTIFIES REDUX STORE CONNECTION
 	// TEST 4: ALIASED IMPORTS
