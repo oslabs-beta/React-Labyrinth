@@ -1,4 +1,3 @@
-// import * as assert from 'assert' -- this one is from node
 import { Parser } from '../../parser';
 import * as path from 'path';
 import { beforeEach, expect, test } from '@jest/globals'; 
@@ -14,7 +13,7 @@ describe('Parser Test Suite', () => {
 	// UNPARSED TREE TEST
     describe('It initializes correctly', () => {
         beforeEach(() => {
-            // declare var and assign it to a test file and make new instance of Parser
+            // Assign the test file and make new instance of Parser
             file = path.join(__dirname, '../test_cases/tc_0/index.js');
             // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
             parser = new Parser(file);
@@ -32,7 +31,7 @@ describe('Parser Test Suite', () => {
 
 	// TEST 0: ONE CHILD
     describe('It works for simple apps', () => {
-        before(() => {
+        beforeEach(() => {
             file = path.join(__dirname, '');
             parser = new Parser(file);
             tree = parser.parse();
@@ -43,9 +42,9 @@ describe('Parser Test Suite', () => {
             //expect(tree).toMatchObject()
         });
 
-        test('Parsed tree has a property called name with value index and one child with name App', () => {
+        // test('Parsed tree has a property called name with value index and one child with name App', () => {
 
-        });
+        // });
     });
 
     // these are the 14 tests we need to test for
@@ -63,7 +62,7 @@ describe('Parser Test Suite', () => {
 	// TEST 11: PARSER DOESN'T BREAK UPON RECURSIVE COMPONENTS
 	// TEST 12: NEXT.JS APPS (pages version & app router version)
   	// TEST 13: Variable Declaration Imports and React.lazy Imports    
-    // TEST 14: CHECK IF COMPONENT IS CLIENT OR SERVER (USING HOOKS) => RENDERS A CERTAIN COLOR (priority)
+    // TEST 14: CHECK IF COMPONENT IS CLIENT OR SERVER (USING HOOKS & DIRECTIVES) => BOOLEAN (priority)
 
     // LOU is doing EXTENSION TEST in extension.test.ts
 });

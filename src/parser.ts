@@ -1,32 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as babel from '@babel/parser';
-import { getNonce } from './getNonce';
+import { getNonce } from './utils/getNonce';
 import { ImportObj } from './types/ImportObj';
 import { Tree } from "./types/tree";
 import { File } from '@babel/types';
-
-//     // function to determine server or client component (can look for 'use client' and 'hooks')
-//     // input: ast node (object)
-//     // output: boolean
-// checkForClientString(node) {
-//     if (node.type === 'Directive') {
-//         console.log('node', node);
-//         // access the value property of the Directive node
-//         console.log('Directive Value:', node.value);
-//         // check if the node.value is a 'DirectiveLiteral' node
-//         if (node.value && node.value.type === 'DirectiveLiteral') {
-//             // check the value to see if it is 'use client'
-//             if (typeof node.value.value === 'string' && node.value.value.trim() === 'use client') {
-//                 // access the value property of the 'DirectiveLiteral' node
-//                 console.log('DirectiveLiteral Value:', node.value.value);
-//                 // might need to do something else here to make it known as client type
-//                 return true;
-//             }
-//         }
-//     }
-//     return false;
-// }
 
 export class Parser {
     entryFile: string;
@@ -86,7 +64,7 @@ export class Parser {
         return this.tree;
     }
 
-    // Set Sapling Parser with a specific Data Tree (from workspace state)
+    // Set entryFile property with the result of Parser (from workspace state)
     public setTree(tree: Tree) {
         this.entryFile = tree.filePath;
         this.tree = tree;
@@ -131,7 +109,7 @@ export class Parser {
         return this.tree!;
     }
 
-    // Traverses the tree and changes expanded property of node whose id matches provided id
+    // Traverses the tree and changes expanded property of node whose ID matches provided ID
     public toggleNode(id: string, expanded: boolean): Tree{
         const callback = (node: { id: string; expanded: boolean }) => {
             if (node.id === id) {
@@ -204,14 +182,13 @@ export class Parser {
         // Find imports in the current file, then find child components in the current file
         const imports = this.getImports(ast.program.body);
 
-        if (this.getCallee(ast.program.body)) {
+        // Set value of isClientComponent property 
+        if (this.getComponentType(ast.program.directives, ast.program.body)) {
             componentTree.isClientComponent = true;
         } else {
             componentTree.isClientComponent = false;
         }
 
-        // console.log('componentTree.isClientComponent', componentTree.isClientComponent);
-        // console.log('--------------------------------')
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
@@ -247,10 +224,8 @@ export class Parser {
     }
 
     // Extracts Imports from current file
-    // const Page1 = lazy(() => import('./page1')); -> is parsed as 'ImportDeclaration'
-    // import Page2 from './page2'; -> is parsed as 'VariableDeclaration'
-    // input: array of objects: ast.program.body
-    // output: object of imoprts
+    // const App1 = lazy(() => import('./App1')); => is parsed as 'ImportDeclaration'
+    // import App2 from './App2'; => is parsed as 'VariableDeclaration'
     private getImports(body: { [key: string]: any }[]): ImportObj {
         const bodyImports = body.filter((item) => item.type === 'ImportDeclaration' || 'VariableDeclaration');
 
@@ -278,7 +253,7 @@ export class Parser {
     }
 
     private findVarDecImports(ast: { [key: string]: any }): string | boolean {
-        // find import path in variable declaration and return it,
+        // Find import path in variable declaration and return it,
         if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
             return ast.arguments[0].value;
         }
@@ -294,23 +269,32 @@ export class Parser {
         return false;
     }
 
-    // helper function to determine component type (client)
-    // input: ast.program.body 
-    // output: boolean 
-    private getCallee(body: { [key: string]: any }[]): boolean {
-        const defaultErr = (err,) => {
+    // Determines server or client component type (looks for use of 'use client' and react/redux state hooks)
+    private getComponentType(directive: { [key: string]: any }[], body: { [key: string]: any }[]): boolean {
+        const defaultErr = (err) => {
             return {
                 method: 'Error in getCallee method of Parser:',
                 log: err,
             }
         };
 
-        // if statement to first check if component has a directive that is strictly equal to 'use client' or 'use server'
-        // if there is no directive, continue down the chain of logic below
+        console.log('directive: ', directive);
+        // Initial check for use of directives (ex: 'use client', 'use server', 'use strict')
+        // Accounts for more than one directive 
+        for (let i = 0; i < directive.length; i++) {
+            if (directive[i].type === 'Directive') {
+                if (typeof directive[i].value.value === 'string' && directive[i].value.value.trim() === 'use client') {
+                    return true;
+                }
+            }    
+            break;    
+        }
 
+        // Second check for use of React/Redux hooks
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
         if (bodyCallee.length === 0) return false;
 
+        // Helper function
         const calleeHelper = (item) => {
             const hooksObj = {
                 useState: 0,
@@ -423,7 +407,7 @@ export class Parser {
                     childNodes,
                 );
 
-            // Case for finding components passed in as props e.g. <Route component={App} />
+            // Case for finding components passed in as props e.g. <Route Component={App} />
             } else if (
                 astTokens[i].type.label === 'jsxName' &&
                 (astTokens[i].value === 'Component' ||
@@ -476,7 +460,6 @@ export class Parser {
                 props: props,
                 children: [],
                 parent: parent.id,
-                // consider adding the id to the parentList array somehow for D3 integration...
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
                 isClientComponent: false
@@ -504,7 +487,7 @@ export class Parser {
 
     // Checks if current Node is connected to React-Redux Store
     private checkForRedux(astTokens: any[], importsObj: ImportObj): boolean {
-        // Check that react-redux is imported in this file (and we have a connect method or otherwise)
+        // Check that React-Redux is imported in this file (and we have a connect method or otherwise)
         let reduxImported = false;
         let connectAlias;
         Object.keys(importsObj).forEach((key) => {

@@ -1,5 +1,3 @@
-import { Tree } from "./tree"
-
 export interface hierarchyData {
     id: string,
     position: { x: number, y: number },

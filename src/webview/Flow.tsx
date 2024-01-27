@@ -16,6 +16,7 @@ import "./style.css";
 
 const OverviewFlow = () => {
 
+  // Required to have different initial states to render through D3
   const initialNodes: Node[] = [];
   const initialEdges: Edge[] = [];
 

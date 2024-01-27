@@ -38,7 +38,7 @@ function activate(context: vscode.ExtensionContext) {
 
 		// Check if panel currently has a webview, if it does dispose of it and create another with updated root file selected. 
 		// Otherwise create a new webview to display root file selected.
-		if(!panel) {
+		if (!panel) {
 			panel = createPanel(context, data, columnToShowIn);
 		} else {
 			panel.dispose()

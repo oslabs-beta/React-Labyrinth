@@ -1,6 +1,6 @@
 import { ConnectionLineType, Edge, Node } from 'reactflow';
 import { Tree } from '../types/tree';
-import { getNonce } from '../getNonce';
+import { getNonce } from '../utils/getNonce';
 import * as d3 from 'd3';
 
 // Contructs our family tree for React application root file that was selected
@@ -17,7 +17,7 @@ class FlowBuilder {
     const width: number = Math.max(totalNodes * 100, 800);
     const height = Math.max(totalNodes * 20, 500)
 
-    //create tree layout and give nodes their positions and 
+    // Create tree layout and give nodes their positions and 
     const treeLayout: d3.TreeLayout<unknown> = d3.tree()
       .size([width, height])
       .separation((a: d3.HierarchyPointNode<Node>, b: d3.HierarchyPointNode<Node>) => (a.parent == b.parent ? 2 : 2.5));
