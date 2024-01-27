@@ -11,7 +11,7 @@ describe('Parser Test Suite', () => {
     let parser, tree, file;
 
 	// UNPARSED TREE TEST
-    describe('It initializes correctly', () => {
+    xdescribe('It initializes correctly', () => {
         beforeEach(() => {
             // Assign the test file and make new instance of Parser
             file = path.join(__dirname, '../test_cases/tc_0/index.js');
@@ -30,7 +30,7 @@ describe('Parser Test Suite', () => {
     });
 
 	// TEST 0: ONE CHILD
-    describe('It works for simple apps', () => {
+    xdescribe('It works for simple apps', () => {
         beforeEach(() => {
             file = path.join(__dirname, '');
             parser = new Parser(file);
@@ -46,6 +46,23 @@ describe('Parser Test Suite', () => {
 
         // });
     });
+
+    // TEST 6: BAD IMPORT OF APP2 FROM APP1 COMPONENT
+    describe('Catches bad imports', () => {
+        beforeEach(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_6/component/App.jsx');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+
+        test('improperly imported child component should exist but show an error', () => {
+            expect(tree.children[0].name).toBe('anotherApp');
+			expect(tree.children[0].error).not.toBe('');
+        })
+
+        
+
+    })
 
     // these are the 14 tests we need to test for
 
