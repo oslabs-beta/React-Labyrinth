@@ -9,6 +9,8 @@ import * as vscode from 'vscode'
 
 describe('Parser Test Suite', () => {
     let parser, tree, file;
+    const fs = require('fs');
+
 
 	// UNPARSED TREE TEST
     xdescribe('It initializes correctly', () => {
@@ -53,15 +55,13 @@ describe('Parser Test Suite', () => {
             file = path.join(__dirname, '../../../../src/test/test_cases/tc_6/component/App.jsx');
             parser = new Parser(file);
             tree = parser.parse();
+            console.log(tree)
         });
 
-        test('improperly imported child component should exist but show an error', () => {
+        test("Child component that doesn't exist still shows up on the node tree", () => {
             expect(tree.children[0].name).toBe('anotherApp');
 			expect(tree.children[0].error).not.toBe('');
         })
-
-        
-
     })
 
     // these are the 14 tests we need to test for

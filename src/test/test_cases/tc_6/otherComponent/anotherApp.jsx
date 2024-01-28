@@ -1,7 +1,6 @@
 import React from "react";
 
-
-const anotherApp = () => {
+export const anotherApp = () => {
     return (
         <div>
             <p>Greetings from inside anotherApp</p>
