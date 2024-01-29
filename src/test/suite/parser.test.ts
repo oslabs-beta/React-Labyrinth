@@ -47,6 +47,20 @@ describe('Parser Test Suite', () => {
         // });
     });
 
+    // TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
+    describe('Parser should not work for components with syntax errors in the code', () => {
+        beforeEach(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_7/index.js');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+        test("Parser stops parsing when there is a syntax error in a component", () => {
+            expect(tree.children[0].name).toBe('App');
+            expect(tree.children[0].error).not.toBeUndefined;
+            expect((tree.children[0].children).length).toBe(0);
+        });
+    })
+
     // these are the 14 tests we need to test for
 
 	// TEST 1: NESTED CHILDREN
