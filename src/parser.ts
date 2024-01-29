@@ -278,7 +278,6 @@ export class Parser {
             }
         };
 
-        console.log('directive: ', directive);
         // Initial check for use of directives (ex: 'use client', 'use server', 'use strict')
         // Accounts for more than one directive 
         for (let i = 0; i < directive.length; i++) {
@@ -314,6 +313,8 @@ export class Parser {
                 useDispatch: 0,
                 useActions: 0,
                 useSelector: 0,
+                useShallowEqualSelector: 0,
+                useStore: 0,
                 bindActionCreators: 0,
             }
             if (item.type === 'VariableDeclaration') {

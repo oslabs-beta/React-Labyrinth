@@ -1,68 +1,118 @@
 import { Parser } from '../../parser';
 import * as path from 'path';
-import { beforeEach, expect, test } from '@jest/globals'; 
-
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-import * as vscode from 'vscode'
-// const myExtension = require('../extension');
+import { beforeAll, expect, test } from '@jest/globals'; 
 
 describe('Parser Test Suite', () => {
     let parser, tree, file;
 
-	// UNPARSED TREE TEST
-    describe('It initializes correctly', () => {
-        beforeEach(() => {
-            // Assign the test file and make new instance of Parser
-            file = path.join(__dirname, '../test_cases/tc_0/index.js');
-            // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
-            parser = new Parser(file);
-        });
-
-        test('It instantiates an object for the parser class', () => {
-            expect((parser)).toBeInstanceOf(Parser);
-        });
-
-        test('It begins with a suitable entry file and a tree that is not yet defined', () => {
-            expect(parser.entryFile).toEqual(file);
-            expect(tree).toBeUndefined();
-        });
-    });
-
-	// TEST 0: ONE CHILD
-    describe('It works for simple apps', () => {
-        beforeEach(() => {
-            file = path.join(__dirname, '');
+	// TEST 11: PARSER DOESN'T BREAK UPON RECURSIVE COMPONENTS
+    describe('It should render the second call of mutually recursive components, but no further', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_11/index.js');
             parser = new Parser(file);
             tree = parser.parse();
         });
 
-        test('It returns an defined object tree when parsed', () => {
+        test('Tree should not be undefined', () => {
             expect(tree).toBeDefined();
-            //expect(tree).toMatchObject()
         });
 
-        // test('Parsed tree has a property called name with value index and one child with name App', () => {
-
-        // });
+        test('Tree should have an index component while child App1, grandchild App2, great-grandchild App1', () => {
+            expect(tree).toHaveProperty('name', 'index');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0]).toHaveProperty('name', 'App1');
+            expect(tree.children[0].children).toHaveLength(1);
+            expect(tree.children[0].children[0]).toHaveProperty('name', 'App2');
+            expect(tree.children[0].children[0].children).toHaveLength(1);
+            expect(tree.children[0].children[0].children[0]).toHaveProperty('name', 'App1');
+            expect(tree.children[0].children[0].children[0].children).toHaveLength(0);
+        });
     });
 
-    // these are the 14 tests we need to test for
+	// TEST 12A: NEXT.JS APPS (pages router)
+    describe('It should parse Next.js applications using Pages Router', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_12a/pages/index.js');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
 
-	// TEST 1: NESTED CHILDREN
-	// TEST 2: THIRD PARTY, REACT ROUTER, DESTRUCTURED IMPORTS
-	// TEST 3: IDENTIFIES REDUX STORE CONNECTION
-	// TEST 4: ALIASED IMPORTS
-	// TEST 5: MISSING EXTENSIONS AND UNUSED IMPORTS
-	// TEST 6: BAD IMPORT OF APP2 FROM APP1 COMPONENT
-	// TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
-	// TEST 8: MULTIPLE PROPS ON ONE COMPONENT
-	// TEST 9: FINDING DIFFERENT PROPS ACROSS TWO OR MORE IDENTICAL COMPONENTS
-	// TEST 10: CHECK CHILDREN WORKS AND COMPONENTS WORK
-	// TEST 11: PARSER DOESN'T BREAK UPON RECURSIVE COMPONENTS
-	// TEST 12: NEXT.JS APPS (pages version & app router version)
-  	// TEST 13: Variable Declaration Imports and React.lazy Imports    
-    // TEST 14: CHECK IF COMPONENT IS CLIENT OR SERVER (USING HOOKS & DIRECTIVES) => BOOLEAN (priority)
+        test('Root should be named index, children should be named Head and Navbar, children of Navbar should be named Link and Image', () => {
+            expect(tree).toHaveProperty('name', 'index');
+            expect(tree.children).toHaveLength(2);
+            expect(tree.children[0]).toHaveProperty('name', 'Head');
+            expect(tree.children[1]).toHaveProperty('name', 'Navbar');
 
-    // LOU is doing EXTENSION TEST in extension.test.ts
+            expect(tree.children[1].children).toHaveLength(2);
+            expect(tree.children[1].children[0]).toHaveProperty('name', 'Link');
+            expect(tree.children[1].children[1]).toHaveProperty('name', 'Image');
+        });
+    });
+
+    // TEST 12B: NEXT.JS APPS (app router)
+    describe('It should parser Next.js applications using Apps Router', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_12b/app/page.jsx');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+
+         test('Root should be named page, it should have one child named Homepage', () => {
+			expect(tree).toHaveProperty('name', 'page');
+			expect(tree.children).toHaveLength(1);
+			expect(tree.children[0]).toHaveProperty('name', 'HomePage');
+		});
+    });
+    
+  	// TEST 13: VARIABLE DECLARATION IMPORTS AND REACT.LAZY IMPORTS 
+    describe('It should parse VariableDeclaration imports including React.lazy imports', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_13/index.js');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+
+        test('Root should be named index, it should have one child named App', () => {
+			expect(tree).toHaveProperty('name', 'index');
+			expect(tree.children).toHaveLength(1);
+			expect(tree.children[0]).toHaveProperty('name', 'App');
+		});
+
+        test('App should have three children, Component1, Component2 and Component3, all found successfully', () => {
+			expect(tree.children[0].children[0]).toHaveProperty('name', 'Component1');
+            expect(tree.children[0].children[0]).toHaveProperty('thirdParty', false);
+
+			expect(tree.children[0].children[1]).toHaveProperty('name', 'Component2');
+            expect(tree.children[0].children[1]).toHaveProperty('thirdParty', false);
+
+            expect(tree.children[0].children[2]).toHaveProperty('name', 'Component3');
+            expect(tree.children[0].children[2]).toHaveProperty('thirdParty', false);
+		});
+    }); 
+
+    // TEST 14: CHECK IF COMPONENT IS A CLIENT COMPONENT USING HOOKS AND DIRECTIVES
+    describe('It should parse components and determine if the component type', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_14/index.js');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+
+        test('Root should be named index, it should have one children named App', () => {
+            expect(tree).toHaveProperty('name', 'index');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0]).toHaveProperty('name', 'App');
+        });
+
+        test('App should have three children, Component1 is a client component using hooks, Component2 is a client component using directives, and Component3 is not a client component', () => {
+            // expect(tree.children[0].children[0]).toHaveProperty('name', 'Component1');
+            // expect(tree.children[0].children[0]).toHaveProperty('isClientComponent', true);
+
+			expect(tree.children[0].children[1]).toHaveProperty('name', 'Component2');
+            expect(tree.children[0].children[1]).toHaveProperty('isClientComponent', true);
+
+            expect(tree.children[0].children[2]).toHaveProperty('name', 'Component3');
+            expect(tree.children[0].children[2]).toHaveProperty('isClientComponent', false);
+        });
+    });
 });

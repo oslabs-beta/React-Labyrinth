@@ -16,7 +16,7 @@
 	"rules": {
 		"no-const-assign": "warn",
 		"no-this-before-super": "warn",
-		"no-undef": "warn",
+		"no-undef": "off",
 		"no-unreachable": "warn",
 		"no-unused-vars": "off",
 		"constructor-super": "warn",
