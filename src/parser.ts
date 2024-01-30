@@ -57,8 +57,34 @@ export class Parser {
         };
         this.tree = root;
         this.parser(root);
+        // clean up nodes with error: 'File not found'
+        
         return this.tree;
     }
+
+    /**  
+     * create some sort of recursive function that will check if the error in the tree is 'File not found'
+     * how can i do this
+     * well if im in the tree, i cant exactly take it out of the array because I'm already in it. So can i check 
+     * that error value when I'm one level out of it? 
+     * something like if(tree.children[i].error && tree.children[i].error === 'File not found') -> slice it out of the array
+     * What would the base case be? When I'm out of elements in the children array? I think so
+     * 
+    */
+    private cleanUp(tree: Tree): void {
+        // base case
+
+        // iterate over tree.children array to check for error. I will have to check the children array of 
+        // the elements in this loop and recursively call cleanUp on it
+        for(let i = 0; i < tree.children.length; i++){
+            if(tree.children[i].children.length !== 0){
+                this.cleanUp(tree.children[i]);
+            }
+            if(tree.children[i].error && tree.children[i].error === 'File not found'){
+                tree.children
+            }
+        }
+    };
 
     public getTree(): Tree {
         return this.tree;
