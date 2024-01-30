@@ -58,7 +58,7 @@ export class Parser {
         this.tree = root;
         this.parser(root);
         // clean up nodes with error: 'File not found'
-        
+        this.cleanUp(this.tree);
         return this.tree;
     }
 
@@ -73,15 +73,20 @@ export class Parser {
     */
     private cleanUp(tree: Tree): void {
         // base case
-
+        if(tree.children.length === 0) return;
         // iterate over tree.children array to check for error. I will have to check the children array of 
         // the elements in this loop and recursively call cleanUp on it
+        // but how can i modify the children array, since im iterating over it.
+        // 
         for(let i = 0; i < tree.children.length; i++){
             if(tree.children[i].children.length !== 0){
                 this.cleanUp(tree.children[i]);
             }
             if(tree.children[i].error && tree.children[i].error === 'File not found'){
-                tree.children
+                // when I find an element with the error, i need to slice it from the children array
+                // how can i do this without modifying the array that i'm iterating over? 
+                tree.children.splice(i,1);
+                i--;
             }
         }
     };
