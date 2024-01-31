@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function Component1() {
+const Component1 = () => {
     const [count, setCount] = useState(0);
 
     const handleClick = () => {
@@ -15,3 +15,5 @@ export default function Component1() {
         </section>
     );
 }
+
+export default Component1;

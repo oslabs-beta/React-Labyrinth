@@ -104,15 +104,24 @@ describe('Parser Test Suite', () => {
             expect(tree.children[0]).toHaveProperty('name', 'App');
         });
 
-        test('App should have three children, Component1 is a client component using hooks, Component2 is a client component using directives, and Component3 is not a client component', () => {
-            // expect(tree.children[0].children[0]).toHaveProperty('name', 'Component1');
-            // expect(tree.children[0].children[0]).toHaveProperty('isClientComponent', true);
+        test('App should have three children, Component1 is a client component using hooks (variable declaration, export default declaration, and function declaration), Component2 is a client component using directives, and Component3 is not a client component', () => {
+            expect(tree.children[0].children[0]).toHaveProperty('name', 'Component1');
+            expect(tree.children[0].children[0]).toHaveProperty('isClientComponent', true);
+            expect(typeof tree.children[0].children[0]).toBe('function');
+            expect(typeof tree.children[0].children[0]).not.toBe('undefined');
+            expect(typeof tree.children[0].children[0]).not.toBe('function');
 
 			expect(tree.children[0].children[1]).toHaveProperty('name', 'Component2');
             expect(tree.children[0].children[1]).toHaveProperty('isClientComponent', true);
 
             expect(tree.children[0].children[2]).toHaveProperty('name', 'Component3');
             expect(tree.children[0].children[2]).toHaveProperty('isClientComponent', false);
+
+            expect(tree.children[0].children[3]).toHaveProperty('name', 'Component4');
+            expect(tree.children[0].children[3]).toHaveProperty('isClientComponent', true);
+
+            expect(tree.children[0].children[4]).toHaveProperty('name', 'Component5');
+            expect(tree.children[0].children[4]).toHaveProperty('isClientComponent', true);
         });
     });
 });
