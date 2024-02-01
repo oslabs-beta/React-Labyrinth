@@ -291,17 +291,18 @@ export class Parser {
 
         // Second check for use of React/Redux hooks
 
+        console.log('body:', body);
         // Checks for components declared using 'const'
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        // console.log('body: ', bodyCallee);
+        console.log('bodyCall: ', bodyCallee);
         
         // Checks for components declared using 'export default function'
         const exportCallee = body.filter((item) => item.type === 'ExportDefaultDeclaration');
-        // console.log('exprt: ', exportCallee);
+        console.log('exprt: ', exportCallee);
 
         // Checks for components declared using 'function'
         const functionCallee = body.filter((item) => item.type === 'FunctionDeclaration');
-        // console.log('func: ', functionCallee);
+        console.log('func: ', functionCallee);
 
         // Helper function
         const calleeHelper = (item) => {
@@ -356,105 +357,150 @@ export class Parser {
         }
 
         // Calling helper function for functionCallee array with length of 1 or more
-        if (functionCallee.length === 1) {
-            const calleeArr = functionCallee[0].body?.body;
-            if (calleeArr === undefined) return false;
+        // if (functionCallee.length === 1) {
+        //     const calleeArr = functionCallee[0].body?.body;
+        //     if (calleeArr === undefined) return false;
 
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
-        } else if (functionCallee.length > 1) {
-            let calleeArr: [] = [];
-            for (let i = 0; i < functionCallee.length; i++) {
-                try {
-                    if (functionCallee[i].declarations[0]?.init?.body?.body) {
-                        calleeArr = functionCallee[i].declarations[0].init.body.body;
-                    }
-                }
-                catch (err) {
-                    const error = defaultErr(err);
-                    console.error(error.method, '\n', error.log);
-                }
-            }
+        //     let checkTrue = false;
+        //     for (let i = 0; i < calleeArr.length; i++) {
+        //         if (checkTrue) return true;
+        //         checkTrue = calleeHelper(calleeArr[i]);
+        //     }
+        //     return checkTrue;
+        // } else if (functionCallee.length > 1) {
+        //     let calleeArr: [] = [];
+        //     for (let i = 0; i < functionCallee.length; i++) {
+        //         try {
+        //             if (functionCallee[i].declarations[0]?.init?.body?.body) {
+        //                 calleeArr = functionCallee[i].declarations[0].init.body.body;
+        //             }
+        //         }
+        //         catch (err) {
+        //             const error = defaultErr(err);
+        //             console.error(error.method, '\n', error.log);
+        //         }
+        //     }
 
-            if (calleeArr === undefined) return false;
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
+        //     if (calleeArr === undefined) return false;
+        //     let checkTrue = false;
+        //     for (let i = 0; i < calleeArr.length; i++) {
+        //         if (checkTrue) return true;
+        //         checkTrue = calleeHelper(calleeArr[i]);
+        //     }
+        //     return checkTrue;
+        // }
+
 
         // Calling helper function for exportCallee array with length of 1 or more
-        } else if (exportCallee.length === 1) {
-            const calleeArr = exportCallee[0].declaration.body?.body;
-            if (calleeArr === undefined) return false;
+        // if (exportCallee.length === 1) {
+        //     const calleeArr = exportCallee[0].declaration.body?.body;
+        //     if (calleeArr === undefined) return false;
 
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
-        } else if (exportCallee.length > 1) {
-            let calleeArr: [] = [];
-            for (let i = 0; i < exportCallee.length; i++) {
-                try {
-                    if (exportCallee[i].declarations[0]?.init?.body?.body) {
-                        calleeArr = exportCallee[i].declarations[0].init.body.body;
-                    }
+        //     let checkTrue = false;
+        //     for (let i = 0; i < calleeArr.length; i++) {
+        //         if (checkTrue) return true;
+        //         checkTrue = calleeHelper(calleeArr[i]);
+        //     }
+        //     return checkTrue;
+        // } else if (exportCallee.length > 1) {
+        //     let calleeArr: [] = [];
+        //     for (let i = 0; i < exportCallee.length; i++) {
+        //         try {
+        //             if (exportCallee[i].declarations[0]?.init?.body?.body) {
+        //                 calleeArr = exportCallee[i].declarations[0].init.body.body;
+        //             }
+        //         }
+        //         catch (err) {
+        //             const error = defaultErr(err);
+        //             console.error(error.method, '\n', error.log);
+        //         }
+        //     }
+
+        //     if (calleeArr === undefined) return false;
+        //     let checkTrue = false;
+        //     for (let i = 0; i < calleeArr.length; i++) {
+        //         if (checkTrue) return true;
+        //         checkTrue = calleeHelper(calleeArr[i]);
+        //     }
+        //     return checkTrue;
+        // }
+
+        // console.log('hello');
+        // // Calling helper function for bodyCallee array with length of 1 or more
+        // if (bodyCallee.length === 1) {
+        //     console.log('body in length: ', bodyCallee);
+        //     const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;            
+        //     console.log('calle: ', calleeArr);
+        //     if (calleeArr === undefined) return false;
+
+        //     let checkTrue = false;
+        //     for (let i = 0; i < calleeArr.length; i++) {
+        //         if (checkTrue) return true;
+        //         console.log('i:', calleeArr[i])
+        //         checkTrue = calleeHelper(calleeArr[i]);
+        //     }
+        //     return checkTrue;
+        // } else if (bodyCallee.length > 1) {
+        //     let calleeArr: [] = [];
+        //     for (let i = 0; i < bodyCallee.length; i++) {
+        //         try {
+        //             if (bodyCallee[i].declarations[0]?.init?.body?.body) {
+        //                 calleeArr = bodyCallee[i].declarations[0].init.body.body;
+        //             }
+        //         }
+        //         catch (err) {
+        //             const error = defaultErr(err);
+        //             console.error(error.method, '\n', error.log);
+        //         }
+        //     }
+
+        //     if (calleeArr === undefined) return false;
+        //     let checkTrue = false;
+        //     for (let i = 0; i < calleeArr.length; i++) {
+        //         if (checkTrue) return true;
+        //         checkTrue = calleeHelper(calleeArr[i]);
+        //     }
+        //     return checkTrue;
+        // }
+        // if (!bodyCallee && !exportCallee && !functionCallee) return false;
+
+        // Process Function Declarations
+        for (const func of functionCallee) {
+            const calleeArr = func.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
                 }
-                catch (err) {
-                    const error = defaultErr(err);
-                    console.error(error.method, '\n', error.log);
-                }
             }
-
-            if (calleeArr === undefined) return false;
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
-
-        // Calling helper function for bodyCallee array with length of 1 or more
-        } else if (bodyCallee.length === 1) {
-            const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
-            if (calleeArr === undefined) return false;
-
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
-        } else if (bodyCallee.length > 1) {
-            let calleeArr: [] = [];
-            for (let i = 0; i < bodyCallee.length; i++) {
-                try {
-                    if (bodyCallee[i].declarations[0]?.init?.body?.body) {
-                        calleeArr = bodyCallee[i].declarations[0].init.body.body;
-                    }
-                }
-                catch (err) {
-                    const error = defaultErr(err);
-                    console.error(error.method, '\n', error.log);
-                }
-            }
-
-            if (calleeArr === undefined) return false;
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
         }
-        if (!bodyCallee && !exportCallee && !functionCallee) return false;
+
+        // Process Export Declarations
+        for (const exportDecl of exportCallee) {
+            const calleeArr = exportDecl.declaration.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+    
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
+                }
+            }
+        }
+    
+        // Process Body Declarations
+        for (const bodyDecl of bodyCallee) {
+            const calleeArr = bodyDecl.declarations[0]?.init?.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+    
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // Finds JSX React Components in current file
