@@ -49,7 +49,7 @@ export class Parser {
             reactRouter: false,
             reduxConnect: false,
             children: [],
-            parent: null,
+            parent: '',
             parentList: [],
             props: {},
             error: '',
@@ -61,7 +61,7 @@ export class Parser {
     }
 
     public getTree(): Tree {
-        return this.tree;
+        return this.tree!;
     }
 
     // Set entryFile property with the result of Parser (from workspace state)
@@ -270,7 +270,7 @@ export class Parser {
     }
 
     // Determines server or client component type (looks for use of 'use client' and react/redux state hooks)
-    private getComponentType(directive: { [key: string]: any }[], body: { [key: string]: any }[]): boolean {
+    private getComponentType(directive: { [key: string]: any }[], body: { [key: string]: any }[]) {
         const defaultErr = (err) => {
             return {
                 method: 'Error in getCallee method of Parser:',
@@ -290,8 +290,18 @@ export class Parser {
         }
 
         // Second check for use of React/Redux hooks
+
+        // Checks for components declared using 'const'
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        if (bodyCallee.length === 0) return false;
+        // console.log('body: ', bodyCallee);
+        
+        // Checks for components declared using 'export default function'
+        const exportCallee = body.filter((item) => item.type === 'ExportDefaultDeclaration');
+        // console.log('exprt: ', exportCallee);
+
+        // Checks for components declared using 'function'
+        const functionCallee = body.filter((item) => item.type === 'FunctionDeclaration');
+        // console.log('func: ', functionCallee);
 
         // Helper function
         const calleeHelper = (item) => {
@@ -345,7 +355,74 @@ export class Parser {
             return false;
         }
 
-        if (bodyCallee.length === 1) {
+        // Calling helper function for functionCallee array with length of 1 or more
+        if (functionCallee.length === 1) {
+            const calleeArr = functionCallee[0].body?.body;
+            if (calleeArr === undefined) return false;
+
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
+        } else if (functionCallee.length > 1) {
+            let calleeArr: [] = [];
+            for (let i = 0; i < functionCallee.length; i++) {
+                try {
+                    if (functionCallee[i].declarations[0]?.init?.body?.body) {
+                        calleeArr = functionCallee[i].declarations[0].init.body.body;
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
+                }
+            }
+
+            if (calleeArr === undefined) return false;
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
+
+        // Calling helper function for exportCallee array with length of 1 or more
+        } else if (exportCallee.length === 1) {
+            const calleeArr = exportCallee[0].declaration.body?.body;
+            if (calleeArr === undefined) return false;
+
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
+        } else if (exportCallee.length > 1) {
+            let calleeArr: [] = [];
+            for (let i = 0; i < exportCallee.length; i++) {
+                try {
+                    if (exportCallee[i].declarations[0]?.init?.body?.body) {
+                        calleeArr = exportCallee[i].declarations[0].init.body.body;
+                    }
+                }
+                catch (err) {
+                    const error = defaultErr(err);
+                    console.error(error.method, '\n', error.log);
+                }
+            }
+
+            if (calleeArr === undefined) return false;
+            let checkTrue = false;
+            for (let i = 0; i < calleeArr.length; i++) {
+                if (checkTrue) return true;
+                checkTrue = calleeHelper(calleeArr[i]);
+            }
+            return checkTrue;
+
+        // Calling helper function for bodyCallee array with length of 1 or more
+        } else if (bodyCallee.length === 1) {
             const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
             if (calleeArr === undefined) return false;
 
@@ -355,9 +432,8 @@ export class Parser {
                 checkTrue = calleeHelper(calleeArr[i]);
             }
             return checkTrue;
-        }
-        else if (bodyCallee.length > 1) {
-            let calleeArr: [];
+        } else if (bodyCallee.length > 1) {
+            let calleeArr: [] = [];
             for (let i = 0; i < bodyCallee.length; i++) {
                 try {
                     if (bodyCallee[i].declarations[0]?.init?.body?.body) {
@@ -378,6 +454,7 @@ export class Parser {
             }
             return checkTrue;
         }
+        if (!bodyCallee && !exportCallee && !functionCallee) return false;
     }
 
     // Finds JSX React Components in current file
