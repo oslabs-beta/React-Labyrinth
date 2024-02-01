@@ -278,7 +278,6 @@ export class Parser {
             }
         };
 
-        console.log('directive: ', directive);
         // Initial check for use of directives (ex: 'use client', 'use server', 'use strict')
         // Accounts for more than one directive 
         for (let i = 0; i < directive.length; i++) {

@@ -72,7 +72,8 @@
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
     "dev": "webpack --watch",
-    "webpack": "webpack"
+    "webpack": "webpack", 
+    "coverage": "jest --coverage"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",

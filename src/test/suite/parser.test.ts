@@ -13,9 +13,7 @@ describe('Parser Test Suite', () => {
 	// UNPARSED TREE TEST
     describe('It initializes correctly', () => {
         beforeEach(() => {
-            // Assign the test file and make new instance of Parser
-            file = path.join(__dirname, '../test_cases/tc_0/index.js');
-            // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_0/index.js');
             parser = new Parser(file);
         });
 
@@ -39,30 +37,62 @@ describe('Parser Test Suite', () => {
 
         test('It returns an defined object tree when parsed', () => {
             expect(tree).toBeDefined();
-            //expect(tree).toMatchObject()
         });
-
-        // test('Parsed tree has a property called name with value index and one child with name App', () => {
-
-        // });
     });
 
-    // these are the 14 tests we need to test for
+    // TEST 8: MULTIPLE PROPS ON ONE COMPONENT
+    describe('Finds multiple props in one component', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_8/components/App.jsx');
+            parser = new Parser(file);
+            tree = parser.parse();
+        })
 
-	// TEST 1: NESTED CHILDREN
-	// TEST 2: THIRD PARTY, REACT ROUTER, DESTRUCTURED IMPORTS
-	// TEST 3: IDENTIFIES REDUX STORE CONNECTION
-	// TEST 4: ALIASED IMPORTS
-	// TEST 5: MISSING EXTENSIONS AND UNUSED IMPORTS
-	// TEST 6: BAD IMPORT OF APP2 FROM APP1 COMPONENT
-	// TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
-	// TEST 8: MULTIPLE PROPS ON ONE COMPONENT
-	// TEST 9: FINDING DIFFERENT PROPS ACROSS TWO OR MORE IDENTICAL COMPONENTS
+        test('Should have children', () => {
+            expect(tree.children).toHaveLength(1);
+            const child = tree.children[0];
+            expect(child.name).toEqual('Main');
+            expect(child.props).toHaveProperty('name');
+            expect(child.props).toHaveProperty('age');
+            expect(child.props).toHaveProperty('DOB');
+        })
+    })
+
+    // TEST 9: FINDING DIFFERENT PROPS ACROSS TWO OR MORE IDENTICAL COMPONENTS
+    describe('Finds different props across two or more identical components.', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_9/components/App.jsx');
+            parser = new Parser(file);
+            tree = parser.parse();
+        })
+
+        test('Should have children', () => {
+            expect(tree.children).toHaveLength(1);
+        })
+
+        test('Child should have different props', () => {
+            const child = tree.children[0].props;
+            expect(child.name).toEqual(true);
+            expect(child.differentName).toEqual(true);
+        })
+    })
+	
 	// TEST 10: CHECK CHILDREN WORKS AND COMPONENTS WORK
-	// TEST 11: PARSER DOESN'T BREAK UPON RECURSIVE COMPONENTS
-	// TEST 12: NEXT.JS APPS (pages version & app router version)
-  	// TEST 13: Variable Declaration Imports and React.lazy Imports    
-    // TEST 14: CHECK IF COMPONENT IS CLIENT OR SERVER (USING HOOKS & DIRECTIVES) => BOOLEAN (priority)
+    xdescribe('Finds different props across two or more identical components.', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_10/components/App.jsx');
+            parser = new Parser(file);
+            tree = parser.parse();
+        })
 
-    // LOU is doing EXTENSION TEST in extension.test.ts
+        test('Should have children', () => {
+            expect(tree.children).toHaveLength(1);
+        })
+
+        test('Child should have different props', () => {
+            const child = tree.children[0].props;
+            expect(child.name).toEqual(true);
+            expect(child.differentName).toEqual(true);
+        })
+    })
 });
