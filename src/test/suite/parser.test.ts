@@ -106,6 +106,8 @@ describe('Parser Test Suite', () => {
         });
 
         test('App should have three children, Component1 is a client component using hooks (variable declaration, export default declaration, and function declaration), Component2 is a client component using directives, and Component3 is not a client component', () => {
+            // these first two doesnt work but the other tests in this test suite does
+            // gives me false instead of true
             expect(tree.children[0].children[0]).toHaveProperty('name', 'Component1');
             expect(tree.children[0].children[0]).toHaveProperty('isClientComponent', true);
 
