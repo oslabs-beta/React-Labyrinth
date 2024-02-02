@@ -290,19 +290,18 @@ export class Parser {
         }
 
         // Second check for use of React/Redux hooks
-
-        console.log('body:', body);
+        // console.log('body:', body);
         // Checks for components declared using 'const'
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        console.log('bodyCall: ', bodyCallee);
+        // console.log('bodyCall: ', bodyCallee);
         
         // Checks for components declared using 'export default function'
         const exportCallee = body.filter((item) => item.type === 'ExportDefaultDeclaration');
-        console.log('exprt: ', exportCallee);
+        // console.log('exprt: ', exportCallee);
 
         // Checks for components declared using 'function'
         const functionCallee = body.filter((item) => item.type === 'FunctionDeclaration');
-        console.log('func: ', functionCallee);
+        // console.log('func: ', functionCallee);
 
         // Helper function
         const calleeHelper = (item) => {
