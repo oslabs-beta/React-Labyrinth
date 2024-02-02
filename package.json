@@ -1,15 +1,17 @@
 {
   "name": "react-labyrinth",
   "displayName": "React Labyrinth",
-  "description": "React Server Components visualization tool",
+  "description": "React Component Type hierarchy tree visualization tool",
   "version": "0.0.1",
+  "icon": "./media/reactLbayrinthFinal.png",
   "publisher": "ReactLabyrinthDev",
+  "preview": false,
   "engines": {
     "vscode": "^1.85.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/oslabs-beta/React-Labyrinth"
+    "url": "https://github.com/oslabs-beta/React-Labyrinth/tree/main"
   },
   "categories": [
     "Other"
@@ -17,14 +19,18 @@
   "keywords": [
     "react",
     "rsc",
+    "react components",
     "hierarchy tree",
     "parent-child",
     "visualizer",
-    "server component"
+    "server component",
+    "client component"
   ],
   "license": "MIT",
   "pricing": "Free",
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./build/extension.js",
   "contributes": {
     "commands": [
@@ -53,10 +59,6 @@
         {
           "id": "metrics-file",
           "name": "Metrics"
-        },
-        {
-          "id": "test",
-          "name": "Test"
         }
       ]
     },
@@ -68,11 +70,12 @@
     ]
   },
   "scripts": {
+    "vscode:prepublish": "build",
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
-    "dev": "webpack --watch",
-    "webpack": "webpack"
+    "watch": "webpack --mode development --config webpack.config.ts --watch",
+    "build": "webpack --mode production --config webpack.config.ts"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",

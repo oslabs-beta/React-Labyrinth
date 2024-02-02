@@ -20,6 +20,7 @@
       "node_modules",
       ".vscode-test",
       "src/webviews",
-      "node_modules/@types/mocha/index.d.ts"
+      "node_modules/@types/mocha/index.d.ts",
+      "src/test/test_cases"
     ]
 }

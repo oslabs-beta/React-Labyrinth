@@ -12,7 +12,6 @@ const extConfig: webpack.Configuration = {
   resolve: { extensions: ['.ts', '.js'] },
   module: { rules: [{ test: /\.ts$/, loader: 'ts-loader' }] },
   externals: { vscode: 'vscode' },
-  mode: 'development'
 };
 
 const webviewConfig: webpack.Configuration = {
@@ -34,7 +33,6 @@ const webviewConfig: webpack.Configuration = {
       },
     ],
   },
-  mode: 'development'
 };
 
 export default [webviewConfig, extConfig];
