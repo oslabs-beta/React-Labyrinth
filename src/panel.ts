@@ -18,7 +18,7 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
     );
     
     // Set the icon logo of extension webview
-    panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'favicon.ico');
+    panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'RL(Final).png');
     
     // Set URI to be the path to bundle
     const bundlePath: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'build', 'bundle.js');
