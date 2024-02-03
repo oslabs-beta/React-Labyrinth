@@ -50,7 +50,7 @@
         {
           "id": "react-labyrinth",
           "title": "React Labyrinth",
-          "icon": "/media/test1.svg"
+          "icon": "/media/RL(Final).png"
         }
       ]
     },
@@ -100,7 +100,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.3",
-    "@babel/parser": "^7.23.4",
+    "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
     "babel": "^6.23.0",
