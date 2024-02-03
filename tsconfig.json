@@ -24,6 +24,7 @@
       "node_modules/@types/glob/index.d.ts",
       "node_modules/@types/jest/index.d.ts",
       "src/test/test_cases/tc_12b/app/layout.jsx",
-      "src/test/test_cases/tc_12b/app/page.tsx"
+      "src/test/test_cases/tc_12b/app/page.tsx",
+      "src/test/test_cases"
     ]
 }
