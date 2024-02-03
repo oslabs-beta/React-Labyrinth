@@ -55,12 +55,10 @@ describe('Parser Test Suite', () => {
             file = path.join(__dirname, '../../../../src/test/test_cases/tc_6/component/App.jsx');
             parser = new Parser(file);
             tree = parser.parse();
-            console.log(tree)
         });
 
-        test("Child component that doesn't exist still shows up on the node tree", () => {
-            expect(tree.children[0].name).toBe('anotherApp');
-			expect(tree.children[0].error).not.toBe('');
+        test("Child component with bad file path does not show up on the node tree", () => {
+            expect(tree.children.length).toBe(0);
         })
     })
 
@@ -71,10 +69,9 @@ describe('Parser Test Suite', () => {
             parser = new Parser(file);
             tree = parser.parse();
         });
+        
         test("Parser stops parsing when there is a syntax error in a component", () => {
-            expect(tree.children[0].name).toBe('App');
-            expect(tree.children[0].error).not.toBeUndefined;
-            expect((tree.children[0].children).length).toBe(0);
+            expect(tree.children.length).toBe(0);
         });
     })
 

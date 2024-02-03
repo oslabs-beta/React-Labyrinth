@@ -57,8 +57,27 @@ export class Parser {
         };
         this.tree = root;
         this.parser(root);
+        // clean up nodes with error: 'File not found'
+        this.removeTreesWithError(this.tree);
         return this.tree;
     }
+
+    private removeTreesWithError(tree: Tree): void {
+        // base case
+        if(tree.children.length === 0) return;
+        // iterate over tree.children array to check for error. 
+        for(let i = 0; i < tree.children.length; i++){
+            // call removeTreesWithError on every tree in the children array
+            if(tree.children[i].children.length !== 0){
+                this.removeTreesWithError(tree.children[i]);
+            }
+            if(tree.children[i].error && (tree.children[i].error === 'File not found' || tree.children[i].error === 'Error while processing this file/node')){
+                // when an error is found, splice the tree out of the children array
+                tree.children.splice(i,1);
+                i--; // decrement to account for change in children array length
+            }
+        }
+    };
 
     public getTree(): Tree {
         return this.tree;
@@ -278,7 +297,7 @@ export class Parser {
             }
         };
 
-        console.log('directive: ', directive);
+        // console.log('directive: ', directive);
         // Initial check for use of directives (ex: 'use client', 'use server', 'use strict')
         // Accounts for more than one directive 
         for (let i = 0; i < directive.length; i++) {
