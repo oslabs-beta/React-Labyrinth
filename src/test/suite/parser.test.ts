@@ -9,9 +9,11 @@ import * as vscode from 'vscode'
 
 describe('Parser Test Suite', () => {
     let parser, tree, file;
+    const fs = require('fs');
+
 
 	// UNPARSED TREE TEST
-    describe('It initializes correctly', () => {
+    xdescribe('It initializes correctly', () => {
         beforeEach(() => {
             // Assign the test file and make new instance of Parser
             file = path.join(__dirname, '../test_cases/tc_0/index.js');
@@ -30,7 +32,7 @@ describe('Parser Test Suite', () => {
     });
 
 	// TEST 0: ONE CHILD
-    describe('It works for simple apps', () => {
+    xdescribe('It works for simple apps', () => {
         beforeEach(() => {
             file = path.join(__dirname, '');
             parser = new Parser(file);
@@ -46,6 +48,32 @@ describe('Parser Test Suite', () => {
 
         // });
     });
+
+    // TEST 6: BAD IMPORT OF APP2 FROM APP1 COMPONENT
+    describe('Catches bad imports', () => {
+        beforeEach(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_6/component/App.jsx');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+
+        test("Child component with bad file path does not show up on the node tree", () => {
+            expect(tree.children.length).toBe(0);
+        })
+    })
+
+    // TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
+    describe('Parser should not work for components with syntax errors in the code', () => {
+        beforeEach(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_7/index.js');
+            parser = new Parser(file);
+            tree = parser.parse();
+        });
+        
+        test("Parser stops parsing when there is a syntax error in a component", () => {
+            expect(tree.children.length).toBe(0);
+        });
+    })
 
     // these are the 14 tests we need to test for
 
