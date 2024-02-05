@@ -1,15 +1,7 @@
-# FOLDERS
-.vscode/**
-.vscode-test/**
-test/**
-node_modules
-**/jsconfig.json
-**/*.map
-**/.eslintrc.json
+**/*
 
-# FILES
-.gitignore
-.yarnrc
-vsc-extension-quickstart.md
-**/*.js.map
-
+!build/
+!CHANGELOG.md
+!packages.json
+!media/
+!README.md
