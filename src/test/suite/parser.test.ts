@@ -1,7 +1,7 @@
 // import * as assert from 'assert' -- this one is from node
 import { Parser } from '../../parser';
 import * as path from 'path';
-import { beforeEach, expect, test } from '@jest/globals'; 
+import { beforeEach, beforeAll, expect, test } from '@jest/globals'; 
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -15,8 +15,7 @@ describe('Parser Test Suite', () => {
     describe('It initializes correctly', () => {
         beforeEach(() => {
             // declare var and assign it to a test file and make new instance of Parser
-            file = path.join(__dirname, '../test_cases/tc_0/index.js');
-            // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_0/index.js');
             parser = new Parser(file);
         });
 
@@ -31,22 +30,24 @@ describe('Parser Test Suite', () => {
     });
 
 	// TEST 0: ONE CHILD
-    it('It works for simple apps', () => {
+    describe('It works for simple apps', () => {
         beforeAll(() => {
-            console.log('-----test 0----------')
-            file = path.join(__dirname, '../test_cases/tc_0/index.js');
+            // console.log('-----test 0----------')
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_0/index.js');
             parser = new Parser(file);
             tree = parser.parse();
+            console.log('tree', tree);
         });
 
         test('It returns an defined object tree when parsed', () => {
             expect(tree).toBeDefined();
-            //expect(tree).toMatchObject()
+            expect(typeof(tree)).toBe('object');
         });
 
         test('Parsed tree has a property called name with value index and one child with name App', () => {
-            expect(tree).toHaveProperty('index');
-            console.log('--------------index---------');
+            expect(tree).toHaveProperty('name', 'index');
+            // console.log('--------------index---------');
+            expect(tree.children[0]).toHaveProperty('name', 'App');
         });
     });
 
@@ -54,7 +55,7 @@ describe('Parser Test Suite', () => {
 
     describe('It checks for nested Children', () => {
         beforeEach(() => {
-            file = path.join(__dirname, '../test_cases/tc_1/index.js');
+            file = path.join(__dirname, '../../../../test_cases/tc_1/index.js');
             // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
             parser = new Parser(file);
         })
