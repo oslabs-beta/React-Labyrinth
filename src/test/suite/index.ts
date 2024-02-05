@@ -1,33 +1,27 @@
 import * as path from 'path';
-import * as Mocha from 'mocha';
 import { glob } from 'glob';
+import * as jest from 'jest';
 
 export async function run(): Promise<void> {
-	// Create the mocha test
-	const mocha = new Mocha.default({
-		ui: 'tdd',
-		color: true
-	});
-
-	const testsRoot = path.resolve(__dirname, '..');
-	const files = await glob('**/**.test.js', { cwd: testsRoot });
-
-	// Add files to the test suite
-	files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
-
 	try {
-		return new Promise((c, e) => {
-			// Run the mocha test
-			mocha.run(failures => {
-				if (failures > 0) {
-					e(new Error(`${failures} tests failed.`));
-				} else {
-					c();
-				}
-			});
+		const testsRoot = path.resolve(__dirname, '..');
+		const files = await glob('**/**.test.js', { cwd: testsRoot });
+	
+		if (files.length === 0) {
+			console.warn('No test files found');
+			return;
+		}
+
+		return new Promise(async (c, e) => {
+			try {
+				await jest.run([...files]);
+				c();
+			} catch (err) {
+				console.error(err);
+				e(err);
+			}
 		});
 	} catch (err) {
 		console.error(err);
 	}
 }
-

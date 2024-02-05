@@ -1,32 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as babel from '@babel/parser';
-import { getNonce } from './getNonce';
+import { getNonce } from './utils/getNonce';
 import { ImportObj } from './types/ImportObj';
 import { Tree } from "./types/tree";
 import { File } from '@babel/types';
-
-//     // function to determine server or client component (can look for 'use client' and 'hooks')
-//     // input: ast node (object)
-//     // output: boolean
-// checkForClientString(node) {
-//     if (node.type === 'Directive') {
-//         console.log('node', node);
-//         // access the value property of the Directive node
-//         console.log('Directive Value:', node.value);
-//         // check if the node.value is a 'DirectiveLiteral' node
-//         if (node.value && node.value.type === 'DirectiveLiteral') {
-//             // check the value to see if it is 'use client'
-//             if (typeof node.value.value === 'string' && node.value.value.trim() === 'use client') {
-//                 // access the value property of the 'DirectiveLiteral' node
-//                 console.log('DirectiveLiteral Value:', node.value.value);
-//                 // might need to do something else here to make it known as client type
-//                 return true;
-//             }
-//         }
-//     }
-//     return false;
-// }
 
 export class Parser {
     entryFile: string;
@@ -71,7 +49,7 @@ export class Parser {
             reactRouter: false,
             reduxConnect: false,
             children: [],
-            parent: null,
+            parent: '',
             parentList: [],
             props: {},
             error: '',
@@ -79,14 +57,33 @@ export class Parser {
         };
         this.tree = root;
         this.parser(root);
+        // clean up nodes with error: 'File not found'
+        this.removeTreesWithError(this.tree);
         return this.tree;
     }
+
+    private removeTreesWithError(tree: Tree): void {
+        // base case
+        if(tree.children.length === 0) return;
+        // iterate over tree.children array to check for error. 
+        for(let i = 0; i < tree.children.length; i++){
+            // call removeTreesWithError on every tree in the children array
+            if(tree.children[i].children.length !== 0){
+                this.removeTreesWithError(tree.children[i]);
+            }
+            if(tree.children[i].error && (tree.children[i].error === 'File not found' || tree.children[i].error === 'Error while processing this file/node')){
+                // when an error is found, splice the tree out of the children array
+                tree.children.splice(i,1);
+                i--; // decrement to account for change in children array length
+            }
+        }
+    };
 
     public getTree(): Tree {
-        return this.tree;
+        return this.tree!;
     }
 
-    // Set Sapling Parser with a specific Data Tree (from workspace state)
+    // Set entryFile property with the result of Parser (from workspace state)
     public setTree(tree: Tree) {
         this.entryFile = tree.filePath;
         this.tree = tree;
@@ -131,7 +128,7 @@ export class Parser {
         return this.tree!;
     }
 
-    // Traverses the tree and changes expanded property of node whose id matches provided id
+    // Traverses the tree and changes expanded property of node whose ID matches provided ID
     public toggleNode(id: string, expanded: boolean): Tree{
         const callback = (node: { id: string; expanded: boolean }) => {
             if (node.id === id) {
@@ -181,9 +178,6 @@ export class Parser {
         if (componentTree.parentList.includes(componentTree.filePath)) {
             return;
         }
-        // if (typeof componentTree.parentList === 'string' && componentTree.parentList.includes(componentTree.filePath)) {
-        //     return;
-        // }
 
         // Create abstract syntax tree of current component tree file
         let ast: babel.ParseResult<File>;
@@ -204,14 +198,13 @@ export class Parser {
         // Find imports in the current file, then find child components in the current file
         const imports = this.getImports(ast.program.body);
 
-        if (this.getCallee(ast.program.body)) {
+        // Set value of isClientComponent property 
+        if (this.getComponentType(ast.program.directives, ast.program.body)) {
             componentTree.isClientComponent = true;
         } else {
             componentTree.isClientComponent = false;
         }
 
-        // console.log('componentTree.isClientComponent', componentTree.isClientComponent);
-        // console.log('--------------------------------')
         // Get any JSX Children of current file:
         if (ast.tokens) {
             componentTree.children = this.getJSXChildren(
@@ -247,10 +240,8 @@ export class Parser {
     }
 
     // Extracts Imports from current file
-    // const Page1 = lazy(() => import('./page1')); -> is parsed as 'ImportDeclaration'
-    // import Page2 from './page2'; -> is parsed as 'VariableDeclaration'
-    // input: array of objects: ast.program.body
-    // output: object of imoprts
+    // const App1 = lazy(() => import('./App1')); => is parsed as 'ImportDeclaration'
+    // import App2 from './App2'; => is parsed as 'VariableDeclaration'
     private getImports(body: { [key: string]: any }[]): ImportObj {
         const bodyImports = body.filter((item) => item.type === 'ImportDeclaration' || 'VariableDeclaration');
 
@@ -278,7 +269,7 @@ export class Parser {
     }
 
     private findVarDecImports(ast: { [key: string]: any }): string | boolean {
-        // find import path in variable declaration and return it,
+        // Find import path in variable declaration and return it,
         if (ast.hasOwnProperty('callee') && ast.callee.type === 'Import') {
             return ast.arguments[0].value;
         }
@@ -294,20 +285,37 @@ export class Parser {
         return false;
     }
 
-    // helper function to determine component type (client)
-    // input: ast.program.body 
-    // output: boolean 
-    private getCallee(body: { [key: string]: any }[]): boolean {
-        const defaultErr = (err,) => {
+    // Determines server or client component type (looks for use of 'use client' and react/redux state hooks)
+    private getComponentType(directive: { [key: string]: any }[], body: { [key: string]: any }[]) {
+        const defaultErr = (err) => {
             return {
                 method: 'Error in getCallee method of Parser:',
                 log: err,
             }
         };
 
-        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        if (bodyCallee.length === 0) return false;
+        // Initial check for use of directives (ex: 'use client', 'use server', 'use strict')
+        // Accounts for more than one directive 
+        for (let i = 0; i < directive.length; i++) {
+            if (directive[i].type === 'Directive') {
+                if (typeof directive[i].value.value === 'string' && directive[i].value.value.trim() === 'use client') {
+                    return true;
+                }
+            }    
+            break;    
+        }
 
+        // Second check for use of React/Redux hooks
+        // Checks for components declared using 'const'
+        const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
+        
+        // Checks for components declared using 'export default function'
+        const exportCallee = body.filter((item) => item.type === 'ExportDefaultDeclaration');
+
+        // Checks for components declared using 'function'
+        const functionCallee = body.filter((item) => item.type === 'FunctionDeclaration');
+
+        // Helper function
         const calleeHelper = (item) => {
             const hooksObj = {
                 useState: 0,
@@ -327,6 +335,8 @@ export class Parser {
                 useDispatch: 0,
                 useActions: 0,
                 useSelector: 0,
+                useShallowEqualSelector: 0,
+                useStore: 0,
                 bindActionCreators: 0,
             }
             if (item.type === 'VariableDeclaration') {
@@ -357,39 +367,43 @@ export class Parser {
             return false;
         }
 
-        if (bodyCallee.length === 1) {
-            const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
-            if (calleeArr === undefined) return false;
+        // Process Function Declarations
+        for (const func of functionCallee) {
+            const calleeArr = func.body?.body;
+            if (!calleeArr) continue; // Skip if no body
 
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
-        }
-        else if (bodyCallee.length > 1) {
-            let calleeArr: [];
-            for (let i = 0; i < bodyCallee.length; i++) {
-                try {
-                    if (bodyCallee[i].declarations[0]?.init?.body?.body) {
-                        calleeArr = bodyCallee[i].declarations[0].init.body.body;
-                    }
-                }
-                catch (err) {
-                    const error = defaultErr(err);
-                    console.error(error.method, '\n', error.log);
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
                 }
             }
-
-            if (calleeArr === undefined) return false;
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
         }
+
+        // Process Export Declarations
+        for (const exportDecl of exportCallee) {
+            const calleeArr = exportDecl.declaration.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+    
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
+                }
+            }
+        }
+    
+        // Process Body Declarations
+        for (const bodyDecl of bodyCallee) {
+            const calleeArr = bodyDecl.declarations[0]?.init?.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+    
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // Finds JSX React Components in current file
@@ -420,7 +434,7 @@ export class Parser {
                     childNodes,
                 );
 
-                // Case for finding components passed in as props e.g. <Route component={App} />
+            // Case for finding components passed in as props e.g. <Route Component={App} />
             } else if (
                 astTokens[i].type.label === 'jsxName' &&
                 (astTokens[i].value === 'Component' ||
@@ -473,7 +487,6 @@ export class Parser {
                 props: props,
                 children: [],
                 parent: parent.id,
-                // consider adding the id to the parentList array somehow for D3 integration...
                 parentList: [parent.filePath].concat(parent.parentList),
                 error: '',
                 isClientComponent: false
@@ -501,7 +514,7 @@ export class Parser {
 
     // Checks if current Node is connected to React-Redux Store
     private checkForRedux(astTokens: any[], importsObj: ImportObj): boolean {
-        // Check that react-redux is imported in this file (and we have a connect method or otherwise)
+        // Check that React-Redux is imported in this file (and we have a connect method or otherwise)
         let reduxImported = false;
         let connectAlias;
         Object.keys(importsObj).forEach((key) => {
