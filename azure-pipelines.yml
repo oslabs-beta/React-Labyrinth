@@ -38,7 +38,7 @@ steps:
 
 - bash: |
     echo ">>> Compile vscode-test and Run sample integration test"
-    npm && npm compile && npm tests
+    npm && npm run compile && npm run tests
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
