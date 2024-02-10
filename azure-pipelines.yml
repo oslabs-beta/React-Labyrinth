@@ -10,7 +10,7 @@ pr:
   branches:
     include:
     - main
-    
+
 strategy:
   matrix:
     linux:
@@ -37,12 +37,8 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - bash: |
-    echo ">>> Compile vscode-test"
-    npm && npm compile
-    echo ">>> Compiled vscode-test"
-    cd sample
-    echo ">>> Run sample integration test"
-    npm && npm compile && npm test
+    echo ">>> Compile vscode-test and Run sample integration test"
+    npm && npm compile && npm tests
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
