@@ -42,7 +42,7 @@ steps:
     echo ">>> Pointing to tests directory"
     cd ./build/src/test/runTest.js
     echo ">>> Run sample integration test"
-    npm && npm run compile && run npm tests
+    npm && npm run compile && npm run tests
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
