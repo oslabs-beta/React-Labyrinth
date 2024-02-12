@@ -1,16 +1,15 @@
 import * as vscode from 'vscode';
-import { getNonce } from './getNonce';
+import { getNonce } from './utils/getNonce';
 import { Tree } from './types/tree';
 
-let panel: vscode.WebviewPanel | undefined = undefined
+let panel: vscode.WebviewPanel | undefined = undefined;
 
 export function createPanel(context: vscode.ExtensionContext, data: Tree, columnToShowIn: vscode.ViewColumn) {
-
-    // utilize method on vscode.window object to create webview
+    // Utilize method on vscode.window object to create webview
     panel = vscode.window.createWebviewPanel(
         'reactLabyrinth',
         'React Labyrinth',
-        // create one new tab
+        // Create one tab
         vscode.ViewColumn.One,
         {
             enableScripts: true,
@@ -19,15 +18,15 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
     );
     
     // Set the icon logo of extension webview
-    panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'favicon.ico');
+    panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'RL(Final).png');
     
     // Set URI to be the path to bundle
     const bundlePath: vscode.Uri = vscode.Uri.joinPath(context.extensionUri, 'build', 'bundle.js');
 
-    // set webview URI to pass into html script
+    // Set webview URI to pass into html script
     const bundleURI: vscode.Uri = panel.webview.asWebviewUri(bundlePath);
 
-    // render html of webview here
+    // Render html of webview here
     panel.webview.html = createWebviewHTML(bundleURI, data);
 
     // Sends data to Flow.tsx to be displayed after parsed data is received
@@ -37,7 +36,6 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
                 case 'onData':
                     if (!msg.value) break;
                     context.workspaceState.update('reactLabyrinth', msg.value);
-                    
                     panel.webview.postMessage(
                         {
                             type: 'parsed-data',
@@ -54,10 +52,10 @@ export function createPanel(context: vscode.ExtensionContext, data: Tree, column
     return panel
 };
 
-// getNonce generates a new random string each time ext is used to prevent external injection of foreign code into the html 
+// getNonce generates a new random string to prevent external injection of foreign code into the HTML
 const nonce: string = getNonce();
 
-// function to create the HTML page for webview
+// Creates the HTML page for webview
 function createWebviewHTML(URI: vscode.Uri, initialData: Tree) : string {
     return (
         `
@@ -83,5 +81,5 @@ function createWebviewHTML(URI: vscode.Uri, initialData: Tree) : string {
             </body>
             </html>
         `
-    )
+    );
 }

@@ -16,6 +16,7 @@ import "./style.css";
 
 const OverviewFlow = () => {
 
+  // Required to have different initial states to render through D3
   const initialNodes: Node[] = [];
   const initialEdges: Edge[] = [];
 
@@ -24,20 +25,19 @@ const OverviewFlow = () => {
 
   useEffect(() => {
     window.addEventListener('message', (e: MessageEvent) => {
-
       // Object containing type prop and value prop
       const msg: MessageEvent = e;
-      const flowBuilder = new FlowBuilder
+      const flowBuilder = new FlowBuilder;
 
       switch (msg.data.type) {
         case 'parsed-data': {
           let data: Tree | undefined = msg.data.value;
 
           // Creates our Tree structure
-          flowBuilder.mappedData(data, initialNodes, initialEdges)
+          flowBuilder.mappedData(data, initialNodes, initialEdges);
 
           setEdges(initialEdges);
-          setNodes(initialNodes)
+          setNodes(initialNodes);
           break;
         }
       }

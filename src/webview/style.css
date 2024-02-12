@@ -15,7 +15,6 @@ body,
   text-align: center;
 }
 
-
 .react-flow__handle.connectionindicator {
   pointer-events: none !important;
 }

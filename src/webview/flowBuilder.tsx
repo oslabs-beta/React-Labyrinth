@@ -1,7 +1,7 @@
 import { ConnectionLineType, Edge, Node } from 'reactflow';
 import { Tree } from '../types/tree';
-import { getNonce } from '../getNonce';
-import * as d3 from 'd3'
+import { getNonce } from '../utils/getNonce';
+import * as d3 from 'd3';
 
 // Contructs our family tree for React application root file that was selected
 
@@ -10,19 +10,17 @@ class FlowBuilder {
   public mappedData(data: Tree, nodes: Node[], edges: Edge[]): void {
 
     // Create a holder for the heirarchical data (msg.value), data comes in an object of all the Trees
-    const root: d3.HierarchyNode<Tree> = d3.hierarchy(data)
+    const root: d3.HierarchyNode<Tree> = d3.hierarchy(data);
 
     // Dynamically adjust height and width of display depending on the amount of nodes
     const totalNodes: number = root.descendants().length;
     const width: number = Math.max(totalNodes * 100, 800);
     const height = Math.max(totalNodes * 20, 500)
 
-
-    //create tree layout and give nodes their positions and 
+    // Create tree layout and give nodes their positions and 
     const treeLayout: d3.TreeLayout<unknown> = d3.tree()
       .size([width, height])
-      .separation((a: d3.HierarchyPointNode<Node>, b: d3.HierarchyPointNode<Node>) => (a.parent == b.parent ? 2 : 2.5))
-
+      .separation((a: d3.HierarchyPointNode<Node>, b: d3.HierarchyPointNode<Node>) => (a.parent == b.parent ? 2 : 2.5));
 
     treeLayout(root);
     // Iterate through each Tree and create a node
@@ -55,7 +53,6 @@ class FlowBuilder {
           animated: true,
         };
 
-
         // Check if the edge already exists before adding
         const edgeExists: boolean = edges.some(
           edge => edge.source === newEdge.source && edge.target === newEdge.target
@@ -63,11 +60,10 @@ class FlowBuilder {
 
         // If edge does not exist, add to our edges array
         if (!edgeExists) {
-          edges.push(newEdge)
+          edges.push(newEdge);
         }
       }
-    }
-    )
+    });
   }
 }
 
