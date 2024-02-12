@@ -49,7 +49,7 @@ export class Parser {
             reactRouter: false,
             reduxConnect: false,
             children: [],
-            parent: null,
+            parent: '',
             parentList: [],
             props: {},
             error: '',
@@ -57,11 +57,30 @@ export class Parser {
         };
         this.tree = root;
         this.parser(root);
+        // clean up nodes with error: 'File not found'
+        this.removeTreesWithError(this.tree);
         return this.tree;
     }
 
+    private removeTreesWithError(tree: Tree): void {
+        // base case
+        if(tree.children.length === 0) return;
+        // iterate over tree.children array to check for error. 
+        for(let i = 0; i < tree.children.length; i++){
+            // call removeTreesWithError on every tree in the children array
+            if(tree.children[i].children.length !== 0){
+                this.removeTreesWithError(tree.children[i]);
+            }
+            if(tree.children[i].error && (tree.children[i].error === 'File not found' || tree.children[i].error === 'Error while processing this file/node')){
+                // when an error is found, splice the tree out of the children array
+                tree.children.splice(i,1);
+                i--; // decrement to account for change in children array length
+            }
+        }
+    };
+
     public getTree(): Tree {
-        return this.tree;
+        return this.tree!;
     }
 
     // Set entryFile property with the result of Parser (from workspace state)
@@ -159,9 +178,6 @@ export class Parser {
         if (componentTree.parentList.includes(componentTree.filePath)) {
             return;
         }
-        // if (typeof componentTree.parentList === 'string' && componentTree.parentList.includes(componentTree.filePath)) {
-        //     return;
-        // }
 
         // Create abstract syntax tree of current component tree file
         let ast: babel.ParseResult<File>;
@@ -270,7 +286,7 @@ export class Parser {
     }
 
     // Determines server or client component type (looks for use of 'use client' and react/redux state hooks)
-    private getComponentType(directive: { [key: string]: any }[], body: { [key: string]: any }[]): boolean {
+    private getComponentType(directive: { [key: string]: any }[], body: { [key: string]: any }[]) {
         const defaultErr = (err) => {
             return {
                 method: 'Error in getCallee method of Parser:',
@@ -290,8 +306,14 @@ export class Parser {
         }
 
         // Second check for use of React/Redux hooks
+        // Checks for components declared using 'const'
         const bodyCallee = body.filter((item) => item.type === 'VariableDeclaration');
-        if (bodyCallee.length === 0) return false;
+        
+        // Checks for components declared using 'export default function'
+        const exportCallee = body.filter((item) => item.type === 'ExportDefaultDeclaration');
+
+        // Checks for components declared using 'function'
+        const functionCallee = body.filter((item) => item.type === 'FunctionDeclaration');
 
         // Helper function
         const calleeHelper = (item) => {
@@ -313,6 +335,8 @@ export class Parser {
                 useDispatch: 0,
                 useActions: 0,
                 useSelector: 0,
+                useShallowEqualSelector: 0,
+                useStore: 0,
                 bindActionCreators: 0,
             }
             if (item.type === 'VariableDeclaration') {
@@ -343,39 +367,43 @@ export class Parser {
             return false;
         }
 
-        if (bodyCallee.length === 1) {
-            const calleeArr = bodyCallee[0].declarations[0]?.init?.body?.body;
-            if (calleeArr === undefined) return false;
+        // Process Function Declarations
+        for (const func of functionCallee) {
+            const calleeArr = func.body?.body;
+            if (!calleeArr) continue; // Skip if no body
 
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
-        }
-        else if (bodyCallee.length > 1) {
-            let calleeArr: [];
-            for (let i = 0; i < bodyCallee.length; i++) {
-                try {
-                    if (bodyCallee[i].declarations[0]?.init?.body?.body) {
-                        calleeArr = bodyCallee[i].declarations[0].init.body.body;
-                    }
-                }
-                catch (err) {
-                    const error = defaultErr(err);
-                    console.error(error.method, '\n', error.log);
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
                 }
             }
-
-            if (calleeArr === undefined) return false;
-            let checkTrue = false;
-            for (let i = 0; i < calleeArr.length; i++) {
-                if (checkTrue) return true;
-                checkTrue = calleeHelper(calleeArr[i]);
-            }
-            return checkTrue;
         }
+
+        // Process Export Declarations
+        for (const exportDecl of exportCallee) {
+            const calleeArr = exportDecl.declaration.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+    
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
+                }
+            }
+        }
+    
+        // Process Body Declarations
+        for (const bodyDecl of bodyCallee) {
+            const calleeArr = bodyDecl.declarations[0]?.init?.body?.body;
+            if (!calleeArr) continue; // Skip if no body
+    
+            for (const callee of calleeArr) {
+                if (calleeHelper(callee)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // Finds JSX React Components in current file

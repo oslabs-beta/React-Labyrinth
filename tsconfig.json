@@ -6,20 +6,20 @@
       "esModuleInterop": true,
       "lib": ["es6", "dom"],
       "jsx": "react",
+      "skipLibCheck": true,
       "sourceMap": true,
       "rootDir": "./src",
       "allowJs": true,
       "strict": false,
-      "inlineSources": true,
     },
     "jest": {
       "tsconfig": "tsconfig.json"
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/**/*.tsx", "src/**/**/*.ts"],
+    "include": ["src"],
     "exclude": [
       "node_modules",
       ".vscode-test",
       "src/webviews",
-      "node_modules/@types/mocha/index.d.ts"
+      "src/test/test_cases"
     ]
 }

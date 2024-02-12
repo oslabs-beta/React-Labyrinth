@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import {createPanel} from './panel';
 import { Parser } from './parser';
 import { Tree } from './types/tree';
+import { showNotification } from './utils/modal';
 
 let tree: Parser | undefined = undefined;
 let panel: vscode.WebviewPanel | undefined = undefined;
@@ -27,7 +28,7 @@ function activate(context: vscode.ExtensionContext) {
 
 		// Throw error message if no file was selected
 		if (!fileArray || fileArray.length === 0) {
-			vscode.window.showErrorMessage('No file selected');
+			showNotification({message: 'No file selected'});
 			return;
 		}
 

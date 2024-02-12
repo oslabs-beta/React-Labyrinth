@@ -1,15 +1,17 @@
 {
   "name": "react-labyrinth",
   "displayName": "React Labyrinth",
-  "description": "React Server Components visualization tool",
+  "description": "React Component Type hierarchy tree visualization tool",
   "version": "0.0.1",
+  "icon": "./media/reactLbayrinthFinal.png",
   "publisher": "ReactLabyrinthDev",
+  "preview": false,
   "engines": {
     "vscode": "^1.85.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/oslabs-beta/React-Labyrinth"
+    "url": "https://github.com/oslabs-beta/React-Labyrinth/tree/main"
   },
   "categories": [
     "Other"
@@ -17,14 +19,18 @@
   "keywords": [
     "react",
     "rsc",
+    "react components",
     "hierarchy tree",
     "parent-child",
     "visualizer",
-    "server component"
+    "server component",
+    "client component"
   ],
   "license": "MIT",
   "pricing": "Free",
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./build/extension.js",
   "contributes": {
     "commands": [
@@ -44,35 +50,33 @@
         {
           "id": "react-labyrinth",
           "title": "React Labyrinth",
-          "icon": "/media/test1.svg"
+          "icon": "/media/RL(Final).png"
         }
       ]
     },
     "views": {
       "react-labyrinth": [
         {
-          "id": "metrics-file",
-          "name": "Metrics"
-        },
-        {
-          "id": "test",
-          "name": "Test"
+          "id": "tree-render",
+          "name": "Tree"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "metrics-file",
-        "contents": "View tree to see where improvements can be made!\n[View Tree](command:myExtension.pickFile)\n"
+        "view": "tree-render",
+        "contents": "View tree to see component types!\n[View Tree](command:myExtension.pickFile)\n"
       }
     ]
   },
   "scripts": {
+    "vscode:prepublish": "prod",
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
-    "dev": "webpack --watch",
-    "webpack": "webpack",
+    "dev": "webpack --mode development --config webpack.config.ts --watch",
+    "prod": "webpack --mode production --config webpack.config.ts",
+    "test-compile": "tsc -p ./",
     "coverage": "npx tsc ; jest --coverage"
   },
   "devDependencies": {
@@ -103,7 +107,9 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.3",
-    "@babel/parser": "^7.23.4",
+    "@babel/parser": "^7.23.9",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
     "babel": "^6.23.0",
     "babel-loader": "^9.1.3",
     "css-loader": "^6.8.1",

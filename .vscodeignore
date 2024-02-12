@@ -1,10 +1,7 @@
-.vscode/**
-.vscode-test/**
-test/**
-.gitignore
-.yarnrc
-vsc-extension-quickstart.md
-**/jsconfig.json
-**/*.map
-**/.eslintrc.json
-**/*.js.map
+**/*
+
+!build/
+!CHANGELOG.md
+!packages.json
+!media/
+!README.md
