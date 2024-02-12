@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1707772221542" clover="3.2.0">
+  <project timestamp="1707772221542" name="All files">
+    <metrics statements="340" coveredstatements="0" conditionals="178" coveredconditionals="0" methods="74" coveredmethods="0" elements="592" coveredelements="0" complexity="0" loc="340" ncloc="340" packages="6" files="14" classes="14"/>
+    <package name="src">
+      <metrics statements="217" coveredstatements="0" conditionals="147" coveredconditionals="0" methods="41" coveredmethods="0"/>
+      <file name="extension.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/extension.ts">
+        <metrics statements="25" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="6" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="14" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="21" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="29" count="0" type="cond" truecount="0" falsecount="3"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="41" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+      </file>
+      <file name="panel.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/panel.ts">
+        <metrics statements="16" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="35" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="37" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+      </file>
+      <file name="parser.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/parser.ts">
+        <metrics statements="176" coveredstatements="0" conditionals="137" coveredconditionals="0" methods="31" coveredmethods="0"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="22" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="77" count="0" type="stmt"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="94" count="0" type="stmt"/>
+        <line num="95" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="115" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="116" count="0" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="121" count="0" type="stmt"/>
+        <line num="126" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="127" count="0" type="stmt"/>
+        <line num="130" count="0" type="stmt"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="140" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="141" count="0" type="stmt"/>
+        <line num="142" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="146" count="0" type="stmt"/>
+        <line num="148" count="0" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="153" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="159" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="168" count="0" type="stmt"/>
+        <line num="169" count="0" type="stmt"/>
+        <line num="178" count="0" type="stmt"/>
+        <line num="179" count="0" type="stmt"/>
+        <line num="183" count="0" type="stmt"/>
+        <line num="186" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="187" count="0" type="stmt"/>
+        <line num="189" count="0" type="stmt"/>
+        <line num="193" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="194" count="0" type="stmt"/>
+        <line num="202" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="203" count="0" type="stmt"/>
+        <line num="207" count="0" type="stmt"/>
+        <line num="208" count="0" type="stmt"/>
+        <line num="213" count="0" type="stmt"/>
+        <line num="214" count="0" type="stmt"/>
+        <line num="216" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="218" count="0" type="stmt"/>
+        <line num="219" count="0" type="stmt"/>
+        <line num="220" count="0" type="stmt"/>
+        <line num="221" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="223" count="0" type="stmt"/>
+        <line num="230" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="232" count="0" type="stmt"/>
+        <line num="233" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="234" count="0" type="stmt"/>
+        <line num="235" count="0" type="stmt"/>
+        <line num="241" count="0" type="cond" truecount="0" falsecount="3"/>
+        <line num="242" count="0" type="stmt"/>
+        <line num="243" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="244" count="0" type="stmt"/>
+        <line num="245" count="0" type="stmt"/>
+        <line num="251" count="0" type="stmt"/>
+        <line num="257" count="0" type="cond" truecount="0" falsecount="3"/>
+        <line num="258" count="0" type="stmt"/>
+        <line num="261" count="0" type="stmt"/>
+        <line num="262" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="263" count="0" type="stmt"/>
+        <line num="264" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="265" count="0" type="stmt"/>
+        <line num="269" count="0" type="stmt"/>
+        <line num="274" count="0" type="stmt"/>
+        <line num="275" count="0" type="stmt"/>
+        <line num="283" count="0" type="stmt"/>
+        <line num="284" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="285" count="0" type="cond" truecount="0" falsecount="3"/>
+        <line num="286" count="0" type="stmt"/>
+        <line num="289" count="0" type="stmt"/>
+        <line num="293" count="0" type="stmt"/>
+        <line num="294" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="297" count="0" type="stmt"/>
+        <line num="298" count="0" type="stmt"/>
+        <line num="318" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="319" count="0" type="stmt"/>
+        <line num="320" count="0" type="cond" truecount="0" falsecount="12"/>
+        <line num="321" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="322" count="0" type="stmt"/>
+        <line num="326" count="0" type="stmt"/>
+        <line num="327" count="0" type="stmt"/>
+        <line num="330" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="331" count="0" type="stmt"/>
+        <line num="332" count="0" type="cond" truecount="0" falsecount="8"/>
+        <line num="333" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="334" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="335" count="0" type="stmt"/>
+        <line num="339" count="0" type="stmt"/>
+        <line num="340" count="0" type="stmt"/>
+        <line num="343" count="0" type="stmt"/>
+        <line num="346" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="347" count="0" type="cond" truecount="0" falsecount="12"/>
+        <line num="348" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="350" count="0" type="stmt"/>
+        <line num="351" count="0" type="stmt"/>
+        <line num="352" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="353" count="0" type="stmt"/>
+        <line num="355" count="0" type="stmt"/>
+        <line num="357" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="359" count="0" type="stmt"/>
+        <line num="360" count="0" type="stmt"/>
+        <line num="361" count="0" type="cond" truecount="0" falsecount="13"/>
+        <line num="362" count="0" type="stmt"/>
+        <line num="366" count="0" type="stmt"/>
+        <line num="367" count="0" type="stmt"/>
+        <line num="371" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="372" count="0" type="stmt"/>
+        <line num="373" count="0" type="stmt"/>
+        <line num="374" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="375" count="0" type="stmt"/>
+        <line num="377" count="0" type="stmt"/>
+        <line num="388" count="0" type="stmt"/>
+        <line num="389" count="0" type="stmt"/>
+        <line num="392" count="0" type="stmt"/>
+        <line num="394" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="399" count="0" type="stmt"/>
+        <line num="400" count="0" type="stmt"/>
+        <line num="401" count="0" type="stmt"/>
+        <line num="410" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="416" count="0" type="stmt"/>
+        <line num="417" count="0" type="stmt"/>
+        <line num="426" count="0" type="stmt"/>
+        <line num="436" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="437" count="0" type="stmt"/>
+        <line num="438" count="0" type="stmt"/>
+        <line num="444" count="0" type="stmt"/>
+        <line num="467" count="0" type="stmt"/>
+        <line num="474" count="0" type="stmt"/>
+        <line num="475" count="0" type="stmt"/>
+        <line num="476" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="480" count="0" type="stmt"/>
+        <line num="482" count="0" type="stmt"/>
+        <line num="484" count="0" type="stmt"/>
+        <line num="490" count="0" type="stmt"/>
+        <line num="492" count="0" type="stmt"/>
+        <line num="493" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="497" count="0" type="stmt"/>
+        <line num="498" count="0" type="stmt"/>
+        <line num="502" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="503" count="0" type="stmt"/>
+        <line num="507" count="0" type="stmt"/>
+        <line num="508" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="513" count="0" type="stmt"/>
+        <line num="516" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.test">
+      <metrics statements="9" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="runTest.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/test/runTest.ts">
+        <metrics statements="9" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.test.suite">
+      <metrics statements="63" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="20" coveredmethods="0"/>
+      <file name="extension.test.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/test/suite/extension.test.ts">
+        <metrics statements="5" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+      </file>
+      <file name="index.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/test/suite/index.ts">
+        <metrics statements="18" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="12" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+      </file>
+      <file name="parser.test.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/test/suite/parser.test.ts">
+        <metrics statements="40" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="15" coveredmethods="0"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.types">
+      <metrics statements="6" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="connection.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/types/connection.ts">
+        <metrics statements="6" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="2" count="0" type="stmt"/>
+        <line num="3" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+      </file>
+      <file name="index.d.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/types/index.d.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="src.utils">
+      <metrics statements="5" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="getNonce.ts" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/utils/getNonce.ts">
+        <metrics statements="5" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="2" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="8" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.webview">
+      <metrics statements="40" coveredstatements="0" conditionals="28" coveredconditionals="0" methods="10" coveredmethods="0"/>
+      <file name="App.tsx" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/webview/App.tsx">
+        <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+      </file>
+      <file name="Flow.tsx" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/webview/Flow.tsx">
+        <metrics statements="21" coveredstatements="0" conditionals="12" coveredconditionals="0" methods="5" coveredmethods="0"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="32" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="60" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="61" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="65" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="66" count="0" type="stmt"/>
+      </file>
+      <file name="flowBuilder.tsx" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/webview/flowBuilder.tsx">
+        <metrics statements="15" coveredstatements="0" conditionals="16" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="23" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="47" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="58" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="62" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="63" count="0" type="stmt"/>
+      </file>
+      <file name="index.tsx" path="/Users/franciscolopez/Desktop/React-Labyrinth/src/webview/index.tsx">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
