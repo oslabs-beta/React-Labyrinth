@@ -38,11 +38,11 @@ steps:
 
 - bash: |
     echo ">>> Compile vscode-test"
-    npm && npm run compile
+    npm install && npm run compile
     echo ">>> Pointing to tests directory"
-    cd /React-Labyrinth/build/src/test
+    cd build/src/test
     echo ">>> Run sample integration test"
-    npm && npm run compile && npm run tests
+    npm run tests
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
