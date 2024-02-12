@@ -10,10 +10,10 @@ describe('Parser Test Suite', () => {
     describe('It works for simple apps', () => {
         beforeAll(() => {
             // console.log('-----test 0----------')
-            file = path.join(__dirname, '../test_cases/tc_0/index.js');
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_0/index.js');
             parser = new Parser(file);
             tree = parser.parse();
-            console.log('tree', tree);
+            // console.log('tree', tree);
         });
 
         test('Tree should not be undefined', () => {
@@ -21,9 +21,8 @@ describe('Parser Test Suite', () => {
             expect(typeof(tree)).toBe('object');
         });
 
-        test('Parsed tree has a property called name with value index and one child with name App', () => {
+        test('Parsed tree has a property called name with value index, and a child with the name App', () => {
             expect(tree).toHaveProperty('name', 'index');
-            // console.log('--------------index---------');
             expect(tree.children[0]).toHaveProperty('name', 'App');
         });
     });
@@ -34,16 +33,44 @@ describe('Parser Test Suite', () => {
 
     describe('It checks for nested Children', () => {
         beforeEach(() => {
-            file = path.join(__dirname, '../../../../test_cases/tc_1/index.js');
-            // file = path.join(__dirname, '../../../src/test/test_apps/test_0/index.js');
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_1/index.js');
             parser = new Parser(file);
+            tree = parser.parse();
+            console.log('tree 1', tree);
         })
 
-        console.log('inside Test 1')
+        test('Parsed tree should have a property called name with the value index, and one child with name App, which has its own child, Main', () => {
+            expect(tree).toHaveProperty('name', 'index');
+            expect(tree.children[0]).toHaveProperty('name', 'App');
+            // console.log(tree.children[0].children);
+            expect(tree.children[0].children[0]).toHaveProperty('name', 'Main');
+        })
+
+        test('Parsed tree has correct amount of child components', () => {
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0].children).toHaveLength(1);
+        })
+
+        test('Parsed tree depth is accurate', () => {
+            expect(tree).toHaveProperty('depth', 0);
+            expect(tree.children[0]).toHaveProperty('depth', 1);
+            expect(tree.children[0].children[0]).toHaveProperty('depth', 2);
+        })
     })
 
+    // TEST 2: THIRD PARTY, REACT ROUTER, DESTRUCTURED IMPORTS
+    describe('It works for third party, React Router, and destructured imports', () => {
+        beforeAll(() => {
+            file = path.join(__dirname, '../../../../src/test/test_cases/tc_2/index.js');
+            parser = new Parser(file);
+            tree = parser.parse();
+            console.log(tree);
+        })
 
-     
+        
+    }) 
+
+
     // TEST 6: BAD IMPORT OF APP2 FROM APP1 COMPONENT
     describe('Catches bad imports', () => {
         beforeEach(() => {
@@ -76,6 +103,7 @@ describe('Parser Test Suite', () => {
             file = path.join(__dirname, '../../../../src/test/test_cases/tc_11/index.js');
             parser = new Parser(file);
             tree = parser.parse();
+            // console.log('tree11', tree);
         });
 
         test('Tree should not be undefined', () => {
@@ -195,20 +223,14 @@ describe('Parser Test Suite', () => {
 
 
 
-	// TEST 2: THIRD PARTY, REACT ROUTER, DESTRUCTURED IMPORTS
+
 	// TEST 3: IDENTIFIES REDUX STORE CONNECTION
 	// TEST 4: ALIASED IMPORTS
 	// TEST 5: MISSING EXTENSIONS AND UNUSED IMPORTS
-	// TEST 6: BAD IMPORT OF APP2 FROM APP1 COMPONENT
-	// TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
+
 	// TEST 8: MULTIPLE PROPS ON ONE COMPONENT
 	// TEST 9: FINDING DIFFERENT PROPS ACROSS TWO OR MORE IDENTICAL COMPONENTS
-	// TEST 10: CHECK CHILDREN WORKS AND COMPONENTS WORK
-	// TEST 11: PARSER DOESN'T BREAK UPON RECURSIVE COMPONENTS
-	// TEST 12: NEXT.JS APPS (pages version & app router version)
-  	// TEST 13: Variable Declaration Imports and React.lazy Imports    
-    // TEST 14: CHECK IF COMPONENT IS CLIENT OR SERVER (USING HOOKS & DIRECTIVES) => BOOLEAN (priority)
-
+	
     // LOU is doing EXTENSION TEST in extension.test.ts
     
 });
