@@ -33,7 +33,7 @@ Once React Labyrinth is installed in your VSCode, you'll notice its logo added t
 
 Upon activation, a sidebar will appear, featuring a 'View Tree' button. Clicking this button will prompt the file explorer to open, allowing you to select the root file of your React App to load the tree structure.
 
-Client Components will be distinguished by a blue background, while Server Components will feature an orange background for easy identification.
+Client Components will be distinguished by a orange background, while Server Components will feature an blue background for easy identification.
 
 ## Tech Stack
 
