@@ -40,7 +40,7 @@ steps:
     echo ">>> Compile vscode-test"
     npm install && npm run compile
     echo ">>> Pointing to tests directory"
-    cd build/src/test
+    cd React-Labyrinth/build/src/test
     echo ">>> Run sample integration test"
     npm run tests
   displayName: Run Tests
