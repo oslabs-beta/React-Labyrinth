@@ -5,6 +5,7 @@ trigger:
   tags:
     include:
     - v*
+    # - refs/tags/v*
 
 pr:
   branches:
@@ -17,8 +18,6 @@ strategy:
       imageName: 'ubuntu-latest'
     mac:
       imageName: 'macos-latest'
-    windows:
-      imageName: 'windows-latest'
 
 pool:
   vmImage: $(imageName)
@@ -37,12 +36,18 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - bash: |
-    echo ">>> Compile vscode-test"
+    echo ">>> Run npm install and Compile vscode-test"
     npm install && npm run compile
-    # echo ">>> Pointing to tests directory"
-    # cd ./build/src/test/runTest.js
     echo ">>> Run sample integration test"
     npm install && npm run compile && npm run tests
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
+
+# - bash: |
+#     echo ">>> Publish"
+#     npm run deploy
+#     displayName: Publish
+#     condition: add(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'), eq(variables['Agent.OS'], 'Linux'))
+#     env:
+#       VSCE_PAT: $(VSCE_PAT)
