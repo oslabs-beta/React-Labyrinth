@@ -74,7 +74,7 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
-    "tests": "node ./build/src/test/runTest.js",
+    "tests": "node React-Labyrinth/build/src/test/runTest.js",
     "dev": "webpack --mode development --config webpack.config.ts --watch",
     "prod": "webpack --mode production --config webpack.config.ts",
     "compile": "tsc -p ./"
