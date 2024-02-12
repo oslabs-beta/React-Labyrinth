@@ -38,11 +38,11 @@ steps:
 
 - bash: |
     echo ">>> Compile vscode-test"
-    npm && npm run compile
+    npm install && npm run compile
     echo ">>> Pointing to tests directory"
     cd ./build/src/test/runTest.js
     echo ">>> Run sample integration test"
-    npm && npm run compile && run npm tests
+    npm install && npm run compile && npm tests
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
