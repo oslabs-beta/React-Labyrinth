@@ -13,7 +13,6 @@ describe('Parser Test Suite', () => {
             file = path.join(__dirname, '../../../../src/test/test_cases/tc_0/index.js');
             parser = new Parser(file);
             tree = parser.parse();
-            // console.log('tree', tree);
         });
 
         test('Tree should not be undefined', () => {
@@ -36,7 +35,6 @@ describe('Parser Test Suite', () => {
             file = path.join(__dirname, '../../../../src/test/test_cases/tc_1/index.js');
             parser = new Parser(file);
             tree = parser.parse();
-            console.log('tree 1', tree);
         })
 
         test('Parsed tree should have a property called name with the value index, and one child with name App, which has its own child, Main', () => {
@@ -64,9 +62,31 @@ describe('Parser Test Suite', () => {
             file = path.join(__dirname, '../../../../src/test/test_cases/tc_2/index.js');
             parser = new Parser(file);
             tree = parser.parse();
-            console.log(tree);
         })
 
+        test('Should parse destructured and third party imports', () => {
+            expect(tree).toHaveProperty('thirdParty', false);
+            expect(tree.children[0]).toHaveProperty('thirdParty', true);
+            expect(tree.children[1]).toHaveProperty('thirdParty', true);
+            
+            try {
+                expect(tree.children[0].name).toContain('Switch')
+            } catch {
+                expect(tree.children[0].name).toContain('Route')
+                
+            }
+            try {
+                expect(tree.children[1].name).toContain('Switch')
+            } catch {
+                expect(tree.children[1].name).toContain('Route')
+                
+            }
+        })
+
+        test('third party should be reactRouter', () => {
+            expect(tree.children[0]).toHaveProperty('reactRouter', true);
+            expect(tree.children[1]).toHaveProperty('reactRouter', true);
+        })
         
     }) 
 
