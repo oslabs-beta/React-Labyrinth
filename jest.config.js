@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     preset: "ts-jest",
-    testEnvironment: "node",
+    testEnvironment: "./src/test/vscode-environment",
     preset: "ts-jest/presets/default-esm",
     globals: {
         "ts-jest": {
