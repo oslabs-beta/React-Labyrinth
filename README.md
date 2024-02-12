@@ -1,70 +1,73 @@
 # React Labyrinth
 
-![React Labyrinth Logo](./media/reactLabyrinthFinal.png)
+<p align="center">
+  <img width="400" height="400" src="https://github.com/oslabs-beta/React-Labyrinth/assets/127361061/ca9ab4e5-cb28-4dc3-83fa-9ef47e4fdbeb">
+</p>
 
-# __Table of Contents__
+## __Table of Contents__
 1. [Overview](#overview)
-2. [Features](#features)
-3. [Installation](#installation)
-4. [Getting Started](#getting-started)
-5. [Known Issues](#known-issues)
-6. [Release Notes](#release-notes)
+2. [Installation](#installation)
+3. [Getting Started](#getting-started)
+4. [Tech Stack](#tech-stack)
+5. [Publications](#publications)
+6. [Contributing](#contributing)
 7. [Meet Our Team](#meet-our-team)
 8. [License](#license)
 
 *work in progress as of 11/13/23*
 ## Overview
-React Server Components are components that run exclusively on the server, allowing the components to do things such as making their own database queries inside of the component, rather than having to make a request to the backend first. These components are different from the components we usually write in React, which under this new paradigm are refered to as Client Components. But the problem is it's not always clear which Client Components could instead be Server Components which would save space on the bundle size and decrease TTI(time to interactive) for the client.
+React Server Components operate exclusively on the server, enabling tasks such as executing database queries within the component itself, rather than relying on backend requests. This paradigm distinguishes them from traditional React components, known as Client Components. However, identifying which Client Components could be optimized as Server Components isn't always straightforward, potentially leading to inefficient bundle sizes and longer time to interactive (TTI) for clients.
 
-We want to create a visualization tool to help developers know where these changes could be implemented and how much time and space their application would save from these potential changes. _(Make sure to "trust our extension" in order to see the bundle size and TTI metrics)_
-
-## Features
-
-Our tool will 
-* Show which components are currently considered Client Components or Server Components 
-* Show if a Client Component has the potential to be a Server Component. 
-* Display the change in Bundle Size and TTI for the web application
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+To address this challenge, we aim to develop a visualization tool to help developers determine their application's component types. By enhancing component-type visibility and aiding in the transition to server components, our tool empowers developers to optimize their applications effectively.
 
 ## Installation
 
-Our visualization tool can be downloaded as an extension in the VS Code Editor. Search for React Labrynth and click "install".
+React Labyrinth extension can be installed via the VSCode Marketplace. Start by clicking the Extensions icon in the Activity Bar on the side of VSCode or by using the View: Extensions command (Ctrl+Shift+X). Search for 'react-labyrinth' and click the "install" button. Upon completion, VSCode will have installed the extension and React Labyrinth is ready for use.
 
 ## Getting Started
 
-Select the root file for your React App to load the tree.
+Once React Labyrinth is installed in your VSCode, you'll notice its logo added to the Activity Bar on the left-hand side. Simply click on the React Labyrinth logo to launch the extension.
+<p align="center">
+  <img width="250" height="450" src="https://github.com/oslabs-beta/React-Labyrinth/assets/127361061/d72b483b-7785-4a5d-9836-9c79ff46e3a3">
+</p>
 
-Any components that are Client Components will have a blue background and Server Components will have an orange background. 
+Upon activation, a sidebar will appear, featuring a 'View Tree' button. Clicking this button will prompt the file explorer to open, allowing you to select the root file of your React App to load the tree structure.
 
-If the component has the potential to be a Server Component, there will be an orange dotted outline surrounding the component node on the tree.
+Client Components will be distinguished by a blue background, while Server Components will feature an orange background for easy identification.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Tech Stack
 
-## Known Issues
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=js,ts,html,css,tailwind,babel,react,d3,jest,nodejs,webpack,git,azure,vscode)](https://skillicons.dev" />
+  </a>
+</p>
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Publications
 
-## Release Notes
+Check out our medium article (insert hyperlink) for more information about React Labyrinth!
 
-Users appreciate release notes as you update your extension.
+## Contributing
 
-### 1.0.0
+Contributions are the cornerstone of the open-source community, fostering an environment of learning, inspiration, and innovation. Your contributions are invaluable and greatly appreciated.
 
-Initial release of ...
+For more details and to begin exploring React Labyrinth, visit its official webpage and LinkedIn page (insert links). These resources offer comprehensive insights into the project, its functionality, key features, and how to get started.
+
+Furthermore, you can access the project's source code, documentation, and issue tracker on GitHub. Feel free to fork the project, implement changes, and submit pull requests to enhance its development.
+
+If you find React Labyrinth beneficial, consider starring it on GitHub to boost its visibility and attract more contributors and users. Your support is crucial in advancing the project's growth and impact.
+
+[Report Bug / Request Feature](https://github.com/oslabs-beta/React-Labyrinth/issues)
 
 ## Meet Our Team
 
-* Ashley Luu
-* Christina Raether
-* Francisco Lopez
-* Johnny Arroyo
-* Louis Kuczykowski
+* Ashley Luu — [Github](https://github.com/ash-t-luu) & [LinkedIn](https://www.linkedin.com/in/ashley-t-luu/)
+* Christina Raether — [Github](https://github.com/ChristinaRaether) & [LinkedIn](https://www.linkedin.com/in/christinaraether/)
+* Francisco Lopez — [Github](https://github.com/Ponch49) & [LinkedIn](https://www.linkedin.com/in/francisco-g-lopez/)
+* Johnny Arroyo — [Github](https://github.com/Johnny-Arroyo) & [LinkedIn](https://www.linkedin.com/in/johnny-arroyo/)
+* Louis Kuczykowski — [Github](https://github.com/Louka3) & [LinkedIn](https://www.linkedin.com/in/louiskuczykowski/)
 
 
 ## License
 
-React Labrynth is developed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License)
+React Labyrinth is developed under the [MIT license](https://en.wikipedia.org/wiki/MIT_License)
