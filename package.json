@@ -3,7 +3,7 @@
   "displayName": "React Labyrinth",
   "description": "React Component Type hierarchy tree visualization tool",
   "version": "0.0.1",
-  "icon": "./media/reactLbayrinthFinal.png",
+  "icon": "./media/reactLabyrinthFinal.png",
   "publisher": "ReactLabyrinthDev",
   "preview": false,
   "engines": {
@@ -70,14 +70,15 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "prod",
+    "vscode:prepublish": "npm run compile",
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
     "tests": "node React-Labyrinth/build/src/test/runTest.js",
     "dev": "webpack --mode development --config webpack.config.ts --watch",
     "prod": "webpack --mode production --config webpack.config.ts",
-    "compile": "tsc -p ./"
+    "compile": "tsc -p ./",
+	  "pack": "vsce package --out MyExtension.vsix"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
@@ -89,6 +90,7 @@
     "@types/vscode": "^1.84.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.23.0",
     "eslint": "^8.54.0",
     "glob": "^10.3.10",
     "jest": "^29.7.0",
