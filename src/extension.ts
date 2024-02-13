@@ -60,7 +60,18 @@ function activate(context: vscode.ExtensionContext) {
 
 	// Command to show panel if it is hidden
 	const showPanel: vscode.Disposable = vscode.commands.registerCommand('myExtension.showPanel', () => {
-		panel.reveal(columnToShowIn);
+		if (!panel) {
+
+			showNotification({message: 'Please select root file of app', timeout: 3000});
+			return;
+
+		} else {
+
+			panel.reveal(columnToShowIn);
+			return;
+			
+		}
+		
 	});
 
 	context.subscriptions.push(pickFile, showPanel);
