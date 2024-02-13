@@ -121,5 +121,13 @@
     "style-loader": "^3.3.3",
     "ts-loader": "^9.5.1",
     "webpack": "^5.90.1"
+  },
+
+  "babel": {
+    "presets": [
+      ["@babel/preset-react", { "runtime": "automatic" }],
+      ["@babel/preset-env", { "targets": { "node": "current" } }],
+      "@babel/preset-typescript"
+    ]
   }
 }

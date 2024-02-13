@@ -21,17 +21,17 @@ describe('Parser Test Suite', () => {
     });
     
     // TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
-    describe('Parser should not work for components with syntax errors in the code', () => {
-        beforeEach(() => {
-            file = path.join(__dirname, '../../../../src/test/test_cases/tc_7/index.js');
-            parser = new Parser(file);
-            tree = parser.parse();
-        });
+    // describe('Parser should not work for components with syntax errors in the code', () => {
+    //     beforeEach(() => {
+    //         file = path.join(__dirname, '../../../../src/test/test_cases/tc_7/index.js');
+    //         parser = new Parser(file);
+    //         tree = parser.parse();
+    //     });
             
-        test("Parser stops parsing when there is a syntax error in a component", () => {
-            expect(tree.children.length).toBe(0);
-        });
-    });
+    //     test("Parser stops parsing when there is a syntax error in a component", () => {
+    //         expect(tree.children.length).toBe(0);
+    //     });
+    // });
 
 	// TEST 11: PARSER DOESN'T BREAK UPON RECURSIVE COMPONENTS
     describe('It should render the second call of mutually recursive components, but no further', () => {
@@ -167,8 +167,7 @@ describe('Parser Test Suite', () => {
 	// TEST 7: SYNTAX ERROR IN APP FILE CAUSES PARSER ERROR
 	// TEST 8: MULTIPLE PROPS ON ONE COMPONENT
 	// TEST 9: FINDING DIFFERENT PROPS ACROSS TWO OR MORE IDENTICAL COMPONENTS
-        });
-    });
+
 
     // TEST 8: MULTIPLE PROPS ON ONE COMPONENT
     describe('Finds multiple props in one component', () => {

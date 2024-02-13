@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/19</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
@@ -89,21 +89,12 @@
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -112,11 +103,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -135,25 +121,18 @@ import * as jest from 'jest';
 &nbsp;
 export async function <span class="fstat-no" title="function not covered" >run(</span>): Promise&lt;void&gt; {
 <span class="cstat-no" title="statement not covered" >	try {</span>
-<span class="cstat-no" title="statement not covered" >		console.log('inside try block of index.ts');</span>
-&nbsp;
 		const testsRoot = <span class="cstat-no" title="statement not covered" >path.resolve(__dirname, '..');</span>
 		const files = <span class="cstat-no" title="statement not covered" >await glob('**/**.test.js', { cwd: testsRoot });</span>
 	
-<span class="cstat-no" title="statement not covered" >		<span class="missing-if-branch" title="if path not taken" >I</span>if (files.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >		if (files.length === 0) {</span>
 <span class="cstat-no" title="statement not covered" >			console.warn('No test files found');</span>
 <span class="cstat-no" title="statement not covered" >			return;</span>
 		}
 &nbsp;
-<span class="cstat-no" title="statement not covered" >		console.log('test files: ', files);</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >		return new Promise(<span class="fstat-no" title="function not covered" >async (c</span>, e) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span></span>
+<span class="cstat-no" title="statement not covered" >		return new Promise(<span class="fstat-no" title="function not covered" >as</span>ync (c, e) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >			try {</span>
-<span class="cstat-no" title="statement not covered" >				console.log('inside promise block of index.ts before await ')</span>
 <span class="cstat-no" title="statement not covered" >				await jest.run([...files]);</span>
-<span class="cstat-no" title="statement not covered" >				console.log('inside promise block of index.ts after await')</span>
 <span class="cstat-no" title="statement not covered" >				c();</span>
-<span class="cstat-no" title="statement not covered" >				console.log('inside promise block of index.ts after c()')</span>
 			} catch (err) {
 <span class="cstat-no" title="statement not covered" >				console.error(err);</span>
 <span class="cstat-no" title="statement not covered" >				e(err);</span>
@@ -169,7 +148,7 @@ export async function <span class="fstat-no" title="function not covered" >run(<
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-02-12T21:32:21.581Z
+                at 2024-02-13T00:08:36.910Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

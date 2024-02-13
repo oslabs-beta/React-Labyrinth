@@ -9,6 +9,9 @@ module.exports = {
             useESM: true,
         },
     },
+    transform: {
+        "^.+\\.[jt]sx?$": "babel-jest"
+    },
     moduleNameMapper: {
         vscode: path.join(__dirname, 'src', 'test', 'vscode.js')
     },
