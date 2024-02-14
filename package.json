@@ -4,7 +4,7 @@
   "description": "React Component Type hierarchy tree visualization tool",
   "version": "1.0.0",
   "icon": "./media/reactLabyrinthFinal.png",
-  "publisher": "ReactLabyrinthDev",
+  "publisher": "react-labyrinth",
   "preview": false,
   "engines": {
     "vscode": "^1.85.1"
