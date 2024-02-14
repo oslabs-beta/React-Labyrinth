@@ -24,7 +24,8 @@
     "parent-child",
     "visualizer",
     "server component",
-    "client component"
+    "client component",
+    "react server components"
   ],
   "license": "MIT",
   "pricing": "Free",
@@ -77,7 +78,8 @@
     "tests": "node ./build/src/test/runTest.js",
     "dev": "webpack --mode development --config webpack.config.ts --watch",
     "prod": "webpack --mode production --config webpack.config.ts",
-    "compile": "tsc -p ./"
+    "compile": "tsc -p ./",
+    "deploy": "vsce publish"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
