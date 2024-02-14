@@ -2,8 +2,8 @@
   "name": "react-labyrinth",
   "displayName": "React Labyrinth",
   "description": "React Component Type hierarchy tree visualization tool",
-  "version": "0.0.1",
-  "icon": "./media/reactLbayrinthFinal.png",
+  "version": "1.0.0",
+  "icon": "./media/reactLabyrinthFinal.png",
   "publisher": "ReactLabyrinthDev",
   "preview": false,
   "engines": {
