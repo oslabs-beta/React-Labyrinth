@@ -2,9 +2,9 @@
   "name": "react-labyrinth",
   "displayName": "React Labyrinth",
   "description": "React Component Type hierarchy tree visualization tool",
-  "version": "0.0.1",
-  "icon": "./media/reactLbayrinthFinal.png",
-  "publisher": "ReactLabyrinthDev",
+  "version": "1.0.0",
+  "icon": "./media/reactLabyrinthFinal.png",
+  "publisher": "react-labyrinth",
   "preview": false,
   "engines": {
     "vscode": "^1.85.1"
@@ -79,6 +79,7 @@
     "dev": "webpack --mode development --config webpack.config.ts --watch",
     "prod": "webpack --mode production --config webpack.config.ts",
     "compile": "tsc -p ./",
+    "coverage": "jest --coverage",
     "deploy": "vsce publish"
   },
   "devDependencies": {
@@ -95,6 +96,7 @@
     "eslint": "^8.54.0",
     "glob": "^10.3.10",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "jest-environment-node": "^29.7.0",
     "postcss-loader": "^7.3.3",
     "postcss-preset-env": "^9.3.0",
@@ -119,5 +121,24 @@
     "style-loader": "^3.3.3",
     "ts-loader": "^9.5.1",
     "webpack": "^5.89.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ],
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ]
   }
 }
