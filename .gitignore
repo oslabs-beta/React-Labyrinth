@@ -3,3 +3,4 @@
 /.vscode-test/
 /build/
 /.DS_Store
+/coverage/
