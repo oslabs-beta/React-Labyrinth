@@ -71,7 +71,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "prod",
+    "vscode:prepublish": "npm run prod",
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
