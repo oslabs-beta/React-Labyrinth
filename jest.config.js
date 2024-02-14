@@ -13,5 +13,12 @@ module.exports = {
         vscode: path.join(__dirname, 'src', 'test', 'vscode.js')
     },
     testMatch: ['**/test/**/*.js', '**/?(*.)+(spec|test).js'],
-    modulePathIgnorePatterns: ["node_modules"]
+    modulePathIgnorePatterns: ["node_modules"],
+    collectCoverage: true,
+    coverageReporters: [ 'lcov', 'text', 'html'],
+    collectCoverageFrom: ['./src/**'],
+    coverageDirectory: 'coverage',
+    transform: {
+      "^.+\\.[jt]sx?$": "babel-jest"
+    },
 };

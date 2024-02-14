@@ -1,5 +1,5 @@
-const { TestEnvironment } = require('jest-environment-node');
-const vscode = require('vscode');
+const { TestEnvironment } = require('jest-environment-jsdom');
+const vscode = require('@vscode/test-electron');
 
 // Allows for VSCode Envionrment to be extended to Jest Environment 
 class VsCodeEnvironment extends TestEnvironment {
