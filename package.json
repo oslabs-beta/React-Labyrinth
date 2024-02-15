@@ -80,7 +80,7 @@
     "prod": "webpack --mode production --config webpack.config.ts",
     "compile": "tsc -p ./",
     "coverage": "jest --coverage",
-    "deploy": "vsce publish --target linux-x64 linux-arm64 darwin-x64 darwin-arm64 web"
+    "deploy": "vsce publish"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
