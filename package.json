@@ -24,7 +24,8 @@
     "parent-child",
     "visualizer",
     "server component",
-    "client component"
+    "client component",
+    "react server components"
   ],
   "license": "MIT",
   "pricing": "Free",
@@ -70,14 +71,16 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "prod",
+    "vscode:prepublish": "npm run prod",
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "npx tsc ; node ./build/src/test/runTest.js",
+    "tests": "node ./build/src/test/runTest.js",
     "dev": "webpack --mode development --config webpack.config.ts --watch",
     "prod": "webpack --mode production --config webpack.config.ts",
-    "test-compile": "tsc -p ./",
-    "coverage": "jest --coverage"
+    "compile": "tsc -p ./",
+    "coverage": "jest --coverage",
+    "deploy": "vsce publish --target linux-x64 linux-arm64 darwin-x64 darwin-arm64 web"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
@@ -89,6 +92,7 @@
     "@types/vscode": "^1.84.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^2.23.0",
     "eslint": "^8.54.0",
     "glob": "^10.3.10",
     "jest": "^29.7.0",
