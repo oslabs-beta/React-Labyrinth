@@ -64,7 +64,8 @@ Client Components will be distinguished by an orange background, while Server Co
 
 ## Publications
 
-Check out our [Medium article](https://lnkd.in/eYawkr6H) for more information about React Labyrinth!
+Check out our Medium articles: [Part 1](https://lnkd.in/eYawkr6H) and [Part 2](https://medium.com/@ashleyluu87/data-flow-from-vs-code-extension-webview-panel-react-components-2f94b881467e) for more information about React Labyrinth!
+
 
 ## Contributing
 
