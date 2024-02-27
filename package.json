@@ -2,7 +2,7 @@
   "name": "react-labyrinth",
   "displayName": "React Labyrinth",
   "description": "React Component Type hierarchy tree visualization tool",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "icon": "./media/reactLabyrinthFinal.png",
   "publisher": "react-labyrinth",
   "preview": false,
@@ -80,7 +80,8 @@
     "prod": "webpack --mode production --config webpack.config.ts",
     "compile": "tsc -p ./",
     "coverage": "jest --coverage",
-    "deploy": "vsce publish"
+    "deploy": "vsce publish",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
